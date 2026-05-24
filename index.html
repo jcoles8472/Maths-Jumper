@@ -62,7 +62,7 @@
     position: absolute;
     top: 32px;
     left: 50%; transform: translateX(-50%);
-    width: 300px;
+    width: 350px;
     z-index: 20;
     filter: drop-shadow(0 6px 16px rgba(0,0,0,0.3));
     animation: logoBob 2.4s ease-in-out infinite;
@@ -75,7 +75,7 @@
   /* Number tiles — top corners */
   .num-two {
     position: absolute;
-    top: 195px; left: 28px;
+    top: 205px; left: 28px;
     width: 64px; z-index: 22;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
     animation: tileWobble 3.5s ease-in-out infinite 0.2s;
@@ -96,7 +96,7 @@
   .block-left {
     position: absolute;
     left: 28px;
-    bottom: 272px; /* sits just above panel */
+    bottom: 350px;
     width: 110px;
     z-index: 18;
     display: flex; flex-direction: column; align-items: center;
@@ -105,7 +105,7 @@
   .block-right {
     position: absolute;
     right: 28px;
-    bottom: 272px;
+    bottom: 375px;
     width: 110px;
     z-index: 18;
     display: flex; flex-direction: column; align-items: center;
@@ -125,22 +125,13 @@
     50%      { transform: translateY(-12px); }
   }
 
-  .sym-block {
-    width: 100%; aspect-ratio: 1;
-    background: linear-gradient(180deg, #f9c846 0%, #c98a00 100%);
-    border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 44px; font-weight: 900; color: #7a4e00;
-    box-shadow: 0 7px 0 #8a5a00, 0 10px 24px rgba(0,0,0,0.3);
-    border: 3px solid #ffd96e;
-    position: relative; z-index: 1;
-  }
+  .sym-block { display: none; }
 
   /* ── Redy: centre, highest point ── */
   .redy-wrap {
     position: absolute;
     /* Redy's feet roughly align with top of blocks */
-    bottom: 390px;
+    bottom: 425px;
     left: 50%; transform: translateX(-50%);
     width: 150px;
     z-index: 20;
@@ -158,14 +149,7 @@
   }
 
   /* Jump trail */
-  .jump-trail {
-    position: absolute;
-    bottom: 374px;
-    left: 50%; transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 5px;
-    z-index: 19;
-    animation: trailPulse 2s ease-in-out infinite;
-  }
+  .jump-trail { display: none; }
   @keyframes trailPulse {
     0%,100% { opacity: 0.7; }
     45%      { opacity: 0.1; }
@@ -178,7 +162,7 @@
   /* ── Panel ── */
   .panel {
     position: absolute;
-    bottom: 86px;
+    bottom: 135px;
     left: 20px; right: 20px;
     background: var(--panel-bg);
     border-radius: 28px;
@@ -215,12 +199,12 @@
   /* ── Bottom nav ── */
   .bottom-nav {
     position: absolute;
-    bottom: 16px; left: 20px; right: 20px;
+    bottom: 35px; left: 20px; right: 20px;
     display: flex; justify-content: space-between;
     z-index: 30;
   }
   .nav-btn {
-    width: 64px; height: 64px;
+    width: 75px; height: 75px;
     border-radius: 18px; border: none;
     cursor: pointer; padding: 0; overflow: hidden;
     box-shadow: 0 5px 0 rgba(0,0,0,0.3);
