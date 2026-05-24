@@ -9,12 +9,10 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   :root {
-    --purple:      #5c3fa3;
-    --purple-dark: #3d2778;
     --purple-btn:  #6b4dbf;
+    --purple-dark: #3d2778;
     --yellow:      #f5c518;
     --yellow-dark: #d4940a;
-    --cream:       #fdf6e3;
     --panel-bg:    #fef9ec;
     --text-dark:   #3d2778;
   }
@@ -26,317 +24,261 @@
     background: #1a1a2e;
   }
 
-  /* ── Phone shell ── */
   .phone-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     width: 100%; height: 100%;
   }
+
+  /* Fixed 390×844 phone canvas, scaled to fit viewport */
   .phone {
     position: relative;
-    /* Portrait phone ratio ~9:19.5 */
-    width: min(390px, 100vw);
-    height: min(844px, 100vh);
+    width: 390px; height: 844px;
     overflow: hidden;
-    border-radius: min(40px, 5vw);
+    border-radius: 40px;
     box-shadow: 0 40px 80px rgba(0,0,0,0.7);
+    transform-origin: center center;
   }
 
-  /* ── Background ── */
   .bg {
     position: absolute; inset: 0;
     background: url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center top / cover no-repeat;
     z-index: 0;
   }
 
-  /* ── Screens ── */
   .screen {
     position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center;
     z-index: 10;
     transition: opacity 0.35s ease, transform 0.35s ease;
   }
   .screen.hidden { opacity: 0; pointer-events: none; transform: scale(0.96); }
 
   /* ══════════════════════════════════════
-     HOME SCREEN
+     HOME SCREEN — all elements absolutely positioned
+     to match the reference image exactly
   ══════════════════════════════════════ */
-  #screen-home { justify-content: flex-start; }
 
-  /* Logo — top ~8% of screen */
+  /* Logo: top of screen, centred */
   .logo {
-    width: 80%;
-    max-width: 310px;
-    margin-top: 5%;
+    position: absolute;
+    top: 32px;
+    left: 50%; transform: translateX(-50%);
+    width: 300px;
     z-index: 20;
-    filter: drop-shadow(0 6px 18px rgba(0,0,0,0.35));
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.3));
     animation: logoBob 2.4s ease-in-out infinite;
   }
   @keyframes logoBob {
-    0%,100% { transform: translateY(0px); }
-    50%      { transform: translateY(-7px); }
-  }
-
-  /* ── Character stage area ──
-     This sits between logo and panel.
-     We use a fixed-height block so the panel always anchors at the bottom.
-  */
-  .stage-area {
-    position: absolute;
-    /* from just below logo to top of panel */
-    top: 22%;
-    bottom: 230px; /* leave room for panel + nav */
-    left: 0; right: 0;
-    z-index: 15;
-  }
-
-  /* Golden pillars with × and = symbols */
-  .pillar {
-    position: absolute;
-    bottom: 0;
-    width: 22%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .pillar-left  { left: 4%; }
-  .pillar-right { right: 4%; }
-
-  .pillar-symbol {
-    width: 100%;
-    aspect-ratio: 1;
-    background: linear-gradient(180deg, #f9c846 0%, #d4940a 100%);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: clamp(24px, 6vw, 36px);
-    font-weight: 900;
-    color: #7a4e00;
-    box-shadow: 0 6px 0 #a36200, 0 8px 20px rgba(0,0,0,0.3);
-    border: 3px solid #ffd96e;
-  }
-  .pillar-body {
-    width: 60%;
-    height: clamp(50px, 8vw, 70px);
-    background: linear-gradient(180deg, #e6a900 0%, #b87d00 100%);
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  }
-
-  /* Characters sitting on pillars */
-  .char-on-pillar {
-    position: absolute;
-    bottom: 100%; /* sit on top of pillar */
-    left: 50%; transform: translateX(-50%);
-    width: 140%;
-    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.25));
-    animation: sideFloat 3s ease-in-out infinite;
-  }
-  .pillar-left  .char-on-pillar { animation-delay: 0.3s; }
-  .pillar-right .char-on-pillar { animation-delay: 0.6s; }
-  @keyframes sideFloat {
     0%,100% { transform: translateX(-50%) translateY(0); }
-    50%      { transform: translateX(-50%) translateY(-10px); }
+    50%      { transform: translateX(-50%) translateY(-7px); }
   }
 
-  /* Redy — centre, jumping higher */
+  /* Number tiles — top corners */
+  .num-two {
+    position: absolute;
+    top: 195px; left: 28px;
+    width: 64px; z-index: 22;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
+    animation: tileWobble 3.5s ease-in-out infinite 0.2s;
+  }
+  .num-three {
+    position: absolute;
+    top: 185px; right: 28px;
+    width: 64px; z-index: 22;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
+    animation: tileWobble 3.5s ease-in-out infinite 0.9s;
+  }
+  @keyframes tileWobble {
+    0%,100% { transform: rotate(-5deg) translateY(0); }
+    50%      { transform: rotate(5deg) translateY(-10px); }
+  }
+
+  /* ── Left block (×) with Pip on top ── */
+  .block-left {
+    position: absolute;
+    left: 28px;
+    bottom: 272px; /* sits just above panel */
+    width: 110px;
+    z-index: 18;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  /* ── Right block (=) with Unia on top ── */
+  .block-right {
+    position: absolute;
+    right: 28px;
+    bottom: 272px;
+    width: 110px;
+    z-index: 18;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  .char-side {
+    width: 130px;
+    margin-bottom: -10px; /* overlap block slightly */
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+    animation: sideFloat 3s ease-in-out infinite;
+    position: relative; z-index: 2;
+  }
+  .block-left  .char-side { animation-delay: 0.3s; }
+  .block-right .char-side { animation-delay: 0.7s; }
+  @keyframes sideFloat {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-12px); }
+  }
+
+  .sym-block {
+    width: 100%; aspect-ratio: 1;
+    background: linear-gradient(180deg, #f9c846 0%, #c98a00 100%);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 44px; font-weight: 900; color: #7a4e00;
+    box-shadow: 0 7px 0 #8a5a00, 0 10px 24px rgba(0,0,0,0.3);
+    border: 3px solid #ffd96e;
+    position: relative; z-index: 1;
+  }
+
+  /* ── Redy: centre, highest point ── */
   .redy-wrap {
     position: absolute;
-    bottom: 60px; /* hovers above stage floor */
+    /* Redy's feet roughly align with top of blocks */
+    bottom: 390px;
     left: 50%; transform: translateX(-50%);
-    width: 36%;
+    width: 150px;
     z-index: 20;
     display: flex; flex-direction: column; align-items: center;
     animation: redyJump 2s ease-in-out infinite;
   }
   @keyframes redyJump {
     0%,100% { transform: translateX(-50%) translateY(0); }
-    40%      { transform: translateX(-50%) translateY(-24px); }
-    60%      { transform: translateX(-50%) translateY(-20px); }
+    45%      { transform: translateX(-50%) translateY(-28px); }
+    55%      { transform: translateX(-50%) translateY(-24px); }
   }
-  .redy-img { width: 100%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3)); }
+  .redy-img {
+    width: 100%;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+  }
 
-  /* Jump trail lines under Redy */
+  /* Jump trail */
   .jump-trail {
     position: absolute;
-    bottom: 54px;
+    bottom: 374px;
     left: 50%; transform: translateX(-50%);
-    width: 30px;
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    z-index: 18;
-    animation: trailFade 2s ease-in-out infinite;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    z-index: 19;
+    animation: trailPulse 2s ease-in-out infinite;
   }
-  @keyframes trailFade {
-    0%,100% { opacity: 0.6; transform: translateX(-50%) scaleY(1); }
-    40%      { opacity: 0; transform: translateX(-50%) scaleY(0.5); }
+  @keyframes trailPulse {
+    0%,100% { opacity: 0.7; }
+    45%      { opacity: 0.1; }
   }
   .trail-line {
-    width: 100%; height: 4px;
-    background: rgba(255,255,255,0.7);
-    border-radius: 2px;
-    clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
-  }
-
-  /* Floating number tiles */
-  .num-tile {
-    position: absolute;
-    z-index: 22;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
-  }
-  .num-two   {
-    top: 5%; left: 10%; width: 17%;
-    animation: tileWobble 3.5s ease-in-out infinite;
-    animation-delay: 0.2s;
-  }
-  .num-three {
-    top: 2%; right: 10%; width: 17%;
-    animation: tileWobble 3.5s ease-in-out infinite;
-    animation-delay: 0.9s;
-  }
-  @keyframes tileWobble {
-    0%,100% { transform: rotate(-6deg) translateY(0); }
-    50%      { transform: rotate(6deg) translateY(-10px); }
+    height: 5px; background: rgba(255,255,255,0.85);
+    border-radius: 3px;
   }
 
   /* ── Panel ── */
   .panel {
     position: absolute;
-    bottom: 82px;
-    left: 50%; transform: translateX(-50%);
-    width: 90%;
+    bottom: 86px;
+    left: 20px; right: 20px;
     background: var(--panel-bg);
     border-radius: 28px;
-    padding: 16px 22px 18px;
-    box-shadow: 0 -2px 0 rgba(255,255,255,0.6), 0 10px 40px rgba(0,0,0,0.25);
+    padding: 18px 22px 20px;
+    box-shadow: 0 -2px 0 rgba(255,255,255,0.5), 0 10px 40px rgba(0,0,0,0.2);
     z-index: 25;
   }
-
   .coins-row {
-    text-align: center;
-    color: var(--yellow-dark);
-    font-size: 20px;
-    font-weight: 900;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
+    text-align: center; color: var(--yellow-dark);
+    font-size: 20px; font-weight: 900; margin-bottom: 3px;
   }
   .stage-row {
-    text-align: center;
-    color: var(--text-dark);
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 14px;
+    text-align: center; color: var(--text-dark);
+    font-size: 15px; font-weight: 700; margin-bottom: 14px;
   }
-
   .btn-play {
-    display: block; width: 100%;
-    padding: 16px;
-    background: var(--purple-btn);
-    color: white; border: none;
-    border-radius: 50px;
-    font-family: 'Nunito', cursive;
+    display: block; width: 100%; padding: 15px;
+    background: var(--purple-btn); color: white; border: none;
+    border-radius: 50px; font-family: 'Nunito', cursive;
     font-size: 19px; font-weight: 900; letter-spacing: 1.5px;
-    cursor: pointer;
-    box-shadow: 0 6px 0 var(--purple-dark);
-    transition: transform 0.1s, box-shadow 0.1s;
-    margin-bottom: 10px;
+    cursor: pointer; box-shadow: 0 6px 0 var(--purple-dark);
+    transition: transform 0.1s, box-shadow 0.1s; margin-bottom: 10px;
   }
   .btn-play:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--purple-dark); }
-
   .btn-select {
-    display: block; width: 100%;
-    padding: 14px;
-    background: transparent;
-    color: var(--text-dark);
-    border: 2.5px solid var(--purple-btn);
-    border-radius: 50px;
-    font-family: 'Nunito', cursive;
-    font-size: 18px; font-weight: 900; letter-spacing: 1.5px;
-    cursor: pointer;
-    transition: background 0.2s;
+    display: block; width: 100%; padding: 14px;
+    background: transparent; color: var(--text-dark);
+    border: 2.5px solid var(--purple-btn); border-radius: 50px;
+    font-family: 'Nunito', cursive; font-size: 18px; font-weight: 900;
+    letter-spacing: 1.5px; cursor: pointer; transition: background 0.2s;
   }
-  .btn-select:active { background: rgba(92,63,163,0.1); }
+  .btn-select:active { background: rgba(92,63,163,0.08); }
 
   /* ── Bottom nav ── */
   .bottom-nav {
     position: absolute;
-    bottom: 14px;
-    left: 50%; transform: translateX(-50%);
-    width: 90%;
+    bottom: 16px; left: 20px; right: 20px;
     display: flex; justify-content: space-between;
     z-index: 30;
-    gap: 10px;
   }
   .nav-btn {
-    flex: 1;
-    aspect-ratio: 1;
-    border-radius: 18px;
-    border: none; cursor: pointer;
-    padding: 0; overflow: hidden;
+    width: 64px; height: 64px;
+    border-radius: 18px; border: none;
+    cursor: pointer; padding: 0; overflow: hidden;
     box-shadow: 0 5px 0 rgba(0,0,0,0.3);
     transition: transform 0.1s, box-shadow 0.1s;
-    max-width: 68px;
   }
   .nav-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
   .nav-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* ══════════════════════════════════════
-     CHARACTER SELECT SCREEN
+     CHARACTER SELECT
   ══════════════════════════════════════ */
   #screen-chars {
-    justify-content: flex-start;
-    padding: 0 5%;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 16px;
   }
   .chars-header {
-    width: 100%;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 0 0;
-    z-index: 20;
+    width: 100%; display: flex; align-items: center;
+    justify-content: space-between; padding: 14px 0 0;
   }
   .back-btn {
-    width: 46px; height: 46px;
-    background: var(--yellow);
-    border: none; border-radius: 12px;
-    font-size: 22px; font-weight: 900; color: white;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; background: var(--yellow);
+    border: none; border-radius: 12px; font-size: 22px;
+    font-weight: 900; color: white; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
     box-shadow: 0 5px 0 var(--yellow-dark);
     transition: transform 0.1s, box-shadow 0.1s;
   }
   .back-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--yellow-dark); }
-
   .coins-badge {
     background: var(--purple-dark); color: white;
     border-radius: 50px; padding: 8px 16px;
     font-size: 15px; font-weight: 900;
-    display: flex; align-items: center; gap: 6px;
   }
-  .chars-title-wrap { width: 100%; text-align: center; margin: 10px 0 4px; z-index: 20; }
+  .chars-title-wrap { width: 100%; text-align: center; margin: 10px 0 4px; }
   .chars-title-sub {
     font-size: 13px; font-weight: 700; color: var(--text-dark);
     background: rgba(255,255,255,0.75); border-radius: 20px;
     padding: 4px 14px; display: inline-block;
   }
   .chars-title-main {
-    display: block; font-size: clamp(30px, 9vw, 40px); font-weight: 900;
-    color: white; text-shadow: 0 4px 0 var(--purple-dark), 0 2px 12px rgba(0,0,0,0.3);
-    letter-spacing: 1px; margin-top: 4px;
+    display: block; font-size: 38px; font-weight: 900; color: white;
+    text-shadow: 0 4px 0 var(--purple-dark); letter-spacing: 1px; margin-top: 4px;
   }
   .char-grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 10px; width: 100%; margin-top: 10px; z-index: 20;
+    gap: 10px; width: 100%; margin-top: 10px;
   }
   .char-card {
-    background: var(--cream); border-radius: 18px;
-    padding: 10px 6px 8px;
+    background: #fdf6e3; border-radius: 18px; padding: 10px 6px 8px;
     display: flex; flex-direction: column; align-items: center;
     cursor: pointer; border: 3px solid transparent;
     transition: border-color 0.2s, transform 0.15s;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
   .char-card.selected { border-color: var(--yellow); background: #fffbea; }
   .char-card:active { transform: scale(0.96); }
   .char-card img { width: 80%; aspect-ratio: 1; object-fit: contain; }
-  .char-emoji { font-size: 52px; line-height: 1; margin: 4px 0; }
+  .char-emoji { font-size: 50px; line-height: 1; margin: 4px 0; }
   .char-name {
     margin-top: 6px; background: var(--purple-btn); color: white;
     border-radius: 20px; font-size: 12px; font-weight: 900;
@@ -350,26 +292,25 @@
     font-size: 14px; border: 2px solid white;
   }
   .char-card.selected .check { display: flex; }
-
   .lets-go-btn {
-    display: block; width: 70%; margin: 14px auto 0;
-    padding: 16px; background: #4caf50; color: white;
-    border: none; border-radius: 50px;
-    font-family: 'Nunito', cursive;
+    display: block; width: 65%; margin: 14px auto 0;
+    padding: 16px; background: #4caf50; color: white; border: none;
+    border-radius: 50px; font-family: 'Nunito', cursive;
     font-size: 20px; font-weight: 900; letter-spacing: 2px;
-    cursor: pointer; box-shadow: 0 5px 0 #388e3c; z-index: 20;
-    position: relative; transition: transform 0.1s, box-shadow 0.1s;
+    cursor: pointer; box-shadow: 0 5px 0 #388e3c;
+    transition: transform 0.1s, box-shadow 0.1s;
   }
   .lets-go-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #388e3c; }
 
   /* ══════════════════════════════════════
      GAME SCREEN
   ══════════════════════════════════════ */
-  #screen-game { justify-content: flex-start; }
+  #screen-game {
+    display: flex; flex-direction: column; align-items: center;
+  }
   .game-header {
-    width: 100%; padding: 12px 5% 0;
+    width: 100%; padding: 14px 16px 0;
     display: flex; justify-content: space-between; align-items: center;
-    z-index: 20;
   }
   .hdr-badge {
     background: var(--purple-dark); color: white;
@@ -389,29 +330,22 @@
   }
   .progress-fill {
     height: 100%; background: var(--yellow);
-    border-radius: 8px; width: 0%;
-    transition: width 0.4s ease;
+    border-radius: 8px; width: 0%; transition: width 0.4s;
   }
   .question-panel {
-    position: absolute; top: 42%; left: 50%;
+    position: absolute; top: 40%; left: 50%;
     transform: translate(-50%, -50%);
     width: 88%; background: var(--panel-bg);
     border-radius: 24px; padding: 28px 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    z-index: 20; text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2); text-align: center;
+    z-index: 20;
   }
-  .question-hint {
-    font-size: 13px; color: #888; font-weight: 700; margin-bottom: 14px;
-  }
-  .question-text {
-    font-size: 52px; font-weight: 900;
-    color: var(--text-dark); line-height: 1.1;
-  }
+  .question-hint { font-size: 13px; color: #888; font-weight: 700; margin-bottom: 14px; }
+  .question-text { font-size: 52px; font-weight: 900; color: var(--text-dark); }
   .answer-grid {
     position: absolute; bottom: 90px; left: 50%;
-    transform: translateX(-50%);
-    width: 90%; display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    transform: translateX(-50%); width: 90%;
+    display: grid; grid-template-columns: repeat(4,1fr);
     gap: 10px; z-index: 20;
   }
   .ans-btn {
@@ -433,49 +367,49 @@
 </head>
 <body>
 <div class="phone-wrap">
-  <div class="phone">
+  <div class="phone" id="phone">
     <div class="bg"></div>
 
     <!-- ══════════ HOME SCREEN ══════════ -->
     <div class="screen" id="screen-home">
 
       <!-- Logo -->
-      <img class="logo" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-logo.png" alt="Maths Jumper"/>
+      <img class="logo"
+        src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-logo.png"
+        alt="Maths Jumper"/>
 
-      <!-- Stage area: pillars + characters -->
-      <div class="stage-area">
+      <!-- Number tiles -->
+      <img class="num-two"
+        src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numbertwo.png" alt="2"/>
+      <img class="num-three"
+        src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numberthree.png" alt="3"/>
 
-        <!-- Floating number tiles -->
-        <img class="num-tile num-two"   src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numbertwo.png"   alt="2"/>
-        <img class="num-tile num-three" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numberthree.png" alt="3"/>
+      <!-- Left block (×) + Pip -->
+      <div class="block-left">
+        <img class="char-side"
+          src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/>
+        <div class="sym-block">×</div>
+      </div>
 
-        <!-- Left pillar: × with Pip -->
-        <div class="pillar pillar-left">
-          <img class="char-on-pillar" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/>
-          <div class="pillar-symbol">×</div>
-          <div class="pillar-body"></div>
-        </div>
+      <!-- Right block (=) + Unia -->
+      <div class="block-right">
+        <img class="char-side"
+          src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/>
+        <div class="sym-block">=</div>
+      </div>
 
-        <!-- Right pillar: = with Unia -->
-        <div class="pillar pillar-right">
-          <img class="char-on-pillar" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/>
-          <div class="pillar-symbol">=</div>
-          <div class="pillar-body"></div>
-        </div>
+      <!-- Jump trail -->
+      <div class="jump-trail">
+        <div class="trail-line" style="width:32px;"></div>
+        <div class="trail-line" style="width:22px;"></div>
+        <div class="trail-line" style="width:14px;"></div>
+      </div>
 
-        <!-- Jump trail under Redy -->
-        <div class="jump-trail">
-          <div class="trail-line" style="width:28px;opacity:0.8;"></div>
-          <div class="trail-line" style="width:20px;opacity:0.5;"></div>
-          <div class="trail-line" style="width:13px;opacity:0.3;"></div>
-        </div>
-
-        <!-- Redy centre jumping -->
-        <div class="redy-wrap">
-          <img class="redy-img" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/>
-        </div>
-
-      </div><!-- .stage-area -->
+      <!-- Redy jumping centre -->
+      <div class="redy-wrap">
+        <img class="redy-img"
+          src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/>
+      </div>
 
       <!-- Stats panel -->
       <div class="panel">
@@ -487,16 +421,16 @@
 
       <!-- Bottom nav -->
       <div class="bottom-nav">
-        <button class="nav-btn" onclick="showScreen('screen-chars')" title="Characters">
+        <button class="nav-btn" onclick="showScreen('screen-chars')">
           <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-icon.png" alt="Characters"/>
         </button>
-        <button class="nav-btn" title="Leaderboard">
+        <button class="nav-btn">
           <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-leaderboard-icon.png" alt="Leaderboard"/>
         </button>
-        <button class="nav-btn" title="Achievements">
+        <button class="nav-btn">
           <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-achievements-icon.png" alt="Achievements"/>
         </button>
-        <button class="nav-btn" title="Settings">
+        <button class="nav-btn">
           <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-settings-icon.png" alt="Settings"/>
         </button>
       </div>
@@ -554,9 +488,7 @@
         <div class="hdr-badge">WORLD 1-1</div>
         <div class="hdr-timer">⏱ <span id="timer">240</span></div>
       </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
       <div class="question-panel">
         <div class="question-hint">Let's multiply! 🐦</div>
         <div class="question-text" id="question-text">
@@ -567,13 +499,22 @@
       <div class="score-badge">⭐ <span id="score">0</span></div>
     </div>
 
-  </div><!-- .phone -->
+  </div>
 </div>
 
 <script>
-  const BASE = 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/';
+  // ── Scale phone to fit any screen ───────────────────────────────
+  function scalePhone() {
+    const phone = document.getElementById('phone');
+    const scaleX = window.innerWidth  / 390;
+    const scaleY = window.innerHeight / 844;
+    const scale  = Math.min(scaleX, scaleY);
+    phone.style.transform = `scale(${scale})`;
+  }
+  scalePhone();
+  window.addEventListener('resize', scalePhone);
 
-  // ── Navigation ───────────────────────────────────────────────────
+  // ── Navigation ──────────────────────────────────────────────────
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
@@ -586,8 +527,8 @@
     card.classList.add('selected');
   }
 
-  // ── Game logic ───────────────────────────────────────────────────
-  const ANS_COLORS = ['#4caf50','#2196f3','#f5c518','#e91e63'];
+  // ── Game ─────────────────────────────────────────────────────────
+  const COLORS = ['#4caf50','#2196f3','#f5c518','#e91e63'];
   let score = 0, answered = 0, timerVal = 240, timerInt;
   const TOTAL = 10;
 
@@ -598,8 +539,7 @@
     document.getElementById('timer').textContent = 240;
     document.getElementById('progress-fill').style.width = '0%';
     timerInt = setInterval(() => {
-      timerVal--;
-      document.getElementById('timer').textContent = timerVal;
+      document.getElementById('timer').textContent = --timerVal;
       if (timerVal <= 0) { clearInterval(timerInt); endGame(); }
     }, 1000);
     nextQ();
@@ -611,18 +551,15 @@
     const ans = a * b;
     document.getElementById('question-text').innerHTML =
       `${a} × ${b} = <span style="border:3px dashed #d4940a;border-radius:12px;padding:2px 14px;color:#d4940a">?</span>`;
-
     const opts = new Set([ans]);
     while (opts.size < 4) opts.add(Math.ceil(Math.random() * 36));
-    const shuffled = [...opts].sort(() => Math.random() - 0.5);
-
     const grid = document.getElementById('answer-grid');
     grid.innerHTML = '';
-    shuffled.forEach((v, i) => {
+    [...opts].sort(() => Math.random()-0.5).forEach((v, i) => {
       const btn = document.createElement('button');
       btn.className = 'ans-btn';
       btn.textContent = v;
-      btn.style.background = ANS_COLORS[i];
+      btn.style.background = COLORS[i];
       btn.onclick = () => checkAns(v, ans, btn);
       grid.appendChild(btn);
     });
