@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Maths Jumper</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --purple: #5c3fa3;
+    --purple-dark: #3d2778;
+    --purple-btn: #6b4dbf;
+    --yellow: #f5c518;
+    --yellow-dark: #e0a800;
+    --cream: #fdf6e3;
+    --panel-bg: #fef9ec;
+    --text-dark: #3d2778;
+  }
+
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Nunito', 'Comic Sans MS', cursive, sans-serif;
+    background: #87ceeb;
+  }
+
+  /* ── Phone frame container ── */
+  .phone-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #1a1a2e;
+  }
+
+  .phone {
+    position: relative;
+    width: min(390px, 100vw);
+    height: min(844px, 100vh);
+    overflow: hidden;
+    border-radius: min(40px, 5vw);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+  }
+
+  /* ── Background ── */
+  .bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png');
+    background-size: cover;
+    background-position: center top;
+    z-index: 0;
+  }
+
+  /* ── Screen layers ── */
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.97);
+  }
+
+  /* ════════════════════════════
+     HOME SCREEN
+  ════════════════════════════ */
+  #screen-home {
+    justify-content: flex-start;
+    padding-top: 6%;
+  }
+
+  /* Logo */
+  .logo {
+    width: 78%;
+    max-width: 300px;
+    animation: logoBounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.3));
+    z-index: 20;
+  }
+  @keyframes logoBounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+  }
+
+  /* Characters row */
+  .characters {
+    position: relative;
+    width: 90%;
+    height: 200px;
+    margin-top: -10px;
+  }
+  .char {
+    position: absolute;
+    bottom: 0;
+    animation: charFloat 3s ease-in-out infinite;
+  }
+  .char-pip  { left: 2%;  width: 32%; animation-delay: 0.2s; }
+  .char-red  { left: 50%; width: 36%; transform: translateX(-50%); animation-delay: 0s; z-index: 5; }
+  .char-unia { right: 2%; width: 32%; animation-delay: 0.5s; }
+  @keyframes charFloat {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-12px); }
+  }
+  .char-red  { animation-name: charFloatCenter; }
+  @keyframes charFloatCenter {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(-16px); }
+  }
+
+  /* Floating number tiles */
+  .num-tile {
+    position: absolute;
+    animation: tileSpin 4s ease-in-out infinite;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
+    z-index: 15;
+  }
+  .num-two   { top: 10px;  left: 8%;  width: 15%; animation-delay: 0.3s; }
+  .num-three { top: 5px;   right: 8%; width: 15%; animation-delay: 0.8s; }
+  @keyframes tileSpin {
+    0%   { transform: rotate(-5deg) translateY(0); }
+    50%  { transform: rotate(5deg) translateY(-8px); }
+    100% { transform: rotate(-5deg) translateY(0); }
+  }
+
+  /* Panel */
+  .panel {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 88%;
+    background: var(--panel-bg);
+    border-radius: 24px;
+    padding: 18px 20px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    z-index: 20;
+  }
+  .coins-row {
+    text-align: center;
+    color: var(--yellow-dark);
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 4px;
+  }
+  .coins-row .star { font-size: 16px; }
+  .stage-row {
+    text-align: center;
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  /* Buttons */
+  .btn-play {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--purple-btn);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Nunito', cursive;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--purple-dark);
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin-bottom: 10px;
+  }
+  .btn-play:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 var(--purple-dark);
+  }
+  .btn-select {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    background: transparent;
+    color: var(--text-dark);
+    border: 2.5px solid var(--purple-btn);
+    border-radius: 50px;
+    font-family: 'Nunito', cursive;
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-select:active { background: rgba(92,63,163,0.1); }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 88%;
+    display: flex;
+    justify-content: space-around;
+    z-index: 25;
+  }
+  .nav-btn {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .nav-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+  }
+  .nav-btn img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ════════════════════════════
+     CHARACTER SELECT SCREEN
+  ════════════════════════════ */
+  #screen-chars {
+    justify-content: flex-start;
+    padding: 0 5%;
+  }
+
+  .chars-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 0;
+    z-index: 20;
+  }
+  .back-btn {
+    width: 46px; height: 46px;
+    background: var(--yellow);
+    border: none; border-radius: 12px;
+    font-size: 22px; cursor: pointer;
+    box-shadow: 0 4px 0 var(--yellow-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; color: white;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .back-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--yellow-dark); }
+  .coins-badge {
+    background: var(--purple-dark);
+    color: white;
+    border-radius: 50px;
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 900;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .chars-title-wrap {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0 4px;
+    z-index: 20;
+  }
+  .chars-title-sub {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dark);
+    background: rgba(255,255,255,0.7);
+    border-radius: 20px;
+    padding: 4px 14px;
+    display: inline-block;
+  }
+  .chars-title-main {
+    display: block;
+    font-size: clamp(32px, 10vw, 42px);
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 4px 0 var(--purple-dark), 0 2px 12px rgba(0,0,0,0.3);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  /* Character grid */
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+    z-index: 20;
+  }
+  .char-card {
+    background: var(--cream);
+    border-radius: 18px;
+    padding: 10px 6px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .char-card.selected {
+    border-color: var(--yellow);
+    background: #fffbea;
+  }
+  .char-card.selected .check {
+    display: flex;
+  }
+  .char-card:active { transform: scale(0.96); }
+  .char-card img { width: 80%; aspect-ratio: 1; object-fit: contain; }
+  .char-card .char-name {
+    margin-top: 6px;
+    background: var(--purple-btn);
+    color: white;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 4px 12px;
+    width: 100%;
+    text-align: center;
+  }
+  .char-card.selected .char-name {
+    background: var(--purple-dark);
+  }
+  .check {
+    display: none;
+    position: absolute;
+    top: -8px; right: -8px;
+    width: 26px; height: 26px;
+    background: #4caf50;
+    border-radius: 50%;
+    align-items: center; justify-content: center;
+    font-size: 14px;
+    border: 2px solid white;
+  }
+
+  /* Emoji placeholders for missing assets */
+  .char-emoji {
+    font-size: 52px;
+    line-height: 1;
+    margin: 4px 0;
+  }
+
+  .lets-go-btn {
+    display: block;
+    width: 70%;
+    margin: 14px auto 0;
+    padding: 16px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Nunito', cursive;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #388e3c;
+    z-index: 20;
+    position: relative;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .lets-go-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #388e3c; }
+
+</style>
+</head>
+<body>
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="bg"></div>
+
+    <!-- ══ HOME SCREEN ══ -->
+    <div class="screen" id="screen-home">
+
+      <!-- Logo -->
+      <img class="logo" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-logo.png" alt="Maths Jumper"/>
+
+      <!-- Characters + floating tiles -->
+      <div class="characters">
+        <img class="num-tile num-two"   src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numbertwo.png"   alt="2"/>
+        <img class="num-tile num-three" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numberthree.png" alt="3"/>
+        <img class="char char-pip"  src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png"  alt="Pip"/>
+        <img class="char char-red"  src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png"  alt="Redy"/>
+        <img class="char char-unia" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/>
+      </div>
+
+      <!-- Stats panel -->
+      <div class="panel">
+        <div class="coins-row">Coins <span class="star">⭐</span>: 0</div>
+        <div class="stage-row">Highest Stage: 1</div>
+        <button class="btn-play" onclick="showScreen('screen-game')">PLAY STAGE 1</button>
+        <button class="btn-select" onclick="showScreen('screen-chars')">SELECT STAGE</button>
+      </div>
+
+      <!-- Bottom nav -->
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="showScreen('screen-chars')" title="Characters">
+          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-icon.png" alt="Characters"/>
+        </button>
+        <button class="nav-btn" title="Leaderboard">
+          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-leaderboard-icon.png" alt="Leaderboard"/>
+        </button>
+        <button class="nav-btn" title="Achievements">
+          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-achievements-icon.png" alt="Achievements"/>
+        </button>
+        <button class="nav-btn" title="Settings">
+          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-settings-icon.png" alt="Settings"/>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ CHARACTER SELECT SCREEN ══ -->
+    <div class="screen hidden" id="screen-chars">
+      <div class="chars-header">
+        <button class="back-btn" onclick="showScreen('screen-home')">←</button>
+        <div class="coins-badge">⭐ 0</div>
+      </div>
+
+      <div class="chars-title-wrap">
+        <span class="chars-title-sub">Pick a buddy and start your maths adventure!</span>
+        <span class="chars-title-main">CHOOSE YOUR<br/>CHARACTER</span>
+      </div>
+
+      <div class="char-grid">
+        <!-- Dino -->
+        <div class="char-card" onclick="selectChar(this,'Dino')">
+          <div class="check">✓</div>
+          <div class="char-emoji">🦕</div>
+          <div class="char-name">Dino</div>
+        </div>
+        <!-- Redy (selected by default) -->
+        <div class="char-card selected" onclick="selectChar(this,'Redy')">
+          <div class="check">✓</div>
+          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/>
+          <div class="char-name">Redy</div>
+        </div>
+        <!-- Unia -->
+        <div class="char-card" onclick="selectChar(this,'Unia')">
+          <div class="check">✓</div>
+          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/>
+          <div class="char-name">Unia</div>
+        </div>
+        <!-- Robo -->
+        <div class="char-card" onclick="selectChar(this,'Robo')">
+          <div class="check">✓</div>
+          <div class="char-emoji">🤖</div>
+          <div class="char-name">Robo</div>
+        </div>
+        <!-- Pip -->
+        <div class="char-card" onclick="selectChar(this,'Pip')">
+          <div class="check">✓</div>
+          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/>
+          <div class="char-name">Pip</div>
+        </div>
+        <!-- Leo -->
+        <div class="char-card" onclick="selectChar(this,'Leo')">
+          <div class="check">✓</div>
+          <div class="char-emoji">🦁</div>
+          <div class="char-name">Leo</div>
+        </div>
+      </div>
+
+      <button class="lets-go-btn" onclick="showScreen('screen-game')">LET'S GO!</button>
+    </div>
+
+    <!-- ══ GAME SCREEN (placeholder) ══ -->
+    <div class="screen hidden" id="screen-game">
+      <div style="width:100%;padding:12px 5% 0;display:flex;justify-content:space-between;align-items:center;z-index:20;">
+        <button class="back-btn" onclick="showScreen('screen-home')">←</button>
+        <div style="background:var(--purple-dark);color:white;border-radius:12px;padding:8px 18px;font-weight:900;font-size:14px;">WORLD 1-1</div>
+        <div style="background:var(--purple-dark);color:white;border-radius:50px;padding:8px 14px;font-weight:900;font-size:14px;display:flex;align-items:center;gap:6px;">⏱ 240</div>
+      </div>
+      <!-- Question panel -->
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:86%;background:var(--panel-bg);border-radius:24px;padding:24px 20px;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:20;text-align:center;">
+        <div style="font-size:13px;color:#888;font-weight:700;margin-bottom:12px;">Let's multiply! 🐦</div>
+        <div style="font-size:52px;font-weight:900;color:var(--text-dark);margin-bottom:8px;" id="question-text">1 × 1 = <span style="border:3px dashed var(--yellow-dark);border-radius:12px;padding:2px 14px;color:var(--yellow-dark)">?</span></div>
+      </div>
+      <!-- Answer buttons -->
+      <div style="position:absolute;bottom:100px;left:50%;transform:translateX(-50%);width:90%;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;z-index:20;" id="answer-grid"></div>
+      <!-- Score bar -->
+      <div style="position:absolute;top:76px;left:5%;right:5%;height:16px;background:rgba(0,0,0,0.2);border-radius:8px;overflow:hidden;z-index:20;">
+        <div id="progress-bar" style="height:100%;background:var(--yellow);border-radius:8px;width:10%;transition:width 0.4s;"></div>
+      </div>
+      <div style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:var(--purple-dark);color:white;border-radius:50px;padding:8px 20px;font-weight:900;font-size:15px;z-index:20;">⭐ <span id="score">0</span></div>
+    </div>
+
+  </div><!-- .phone -->
+</div><!-- .phone-wrap -->
+
+<script>
+  // ── Screen navigation ──────────────────────────────────────────
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    if (id === 'screen-game') startGame();
+  }
+
+  // ── Character select ───────────────────────────────────────────
+  function selectChar(card, name) {
+    document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+  }
+
+  // ── Simple multiplication game ─────────────────────────────────
+  let score = 0;
+  let questionsAnswered = 0;
+  const TOTAL_QUESTIONS = 10;
+
+  function startGame() {
+    score = 0;
+    questionsAnswered = 0;
+    document.getElementById('score').textContent = score;
+    document.getElementById('progress-bar').style.width = '0%';
+    nextQuestion();
+  }
+
+  function nextQuestion() {
+    const a = Math.floor(Math.random() * 5) + 1;
+    const b = Math.floor(Math.random() * 5) + 1;
+    const correct = a * b;
+
+    document.getElementById('question-text').innerHTML =
+      `${a} × ${b} = <span style="border:3px dashed #e0a800;border-radius:12px;padding:2px 14px;color:#e0a800">?</span>`;
+
+    // Generate 4 answer choices
+    const choices = new Set([correct]);
+    while (choices.size < 4) {
+      choices.add(Math.floor(Math.random() * 25) + 1);
+    }
+    const shuffled = [...choices].sort(() => Math.random() - 0.5);
+
+    const colors = ['#4caf50','#2196f3','#f5c518','#e91e63'];
+    const grid = document.getElementById('answer-grid');
+    grid.innerHTML = '';
+    shuffled.forEach((val, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = val;
+      btn.style.cssText = `
+        background:${colors[i]};color:white;border:none;border-radius:16px;
+        padding:18px 0;font-size:26px;font-weight:900;font-family:'Nunito',cursive;
+        cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,0.25);
+        transition:transform 0.1s,box-shadow 0.1s;
+      `;
+      btn.onclick = () => checkAnswer(val, correct, btn);
+      grid.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(chosen, correct, btn) {
+    const grid = document.getElementById('answer-grid');
+    grid.querySelectorAll('button').forEach(b => b.disabled = true);
+
+    if (chosen === correct) {
+      btn.style.background = '#4caf50';
+      btn.textContent = '✓ ' + chosen;
+      score += 10;
+      document.getElementById('score').textContent = score;
+    } else {
+      btn.style.background = '#f44336';
+      btn.textContent = '✗ ' + chosen;
+      // Highlight correct
+      grid.querySelectorAll('button').forEach(b => {
+        if (parseInt(b.textContent) === correct) b.style.background = '#4caf50';
+      });
+    }
+
+    questionsAnswered++;
+    document.getElementById('progress-bar').style.width =
+      (questionsAnswered / TOTAL_QUESTIONS * 100) + '%';
+
+    setTimeout(() => {
+      if (questionsAnswered < TOTAL_QUESTIONS) {
+        nextQuestion();
+      } else {
+        // End of round
+        document.getElementById('question-text').innerHTML =
+          `🎉 Score: ${score}!`;
+        grid.innerHTML = `<button onclick="startGame()" style="grid-column:span 4;background:#4caf50;color:white;border:none;border-radius:16px;padding:16px;font-size:18px;font-weight:900;font-family:'Nunito',cursive;cursor:pointer;">Play Again!</button>`;
+      }
+    }, 1000);
+  }
+</script>
+</body>
+</html>
