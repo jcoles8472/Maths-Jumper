@@ -24,12 +24,8 @@
     background: #1a1a2e;
   }
 
-  .phone-wrap {
-    display: flex; align-items: center; justify-content: center;
-    width: 100%; height: 100%;
-  }
+  .phone-wrap { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
 
-  /* Fixed 390×844 phone canvas, scaled to fit viewport */
   .phone {
     position: relative;
     width: 390px; height: 844px;
@@ -52,18 +48,10 @@
   }
   .screen.hidden { opacity: 0; pointer-events: none; transform: scale(0.96); }
 
-  /* ══════════════════════════════════════
-     HOME SCREEN — all elements absolutely positioned
-     to match the reference image exactly
-  ══════════════════════════════════════ */
-
-  /* Logo: top of screen, centred */
+  /* ── Logo ── */
   .logo {
-    position: absolute;
-    top: 32px;
-    left: 50%; transform: translateX(-50%);
-    width: 350px;
-    z-index: 20;
+    position: absolute; top: 32px; left: 50%; transform: translateX(-50%);
+    width: 350px; z-index: 20;
     filter: drop-shadow(0 6px 16px rgba(0,0,0,0.3));
     animation: logoBob 2.4s ease-in-out infinite;
   }
@@ -72,17 +60,15 @@
     50%      { transform: translateX(-50%) translateY(-7px); }
   }
 
-  /* Number tiles — top corners */
+  /* ── Number tiles ── */
   .num-two {
-    position: absolute;
-    top: 205px; left: 28px;
+    position: absolute; top: 205px; left: 28px;
     width: 64px; z-index: 22;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
     animation: tileWobble 3.5s ease-in-out infinite 0.2s;
   }
   .num-three {
-    position: absolute;
-    top: 185px; right: 28px;
+    position: absolute; top: 185px; right: 28px;
     width: 64px; z-index: 22;
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
     animation: tileWobble 3.5s ease-in-out infinite 0.9s;
@@ -92,28 +78,19 @@
     50%      { transform: rotate(5deg) translateY(-10px); }
   }
 
-  /* ── Left block (×) with Pip on top ── */
+  /* ── Side characters ── */
   .block-left {
-    position: absolute;
-    left: 28px;
-    bottom: 350px;
-    width: 110px;
-    z-index: 18;
+    position: absolute; left: 28px; bottom: 350px;
+    width: 110px; z-index: 18;
     display: flex; flex-direction: column; align-items: center;
   }
-  /* ── Right block (=) with Unia on top ── */
   .block-right {
-    position: absolute;
-    right: 28px;
-    bottom: 375px;
-    width: 110px;
-    z-index: 18;
+    position: absolute; right: 28px; bottom: 375px;
+    width: 110px; z-index: 18;
     display: flex; flex-direction: column; align-items: center;
   }
-
   .char-side {
-    width: 130px;
-    margin-bottom: -10px; /* overlap block slightly */
+    width: 130px; margin-bottom: -10px;
     filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
     animation: sideFloat 3s ease-in-out infinite;
     position: relative; z-index: 2;
@@ -124,17 +101,12 @@
     0%,100% { transform: translateY(0); }
     50%      { transform: translateY(-12px); }
   }
-
   .sym-block { display: none; }
 
-  /* ── Redy: centre, highest point ── */
+  /* ── Redy ── */
   .redy-wrap {
-    position: absolute;
-    /* Redy's feet roughly align with top of blocks */
-    bottom: 425px;
-    left: 50%; transform: translateX(-50%);
-    width: 150px;
-    z-index: 20;
+    position: absolute; bottom: 425px; left: 50%; transform: translateX(-50%);
+    width: 150px; z-index: 20;
     display: flex; flex-direction: column; align-items: center;
     animation: redyJump 2s ease-in-out infinite;
   }
@@ -143,41 +115,18 @@
     45%      { transform: translateX(-50%) translateY(-28px); }
     55%      { transform: translateX(-50%) translateY(-24px); }
   }
-  .redy-img {
-    width: 100%;
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
-  }
-
-  /* Jump trail */
+  .redy-img { width: 100%; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3)); }
   .jump-trail { display: none; }
-  @keyframes trailPulse {
-    0%,100% { opacity: 0.7; }
-    45%      { opacity: 0.1; }
-  }
-  .trail-line {
-    height: 5px; background: rgba(255,255,255,0.85);
-    border-radius: 3px;
-  }
 
-  /* ── Panel ── */
+  /* ── Home panel ── */
   .panel {
-    position: absolute;
-    bottom: 135px;
-    left: 20px; right: 20px;
-    background: var(--panel-bg);
-    border-radius: 28px;
-    padding: 18px 22px 20px;
+    position: absolute; bottom: 135px; left: 20px; right: 20px;
+    background: var(--panel-bg); border-radius: 28px; padding: 18px 22px 20px;
     box-shadow: 0 -2px 0 rgba(255,255,255,0.5), 0 10px 40px rgba(0,0,0,0.2);
     z-index: 25;
   }
-  .coins-row {
-    text-align: center; color: var(--yellow-dark);
-    font-size: 20px; font-weight: 900; margin-bottom: 3px;
-  }
-  .stage-row {
-    text-align: center; color: var(--text-dark);
-    font-size: 15px; font-weight: 700; margin-bottom: 14px;
-  }
+  .coins-row { text-align: center; color: var(--yellow-dark); font-size: 20px; font-weight: 900; margin-bottom: 3px; }
+  .stage-row { text-align: center; color: var(--text-dark); font-size: 15px; font-weight: 700; margin-bottom: 14px; }
   .btn-play {
     display: block; width: 100%; padding: 15px;
     background: var(--purple-btn); color: white; border: none;
@@ -198,32 +147,24 @@
 
   /* ── Bottom nav ── */
   .bottom-nav {
-    position: absolute;
-    bottom: 35px; left: 20px; right: 20px;
-    display: flex; justify-content: space-between;
-    z-index: 30;
+    position: absolute; bottom: 35px; left: 20px; right: 20px;
+    display: flex; justify-content: space-between; z-index: 30;
   }
   .nav-btn {
-    width: 75px; height: 75px;
-    border-radius: 18px; border: none; outline: none;
-    background: none; -webkit-appearance: none;
+    width: 75px; height: 75px; border-radius: 18px;
+    border: none; outline: none; background: none; -webkit-appearance: none;
     cursor: pointer; padding: 0; overflow: hidden;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.3);
     transition: transform 0.1s, box-shadow 0.1s;
   }
   .nav-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
   .nav-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* ══════════════════════════════════════
-     CHARACTER SELECT
+     CHARACTER SELECT SCREEN
   ══════════════════════════════════════ */
-  #screen-chars {
-    display: flex; flex-direction: column; align-items: center;
-    padding: 0 16px;
-  }
-  .chars-header {
-    width: 100%; display: flex; align-items: center;
-    justify-content: space-between; padding: 14px 0 0;
-  }
+  #screen-chars { display: flex; flex-direction: column; align-items: center; padding: 0 16px; }
+  .chars-header { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 0 0; }
   .back-btn {
     width: 46px; height: 46px; background: var(--yellow);
     border: none; border-radius: 12px; font-size: 22px;
@@ -233,25 +174,11 @@
     transition: transform 0.1s, box-shadow 0.1s;
   }
   .back-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--yellow-dark); }
-  .coins-badge {
-    background: var(--purple-dark); color: white;
-    border-radius: 50px; padding: 8px 16px;
-    font-size: 15px; font-weight: 900;
-  }
+  .coins-badge { background: var(--purple-dark); color: white; border-radius: 50px; padding: 8px 16px; font-size: 15px; font-weight: 900; }
   .chars-title-wrap { width: 100%; text-align: center; margin: 10px 0 4px; }
-  .chars-title-sub {
-    font-size: 13px; font-weight: 700; color: var(--text-dark);
-    background: rgba(255,255,255,0.75); border-radius: 20px;
-    padding: 4px 14px; display: inline-block;
-  }
-  .chars-title-main {
-    display: block; font-size: 38px; font-weight: 900; color: white;
-    text-shadow: 0 4px 0 var(--purple-dark); letter-spacing: 1px; margin-top: 4px;
-  }
-  .char-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 10px; width: 100%; margin-top: 10px;
-  }
+  .chars-title-sub { font-size: 13px; font-weight: 700; color: var(--text-dark); background: rgba(255,255,255,0.75); border-radius: 20px; padding: 4px 14px; display: inline-block; }
+  .chars-title-main { display: block; font-size: 38px; font-weight: 900; color: white; text-shadow: 0 4px 0 var(--purple-dark); letter-spacing: 1px; margin-top: 4px; }
+  .char-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
   .char-card {
     background: #fdf6e3; border-radius: 18px; padding: 10px 6px 8px;
     display: flex; flex-direction: column; align-items: center;
@@ -260,22 +187,17 @@
     position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
   .char-card.selected { border-color: var(--yellow); background: #fffbea; }
-  .char-card:active { transform: scale(0.96); }
+  .char-card.locked { opacity: 0.6; cursor: default; }
+  .char-card:active:not(.locked) { transform: scale(0.96); }
   .char-card img { width: 80%; aspect-ratio: 1; object-fit: contain; }
   .char-emoji { font-size: 50px; line-height: 1; margin: 4px 0; }
-  .char-name {
-    margin-top: 6px; background: var(--purple-btn); color: white;
-    border-radius: 20px; font-size: 12px; font-weight: 900;
-    padding: 4px 12px; width: 100%; text-align: center;
-  }
+  .char-name { margin-top: 6px; background: var(--purple-btn); color: white; border-radius: 20px; font-size: 12px; font-weight: 900; padding: 4px 12px; width: 100%; text-align: center; }
   .char-card.selected .char-name { background: var(--purple-dark); }
-  .check {
-    display: none; position: absolute; top: -8px; right: -8px;
-    width: 26px; height: 26px; background: #4caf50;
-    border-radius: 50%; align-items: center; justify-content: center;
-    font-size: 14px; border: 2px solid white;
-  }
+  .char-card.locked .char-name { background: #999; }
+  .check { display: none; position: absolute; top: -8px; right: -8px; width: 26px; height: 26px; background: #4caf50; border-radius: 50%; align-items: center; justify-content: center; font-size: 14px; border: 2px solid white; }
   .char-card.selected .check { display: flex; }
+  .lock-badge { position: absolute; top: -8px; right: -8px; width: 26px; height: 26px; background: #999; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid white; }
+  .unlock-price { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); background: var(--yellow); color: #7a4e00; border-radius: 20px; font-size: 10px; font-weight: 900; padding: 2px 8px; white-space: nowrap; }
   .lets-go-btn {
     display: block; width: 65%; margin: 14px auto 0;
     padding: 16px; background: #4caf50; color: white; border: none;
@@ -287,50 +209,74 @@
   .lets-go-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #388e3c; }
 
   /* ══════════════════════════════════════
+     STAGE SELECT SCREEN
+  ══════════════════════════════════════ */
+  #screen-stages { display: flex; flex-direction: column; align-items: center; padding: 0 16px; }
+  .stage-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; width: 100%; margin-top: 10px; }
+  .stage-card {
+    background: var(--panel-bg); border-radius: 20px; padding: 18px 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    cursor: pointer; border: 3px solid transparent;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .stage-card:active { transform: scale(0.97); }
+  .stage-card.active-stage { border-color: var(--yellow); }
+  .stage-num { font-size: 28px; font-weight: 900; color: var(--purple-dark); }
+  .stage-name { font-size: 13px; font-weight: 900; color: var(--purple-btn); text-align: center; }
+  .stage-tables { font-size: 11px; color: #888; font-weight: 700; text-align: center; }
+  .stage-stars { font-size: 14px; letter-spacing: 2px; }
+
+  /* ══════════════════════════════════════
      GAME SCREEN
   ══════════════════════════════════════ */
-  #screen-game {
-    display: flex; flex-direction: column; align-items: center;
-  }
-  .game-header {
-    width: 100%; padding: 14px 16px 0;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .hdr-badge {
-    background: var(--purple-dark); color: white;
-    border-radius: 12px; padding: 8px 18px;
-    font-weight: 900; font-size: 14px;
-  }
-  .hdr-timer {
-    background: var(--purple-dark); color: white;
-    border-radius: 50px; padding: 8px 14px;
-    font-weight: 900; font-size: 14px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .progress-track {
-    position: absolute; top: 74px; left: 5%; right: 5%;
-    height: 16px; background: rgba(0,0,0,0.2);
-    border-radius: 8px; overflow: hidden; z-index: 20;
-  }
-  .progress-fill {
-    height: 100%; background: var(--yellow);
-    border-radius: 8px; width: 0%; transition: width 0.4s;
-  }
+  #screen-game { display: flex; flex-direction: column; align-items: center; }
+  .game-header { width: 100%; padding: 14px 16px 0; display: flex; justify-content: space-between; align-items: center; }
+  .hdr-badge { background: var(--purple-dark); color: white; border-radius: 12px; padding: 8px 18px; font-weight: 900; font-size: 14px; }
+  .hdr-coins { background: var(--yellow-dark); color: white; border-radius: 50px; padding: 8px 14px; font-weight: 900; font-size: 14px; display: flex; align-items: center; gap: 4px; }
+  .progress-track { position: absolute; top: 74px; left: 5%; right: 5%; height: 16px; background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; z-index: 20; }
+  .progress-fill { height: 100%; background: var(--yellow); border-radius: 8px; width: 0%; transition: width 0.4s; }
   .question-panel {
-    position: absolute; top: 40%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 88%; background: var(--panel-bg);
-    border-radius: 24px; padding: 28px 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2); text-align: center;
-    z-index: 20;
+    position: absolute; top: 38%; left: 50%; transform: translate(-50%, -50%);
+    width: 88%; background: var(--panel-bg); border-radius: 24px; padding: 20px 24px 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2); text-align: center; z-index: 20;
   }
-  .question-hint { font-size: 13px; color: #888; font-weight: 700; margin-bottom: 14px; }
-  .question-text { font-size: 52px; font-weight: 900; color: var(--text-dark); }
+  .question-top { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+  .question-hint-label { font-size: 13px; color: #888; font-weight: 700; }
+  .hint-btn {
+    background: var(--yellow); color: #7a4e00; border: none; border-radius: 20px;
+    padding: 4px 12px; font-size: 11px; font-weight: 900; font-family: 'Nunito', cursive;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .hint-btn:active { background: var(--yellow-dark); color: white; }
+  .question-text { font-size: 48px; font-weight: 900; color: var(--text-dark); line-height: 1.1; }
+
+  /* Hint dot grid */
+  .hint-grid {
+    display: none;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    margin-top: 12px;
+    padding: 10px;
+    background: rgba(92,63,163,0.08);
+    border-radius: 12px;
+  }
+  .hint-grid.visible { display: flex; }
+  .hint-row { display: flex; gap: 5px; width: 100%; justify-content: center; }
+  .hint-dot {
+    width: 16px; height: 16px;
+    background: var(--purple-btn); border-radius: 50%;
+    animation: dotPop 0.3s ease backwards;
+  }
+  @keyframes dotPop {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
   .answer-grid {
-    position: absolute; bottom: 90px; left: 50%;
-    transform: translateX(-50%); width: 90%;
-    display: grid; grid-template-columns: repeat(4,1fr);
-    gap: 10px; z-index: 20;
+    position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%);
+    width: 90%; display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; z-index: 20;
   }
   .ans-btn {
     color: white; border: none; border-radius: 16px;
@@ -340,13 +286,105 @@
     transition: transform 0.1s, box-shadow 0.1s;
   }
   .ans-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.25); }
-  .score-badge {
-    position: absolute; bottom: 20px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--purple-dark); color: white;
-    border-radius: 50px; padding: 8px 24px;
-    font-weight: 900; font-size: 16px; z-index: 20;
+
+  /* SRS indicator */
+  .srs-badge {
+    position: absolute; top: 74px; right: 5%;
+    background: #ff7043; color: white; border-radius: 20px;
+    padding: 3px 10px; font-size: 11px; font-weight: 900;
+    z-index: 25; opacity: 0; transition: opacity 0.3s;
   }
+  .srs-badge.visible { opacity: 1; }
+
+  .score-badge {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+    background: var(--purple-dark); color: white; border-radius: 50px;
+    padding: 8px 24px; font-weight: 900; font-size: 16px; z-index: 20;
+  }
+
+  /* ══════════════════════════════════════
+     STREAK BANNER
+  ══════════════════════════════════════ */
+  .streak-banner {
+    position: absolute; top: 95px; left: 50%; transform: translateX(-50%) scale(0);
+    background: linear-gradient(135deg, #ff6b35, #f7c59f);
+    color: white; border-radius: 30px; padding: 12px 28px;
+    font-size: 22px; font-weight: 900; letter-spacing: 1px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3); z-index: 50;
+    white-space: nowrap; pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+    opacity: 0;
+  }
+  .streak-banner.show {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  .streak-banner.hide {
+    transform: translateX(-50%) scale(0.8);
+    opacity: 0;
+  }
+
+  /* ══════════════════════════════════════
+     SHOP MODAL
+  ══════════════════════════════════════ */
+  .modal-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 80;
+    display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+  .modal-sheet {
+    width: 100%; background: var(--panel-bg);
+    border-radius: 28px 28px 0 0; padding: 24px 20px 32px;
+    transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  .modal-overlay.open .modal-sheet { transform: translateY(0); }
+  .modal-title { font-size: 22px; font-weight: 900; color: var(--text-dark); text-align: center; margin-bottom: 4px; }
+  .modal-sub { font-size: 13px; color: #888; font-weight: 700; text-align: center; margin-bottom: 16px; }
+  .modal-coins { text-align: center; color: var(--yellow-dark); font-size: 17px; font-weight: 900; margin-bottom: 16px; }
+  .skin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .skin-card {
+    border-radius: 16px; padding: 14px 8px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    border: 3px solid transparent; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .skin-card:active { transform: scale(0.96); }
+  .skin-card.equipped { border-color: var(--yellow); }
+  .skin-cube {
+    width: 54px; height: 54px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  }
+  .skin-label { font-size: 11px; font-weight: 900; color: var(--text-dark); text-align: center; }
+  .skin-cost { font-size: 10px; font-weight: 900; color: var(--yellow-dark); }
+  .skin-owned { font-size: 10px; font-weight: 900; color: #4caf50; }
+  .modal-close {
+    display: block; width: 100%; margin-top: 18px; padding: 14px;
+    background: var(--purple-btn); color: white; border: none; border-radius: 50px;
+    font-family: 'Nunito', cursive; font-size: 17px; font-weight: 900;
+    cursor: pointer; box-shadow: 0 5px 0 var(--purple-dark);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .modal-close:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--purple-dark); }
+
+  /* ══════════════════════════════════════
+     TOAST / FEEDBACK
+  ══════════════════════════════════════ */
+  .toast {
+    position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--purple-dark); color: white; border-radius: 20px;
+    padding: 8px 20px; font-size: 14px; font-weight: 900;
+    opacity: 0; pointer-events: none; z-index: 60;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
@@ -356,57 +394,30 @@
 
     <!-- ══════════ HOME SCREEN ══════════ -->
     <div class="screen" id="screen-home">
-
-      <!-- Logo -->
-      <img class="logo"
-        src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-logo.png"
-        alt="Maths Jumper"/>
-
-      <!-- Number tiles -->
-      <img class="num-two"
-        src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numbertwo.png" alt="2"/>
-      <img class="num-three"
-        src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numberthree.png" alt="3"/>
-
-      <!-- Left block (×) + Pip -->
+      <img class="logo" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-logo.png" alt="Maths Jumper"/>
+      <img class="num-two"   src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numbertwo.png" alt="2"/>
+      <img class="num-three" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numberthree.png" alt="3"/>
       <div class="block-left">
-        <img class="char-side"
-          src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/>
+        <img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/>
         <div class="sym-block">×</div>
       </div>
-
-      <!-- Right block (=) + Unia -->
       <div class="block-right">
-        <img class="char-side"
-          src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/>
+        <img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/>
         <div class="sym-block">=</div>
       </div>
-
-      <!-- Jump trail -->
-      <div class="jump-trail">
-        <div class="trail-line" style="width:32px;"></div>
-        <div class="trail-line" style="width:22px;"></div>
-        <div class="trail-line" style="width:14px;"></div>
-      </div>
-
-      <!-- Redy jumping centre -->
+      <div class="jump-trail"></div>
       <div class="redy-wrap">
-        <img class="redy-img"
-          src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/>
+        <img class="redy-img" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/>
       </div>
-
-      <!-- Stats panel -->
       <div class="panel">
-        <div class="coins-row">Coins ⭐: 0</div>
-        <div class="stage-row">Highest Stage: 1</div>
-        <button class="btn-play" onclick="showScreen('screen-game')">PLAY STAGE 1</button>
-        <button class="btn-select" onclick="showScreen('screen-chars')">SELECT STAGE</button>
+        <div class="coins-row" id="home-coins">Coins ⭐: 0</div>
+        <div class="stage-row" id="home-stage">Highest Stage: 1</div>
+        <button class="btn-play" id="btn-play-home">PLAY STAGE 1</button>
+        <button class="btn-select" onclick="showScreen('screen-stages')">SELECT STAGE</button>
       </div>
-
-      <!-- Bottom nav -->
       <div class="bottom-nav">
-        <button class="nav-btn" onclick="showScreen('screen-chars')">
-          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-icon.png" alt="Characters"/>
+        <button class="nav-btn" onclick="openShop()">
+          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-icon.png" alt="Shop"/>
         </button>
         <button class="nav-btn">
           <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-leaderboard-icon.png" alt="Leaderboard"/>
@@ -420,166 +431,521 @@
       </div>
     </div>
 
+    <!-- ══════════ STAGE SELECT ══════════ -->
+    <div class="screen hidden" id="screen-stages">
+      <div class="chars-header">
+        <button class="back-btn" onclick="showScreen('screen-home')">←</button>
+        <div class="coins-badge" id="stage-coins-badge">⭐ 0</div>
+      </div>
+      <div class="chars-title-wrap">
+        <span class="chars-title-sub">Pick your challenge level!</span>
+        <span class="chars-title-main">SELECT<br/>STAGE</span>
+      </div>
+      <div class="stage-grid" id="stage-grid"></div>
+    </div>
+
     <!-- ══════════ CHARACTER SELECT ══════════ -->
     <div class="screen hidden" id="screen-chars">
       <div class="chars-header">
         <button class="back-btn" onclick="showScreen('screen-home')">←</button>
-        <div class="coins-badge">⭐ 0</div>
+        <div class="coins-badge" id="chars-coins-badge">⭐ 0</div>
       </div>
       <div class="chars-title-wrap">
         <span class="chars-title-sub">Pick a buddy and start your maths adventure!</span>
         <span class="chars-title-main">CHOOSE YOUR<br/>CHARACTER</span>
       </div>
-      <div class="char-grid">
-        <div class="char-card" onclick="selectChar(this)">
-          <div class="check">✓</div>
-          <div class="char-emoji">🦕</div>
-          <div class="char-name">Dino</div>
-        </div>
-        <div class="char-card selected" onclick="selectChar(this)">
-          <div class="check">✓</div>
-          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/>
-          <div class="char-name">Redy</div>
-        </div>
-        <div class="char-card" onclick="selectChar(this)">
-          <div class="check">✓</div>
-          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/>
-          <div class="char-name">Unia</div>
-        </div>
-        <div class="char-card" onclick="selectChar(this)">
-          <div class="check">✓</div>
-          <div class="char-emoji">🤖</div>
-          <div class="char-name">Robo</div>
-        </div>
-        <div class="char-card" onclick="selectChar(this)">
-          <div class="check">✓</div>
-          <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/>
-          <div class="char-name">Pip</div>
-        </div>
-        <div class="char-card" onclick="selectChar(this)">
-          <div class="check">✓</div>
-          <div class="char-emoji">🦁</div>
-          <div class="char-name">Leo</div>
-        </div>
-      </div>
+      <div class="char-grid" id="char-grid"></div>
       <button class="lets-go-btn" onclick="showScreen('screen-game')">LET'S GO!</button>
     </div>
 
     <!-- ══════════ GAME SCREEN ══════════ -->
     <div class="screen hidden" id="screen-game">
       <div class="game-header">
-        <button class="back-btn" onclick="showScreen('screen-home')">←</button>
-        <div class="hdr-badge">WORLD 1-1</div>
-        <div class="hdr-timer">⏱ <span id="timer">240</span></div>
+        <button class="back-btn" onclick="endSession()">←</button>
+        <div class="hdr-badge" id="hdr-stage">STAGE 1</div>
+        <div class="hdr-coins">⭐ <span id="hdr-coins-val">0</span></div>
       </div>
       <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="srs-badge" id="srs-badge">🔄 Retry!</div>
       <div class="question-panel">
-        <div class="question-hint">Let's multiply! 🐦</div>
+        <div class="question-top">
+          <span class="question-hint-label" id="q-hint-label">Let's multiply! 🐦</span>
+          <button class="hint-btn" onclick="toggleHint()">💡 Hint</button>
+        </div>
         <div class="question-text" id="question-text">
           1 × 1 = <span style="border:3px dashed #d4940a;border-radius:12px;padding:2px 14px;color:#d4940a">?</span>
         </div>
+        <div class="hint-grid" id="hint-grid"></div>
       </div>
+      <div class="streak-banner" id="streak-banner">🔥 STREAK!</div>
       <div class="answer-grid" id="answer-grid"></div>
       <div class="score-badge">⭐ <span id="score">0</span></div>
     </div>
 
-  </div>
+    <!-- ══════════ SHOP MODAL ══════════ -->
+    <div class="modal-overlay" id="shop-modal">
+      <div class="modal-sheet">
+        <div class="modal-title">🎨 Character Shop</div>
+        <div class="modal-sub">Spend coins to unlock new looks for Redy!</div>
+        <div class="modal-coins" id="shop-coins-display">Your coins: ⭐ 0</div>
+        <div class="skin-grid" id="skin-grid"></div>
+        <button class="modal-close" onclick="closeShop()">CLOSE</button>
+      </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+  </div><!-- .phone -->
 </div>
 
 <script>
-  // ── Scale phone to fit any screen ───────────────────────────────
-  function scalePhone() {
-    const phone = document.getElementById('phone');
-    const scaleX = window.innerWidth  / 390;
-    const scaleY = window.innerHeight / 844;
-    const scale  = Math.min(scaleX, scaleY);
-    phone.style.transform = `scale(${scale})`;
-  }
-  scalePhone();
-  window.addEventListener('resize', scalePhone);
+/* ═══════════════════════════════════════════════════════════════
+   CONSTANTS & DATA
+═══════════════════════════════════════════════════════════════ */
+const BASE = 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/';
+const COLORS = ['#4caf50','#2196f3','#f5c518','#e91e63'];
 
-  // ── Navigation ──────────────────────────────────────────────────
-  function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
-    if (id === 'screen-game') startGame();
-  }
+// Cognitive Stage Progression
+const STAGES = [
+  { id: 1, name: 'Easy Wins',   tables: [2,5,10],    desc: '2s, 5s & 10s',    emoji: '⭐' },
+  { id: 2, name: 'Doubles',     tables: [4,8],        desc: '4s & 8s',         emoji: '🔥' },
+  { id: 3, name: 'Patterns',    tables: [3,6,9],      desc: '3s, 6s & 9s',     emoji: '💫' },
+  { id: 4, name: 'Hard Ones',   tables: [7,11,12],    desc: '7s, 11s & 12s',   emoji: '🏆' },
+];
 
-  // ── Character select ─────────────────────────────────────────────
-  function selectChar(card) {
-    document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-  }
+// Hint labels per stage
+const STAGE_HINTS = [
+  'Easy does it! 🐦',
+  'Double trouble! 🔥',
+  'Spot the pattern! 💫',
+  'You got this! 🏆',
+];
 
-  // ── Game ─────────────────────────────────────────────────────────
-  const COLORS = ['#4caf50','#2196f3','#f5c518','#e91e63'];
-  let score = 0, answered = 0, timerVal = 240, timerInt;
-  const TOTAL = 10;
+// Character skins for the shop
+const SKINS = [
+  { id: 'red',    label: 'Classic',  color: '#e53935', accent: '#b71c1c', emoji: '😊', cost: 0    },
+  { id: 'blue',   label: 'Ocean',    color: '#1e88e5', accent: '#0d47a1', emoji: '😎', cost: 50   },
+  { id: 'green',  label: 'Forest',   color: '#43a047', accent: '#1b5e20', emoji: '🌿', cost: 50   },
+  { id: 'purple', label: 'Cosmic',   color: '#8e24aa', accent: '#4a148c', emoji: '🔮', cost: 50   },
+  { id: 'gold',   label: 'Legend',   color: '#f9a825', accent: '#e65100', emoji: '👑', cost: 100  },
+  { id: 'rainbow',label: 'Rainbow',  color: 'linear-gradient(135deg,#f44336,#ff9800,#ffeb3b,#4caf50,#2196f3,#9c27b0)', accent: '#333', emoji: '🌈', cost: 150 },
+];
 
-  function startGame() {
-    score = 0; answered = 0; timerVal = 240;
-    clearInterval(timerInt);
-    document.getElementById('score').textContent = 0;
-    document.getElementById('timer').textContent = 240;
-    document.getElementById('progress-fill').style.width = '0%';
-    timerInt = setInterval(() => {
-      document.getElementById('timer').textContent = --timerVal;
-      if (timerVal <= 0) { clearInterval(timerInt); endGame(); }
-    }, 1000);
-    nextQ();
-  }
+// Characters
+const CHARACTERS = [
+  { id: 'dino',  name: 'Dino',  emoji: '🦕', img: null     },
+  { id: 'redy',  name: 'Redy',  emoji: null,  img: BASE + 'mj-start-character-red.png'  },
+  { id: 'unia',  name: 'Unia',  emoji: null,  img: BASE + 'mj-start-character-unia.png' },
+  { id: 'robo',  name: 'Robo',  emoji: '🤖', img: null     },
+  { id: 'pip',   name: 'Pip',   emoji: null,  img: BASE + 'mj-start-character-pip.png'  },
+  { id: 'leo',   name: 'Leo',   emoji: '🦁', img: null     },
+];
 
-  function nextQ() {
-    const a = Math.ceil(Math.random() * 6);
-    const b = Math.ceil(Math.random() * 6);
-    const ans = a * b;
-    document.getElementById('question-text').innerHTML =
-      `${a} × ${b} = <span style="border:3px dashed #d4940a;border-radius:12px;padding:2px 14px;color:#d4940a">?</span>`;
-    const opts = new Set([ans]);
-    while (opts.size < 4) opts.add(Math.ceil(Math.random() * 36));
-    const grid = document.getElementById('answer-grid');
+/* ═══════════════════════════════════════════════════════════════
+   PERSISTENCE — localStorage
+═══════════════════════════════════════════════════════════════ */
+function loadState() {
+  try {
+    return JSON.parse(localStorage.getItem('mj_state')) || {};
+  } catch { return {}; }
+}
+function saveState(patch) {
+  const s = { ...loadState(), ...patch };
+  localStorage.setItem('mj_state', JSON.stringify(s));
+  return s;
+}
+
+// Defaults
+function getCoins()          { return loadState().coins          ?? 0; }
+function getHighestStage()   { return loadState().highestStage   ?? 1; }
+function getUnlockedSkins()  { return loadState().unlockedSkins  ?? ['red']; }
+function getEquippedSkin()   { return loadState().equippedSkin   ?? 'red'; }
+function getCurrentStage()   { return loadState().currentStage   ?? 1; }
+function getSelectedChar()   { return loadState().selectedChar   ?? 'redy'; }
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════════════════════ */
+function scalePhone() {
+  const phone = document.getElementById('phone');
+  const scale = Math.min(window.innerWidth / 390, window.innerHeight / 844);
+  phone.style.transform = `scale(${scale})`;
+}
+scalePhone();
+window.addEventListener('resize', scalePhone);
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  if (id === 'screen-home')   refreshHome();
+  if (id === 'screen-stages') renderStages();
+  if (id === 'screen-chars')  renderChars();
+  if (id === 'screen-game')   startGame();
+}
+
+function showToast(msg, duration = 1800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME SCREEN
+═══════════════════════════════════════════════════════════════ */
+function refreshHome() {
+  const coins  = getCoins();
+  const stage  = getCurrentStage();
+  const hi     = getHighestStage();
+  document.getElementById('home-coins').textContent = `Coins ⭐: ${coins}`;
+  document.getElementById('home-stage').textContent = `Highest Stage: ${hi}`;
+  const btn = document.getElementById('btn-play-home');
+  btn.textContent = `PLAY STAGE ${stage}`;
+  btn.onclick = () => showScreen('screen-game');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STAGE SELECT (Feature 2)
+═══════════════════════════════════════════════════════════════ */
+function renderStages() {
+  document.getElementById('stage-coins-badge').textContent = `⭐ ${getCoins()}`;
+  const grid = document.getElementById('stage-grid');
+  const current = getCurrentStage();
+  grid.innerHTML = '';
+  STAGES.forEach(st => {
+    const card = document.createElement('div');
+    card.className = 'stage-card' + (st.id === current ? ' active-stage' : '');
+    const stars = '⭐'.repeat(Math.min(3, Math.max(0, getHighestStage() - st.id + 1)));
+    card.innerHTML = `
+      <div class="stage-num">${st.emoji} Stage ${st.id}</div>
+      <div class="stage-name">${st.name}</div>
+      <div class="stage-tables">${st.desc}</div>
+      <div class="stage-stars">${stars || '○○○'}</div>
+    `;
+    card.onclick = () => {
+      saveState({ currentStage: st.id });
+      showScreen('screen-game');
+    };
+    grid.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CHARACTER SELECT
+═══════════════════════════════════════════════════════════════ */
+function renderChars() {
+  document.getElementById('chars-coins-badge').textContent = `⭐ ${getCoins()}`;
+  const grid = document.getElementById('char-grid');
+  const selected = getSelectedChar();
+  grid.innerHTML = '';
+  CHARACTERS.forEach(ch => {
+    const card = document.createElement('div');
+    card.className = 'char-card' + (ch.id === selected ? ' selected' : '');
+    card.innerHTML = `
+      <div class="check">✓</div>
+      ${ch.img ? `<img src="${ch.img}" alt="${ch.name}"/>` : `<div class="char-emoji">${ch.emoji}</div>`}
+      <div class="char-name">${ch.name}</div>
+    `;
+    card.onclick = () => {
+      document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      saveState({ selectedChar: ch.id });
+    };
+    grid.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SHOP (Feature 5)
+═══════════════════════════════════════════════════════════════ */
+function openShop() {
+  renderShop();
+  document.getElementById('shop-modal').classList.add('open');
+}
+function closeShop() {
+  document.getElementById('shop-modal').classList.remove('open');
+  refreshHome();
+}
+function renderShop() {
+  const coins    = getCoins();
+  const unlocked = getUnlockedSkins();
+  const equipped = getEquippedSkin();
+  document.getElementById('shop-coins-display').textContent = `Your coins: ⭐ ${coins}`;
+  const grid = document.getElementById('skin-grid');
+  grid.innerHTML = '';
+  SKINS.forEach(sk => {
+    const isOwned    = unlocked.includes(sk.id);
+    const isEquipped = sk.id === equipped;
+    const canAfford  = coins >= sk.cost;
+    const card = document.createElement('div');
+    card.className = 'skin-card' + (isEquipped ? ' equipped' : '');
+    const bgStyle = sk.color.startsWith('linear') ? `background:${sk.color}` : `background:${sk.color}`;
+    card.innerHTML = `
+      <div class="skin-cube" style="${bgStyle}">${sk.emoji}</div>
+      <div class="skin-label">${sk.label}</div>
+      ${isEquipped  ? `<div class="skin-owned">✓ ON</div>`
+       : isOwned    ? `<div class="skin-owned">Owned</div>`
+       : canAfford  ? `<div class="skin-cost">⭐ ${sk.cost}</div>`
+                    : `<div class="skin-cost" style="color:#ccc">⭐ ${sk.cost}</div>`}
+    `;
+    card.onclick = () => {
+      if (isEquipped) return;
+      if (isOwned) {
+        saveState({ equippedSkin: sk.id });
+        showToast(`Equipped ${sk.label}! ${sk.emoji}`);
+        renderShop();
+      } else if (canAfford) {
+        const newCoins    = getCoins() - sk.cost;
+        const newUnlocked = [...getUnlockedSkins(), sk.id];
+        saveState({ coins: newCoins, unlockedSkins: newUnlocked, equippedSkin: sk.id });
+        showToast(`Unlocked ${sk.label}! ${sk.emoji}`);
+        renderShop();
+      } else {
+        showToast(`Need ⭐ ${sk.cost - getCoins()} more coins!`);
+      }
+    };
+    grid.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GAME ENGINE
+═══════════════════════════════════════════════════════════════ */
+let gameScore    = 0;
+let sessionCoins = 0;
+let streak       = 0;
+let answered     = 0;
+let currentQ     = null;    // { a, b, ans }
+let questionQueue = [];     // upcoming question objects
+let srsRetryQueue = [];     // { q, retryAt } — SRS queue
+let hintVisible  = false;
+const TOTAL      = 10;
+
+// ── Question generation ───────────────────────────────────────
+function makeQ(stage) {
+  const tables = STAGES[stage - 1].tables;
+  const table  = tables[Math.floor(Math.random() * tables.length)];
+  const b      = Math.ceil(Math.random() * 12);
+  return { a: table, b, ans: table * b };
+}
+
+function buildQueue(stage) {
+  questionQueue = [];
+  for (let i = 0; i < TOTAL; i++) questionQueue.push(makeQ(stage));
+}
+
+// ── SRS injection (Feature 1) ─────────────────────────────────
+function injectSRS(wrongQ) {
+  // inject at position +2 and +5 (clamped to queue length)
+  const q1 = { ...wrongQ };
+  const q2 = { ...wrongQ };
+  const insertAt2 = Math.min(2, questionQueue.length);
+  const insertAt5 = Math.min(5, questionQueue.length + 1);
+  questionQueue.splice(insertAt2, 0, q1);
+  questionQueue.splice(insertAt5, 0, q2);
+}
+
+// ── Streak banners (Feature 3) ────────────────────────────────
+const STREAK_MSGS = {
+  3:  '3-STREAK! 🎉',
+  5:  'SUPER JUMPER! 🔥',
+  10: 'MATHS MASTER! 🏆',
+};
+function checkStreak(n) {
+  const msg = STREAK_MSGS[n];
+  if (!msg) return;
+  const banner = document.getElementById('streak-banner');
+  banner.textContent = msg;
+  banner.classList.remove('hide');
+  banner.classList.add('show');
+
+  // Bonus coins
+  const bonus = n >= 10 ? 15 : n >= 5 ? 8 : 4;
+  sessionCoins += bonus;
+  document.getElementById('hdr-coins-val').textContent = getCoins() + sessionCoins;
+
+  setTimeout(() => {
+    banner.classList.remove('show');
+    banner.classList.add('hide');
+  }, 2000);
+}
+
+// ── Hint grid (Feature 3) ─────────────────────────────────────
+function toggleHint() {
+  hintVisible = !hintVisible;
+  const grid = document.getElementById('hint-grid');
+  if (hintVisible && currentQ) {
     grid.innerHTML = '';
-    [...opts].sort(() => Math.random()-0.5).forEach((v, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'ans-btn';
-      btn.textContent = v;
-      btn.style.background = COLORS[i];
-      btn.onclick = () => checkAns(v, ans, btn);
-      grid.appendChild(btn);
-    });
-  }
-
-  function checkAns(chosen, correct, btn) {
-    document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
-    if (chosen === correct) {
-      btn.style.background = '#4caf50';
-      btn.textContent = '✓ ' + chosen;
-      score += 10;
-      document.getElementById('score').textContent = score;
-    } else {
-      btn.style.background = '#f44336';
-      btn.textContent = '✗ ' + chosen;
-      document.querySelectorAll('.ans-btn').forEach(b => {
-        if (Number(b.textContent) === correct) b.style.background = '#4caf50';
-      });
+    grid.classList.add('visible');
+    for (let r = 0; r < currentQ.a; r++) {
+      const row = document.createElement('div');
+      row.className = 'hint-row';
+      for (let c = 0; c < currentQ.b; c++) {
+        const dot = document.createElement('div');
+        dot.className = 'hint-dot';
+        dot.style.animationDelay = `${(r * currentQ.b + c) * 30}ms`;
+        row.appendChild(dot);
+      }
+      grid.appendChild(row);
     }
-    answered++;
-    document.getElementById('progress-fill').style.width = (answered / TOTAL * 100) + '%';
-    setTimeout(() => answered < TOTAL ? nextQ() : endGame(), 900);
+  } else {
+    grid.classList.remove('visible');
+    grid.innerHTML = '';
+  }
+}
+
+// ── Start game ────────────────────────────────────────────────
+function startGame() {
+  const stage  = getCurrentStage();
+  gameScore    = 0;
+  sessionCoins = 0;
+  streak       = 0;
+  answered     = 0;
+  hintVisible  = false;
+  srsRetryQueue = [];
+
+  document.getElementById('hdr-stage').textContent    = `STAGE ${stage}`;
+  document.getElementById('hdr-coins-val').textContent = getCoins();
+  document.getElementById('score').textContent         = 0;
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('hint-grid').classList.remove('visible');
+  document.getElementById('hint-grid').innerHTML = '';
+  document.getElementById('srs-badge').classList.remove('visible');
+  document.getElementById('streak-banner').classList.remove('show','hide');
+
+  document.getElementById('q-hint-label').textContent = STAGE_HINTS[stage - 1] || 'Let\'s go! 🐦';
+
+  buildQueue(stage);
+  nextQ();
+}
+
+function nextQ() {
+  hintVisible = false;
+  document.getElementById('hint-grid').classList.remove('visible');
+  document.getElementById('hint-grid').innerHTML = '';
+
+  // Check SRS queue — pull any due items
+  const due = srsRetryQueue.filter(r => r.retryAt <= answered);
+  if (due.length) {
+    currentQ = due[0].q;
+    srsRetryQueue = srsRetryQueue.filter(r => r.retryAt > answered);
+    document.getElementById('srs-badge').classList.add('visible');
+  } else {
+    if (!questionQueue.length) { endGame(); return; }
+    currentQ = questionQueue.shift();
+    document.getElementById('srs-badge').classList.remove('visible');
   }
 
-  function endGame() {
-    clearInterval(timerInt);
-    document.getElementById('question-text').innerHTML = `🎉 Score: ${score}!`;
-    const grid = document.getElementById('answer-grid');
-    grid.innerHTML = '';
+  renderQ(currentQ);
+}
+
+function renderQ(q) {
+  document.getElementById('question-text').innerHTML =
+    `${q.a} × ${q.b} = <span style="border:3px dashed #d4940a;border-radius:12px;padding:2px 14px;color:#d4940a">?</span>`;
+
+  // 4 answer choices with correct answer guaranteed
+  const opts = new Set([q.ans]);
+  const maxWrong = q.ans < 20 ? q.ans + 20 : q.ans + 30;
+  while (opts.size < 4) opts.add(Math.max(1, q.ans + (Math.floor(Math.random() * 10) - 5)));
+  // fallback if opts stuck
+  while (opts.size < 4) opts.add(Math.ceil(Math.random() * maxWrong));
+
+  const shuffled = [...opts].sort(() => Math.random() - 0.5);
+  const grid = document.getElementById('answer-grid');
+  grid.innerHTML = '';
+  shuffled.forEach((v, i) => {
     const btn = document.createElement('button');
     btn.className = 'ans-btn';
-    btn.style.cssText = 'grid-column:span 4;background:#4caf50;font-size:20px;padding:20px;';
-    btn.textContent = 'Play Again!';
-    btn.onclick = startGame;
+    btn.textContent = v;
+    btn.style.background = COLORS[i % COLORS.length];
+    btn.onclick = () => checkAns(v, q, btn);
     grid.appendChild(btn);
+  });
+}
+
+function checkAns(chosen, q, btn) {
+  document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+
+  if (chosen === q.ans) {
+    btn.style.background = '#4caf50';
+    btn.textContent = '✓ ' + chosen;
+
+    gameScore    += 10;
+    sessionCoins += 2;
+    streak++;
+    answered++;
+
+    document.getElementById('score').textContent         = gameScore;
+    document.getElementById('hdr-coins-val').textContent = getCoins() + sessionCoins;
+    document.getElementById('progress-fill').style.width = (answered / TOTAL * 100) + '%';
+
+    checkStreak(streak);
+
+  } else {
+    btn.style.background = '#f44336';
+    btn.textContent = '✗ ' + chosen;
+    // Highlight correct
+    document.querySelectorAll('.ans-btn').forEach(b => {
+      if (parseInt(b.textContent) === q.ans) b.style.background = '#4caf50';
+    });
+
+    streak = 0; // reset streak on wrong
+    answered++;
+    document.getElementById('progress-fill').style.width = (answered / TOTAL * 100) + '%';
+
+    // SRS: inject this question back at +2 and +5 (Feature 1)
+    injectSRS(q);
+    document.getElementById('srs-badge').classList.add('visible');
+    setTimeout(() => document.getElementById('srs-badge').classList.remove('visible'), 1200);
   }
+
+  setTimeout(() => answered < TOTAL || questionQueue.length ? nextQ() : endGame(), 900);
+}
+
+function endGame() {
+  // Save coins + highest stage
+  const totalCoins = getCoins() + sessionCoins;
+  const stage      = getCurrentStage();
+  const hi         = Math.max(getHighestStage(), stage);
+  saveState({ coins: totalCoins, highestStage: hi });
+
+  // Show end screen
+  document.getElementById('question-text').innerHTML = `🎉 Score: ${gameScore}!<br><span style="font-size:18px;color:#888">+${sessionCoins} ⭐ coins earned</span>`;
+  document.getElementById('hint-grid').classList.remove('visible');
+
+  const grid = document.getElementById('answer-grid');
+  grid.innerHTML = '';
+
+  const playAgain = document.createElement('button');
+  playAgain.className = 'ans-btn';
+  playAgain.style.cssText = 'grid-column:span 2;background:#4caf50;font-size:17px;padding:18px;';
+  playAgain.textContent = '▶ Play Again';
+  playAgain.onclick = startGame;
+
+  const homeBtn = document.createElement('button');
+  homeBtn.className = 'ans-btn';
+  homeBtn.style.cssText = 'grid-column:span 2;background:var(--purple-btn);font-size:17px;padding:18px;';
+  homeBtn.textContent = '🏠 Home';
+  homeBtn.onclick = () => showScreen('screen-home');
+
+  grid.appendChild(playAgain);
+  grid.appendChild(homeBtn);
+
+  document.getElementById('hdr-coins-val').textContent = totalCoins;
+}
+
+function endSession() {
+  // Save whatever was earned so far
+  const totalCoins = getCoins() + sessionCoins;
+  saveState({ coins: totalCoins });
+  showScreen('screen-home');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════ */
+refreshHome();
 </script>
 </body>
 </html>
