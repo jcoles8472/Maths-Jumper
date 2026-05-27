@@ -17,21 +17,12 @@
 }
 html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursive,sans-serif; background:#1a1a2e; }
 .phone-wrap { display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
-.phone {
-  position:relative; width:390px; height:844px;
-  overflow:hidden; border-radius:40px;
-  box-shadow:0 40px 80px rgba(0,0,0,0.7);
-  transform-origin:center center;
-}
-.bg {
-  position:absolute; inset:0;
-  background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center top/cover no-repeat;
-  z-index:0;
-}
+.phone { position:relative; width:390px; height:844px; overflow:hidden; border-radius:40px; box-shadow:0 40px 80px rgba(0,0,0,.7); transform-origin:center center; }
+.bg { position:absolute; inset:0; background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center top/cover no-repeat; z-index:0; }
 .screen { position:absolute; inset:0; z-index:10; transition:opacity .35s ease,transform .35s ease; }
 .screen.hidden { opacity:0; pointer-events:none; transform:scale(.96); }
 
-/* ── HOME ── */
+/* ══ HOME ══ */
 .logo { position:absolute; top:32px; left:50%; transform:translateX(-50%); width:350px; z-index:20; filter:drop-shadow(0 6px 16px rgba(0,0,0,.3)); animation:logoBob 2.4s ease-in-out infinite; }
 @keyframes logoBob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-7px)} }
 .num-two  { position:absolute; top:205px; left:28px;  width:64px; z-index:22; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); animation:tileWobble 3.5s ease-in-out infinite .2s; }
@@ -40,18 +31,18 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .block-left  { position:absolute; left:28px;  bottom:350px; width:110px; z-index:18; display:flex; flex-direction:column; align-items:center; }
 .block-right { position:absolute; right:28px; bottom:375px; width:110px; z-index:18; display:flex; flex-direction:column; align-items:center; }
 .char-side { width:130px; margin-bottom:-10px; filter:drop-shadow(0 6px 12px rgba(0,0,0,.25)); animation:sideFloat 3s ease-in-out infinite; position:relative; z-index:2; }
-.block-left  .char-side { animation-delay:.3s; }
+.block-left .char-side { animation-delay:.3s; }
 .block-right .char-side { animation-delay:.7s; }
 @keyframes sideFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 .sym-block { display:none; }
-.redy-wrap { position:absolute; bottom:425px; left:50%; transform:translateX(-50%); width:150px; z-index:20; display:flex; flex-direction:column; align-items:center; animation:redyJump 2s ease-in-out infinite; }
+.redy-wrap { position:absolute; bottom:425px; left:50%; transform:translateX(-50%); width:150px; z-index:20; animation:redyJump 2s ease-in-out infinite; }
 @keyframes redyJump { 0%,100%{transform:translateX(-50%) translateY(0)} 45%{transform:translateX(-50%) translateY(-28px)} 55%{transform:translateX(-50%) translateY(-24px)} }
 .redy-img { width:100%; filter:drop-shadow(0 8px 16px rgba(0,0,0,.3)); }
 .jump-trail { display:none; }
 .panel { position:absolute; bottom:135px; left:20px; right:20px; background:var(--panel-bg); border-radius:28px; padding:18px 22px 20px; box-shadow:0 -2px 0 rgba(255,255,255,.5),0 10px 40px rgba(0,0,0,.2); z-index:25; }
 .coins-row { text-align:center; color:var(--yellow-dark); font-size:20px; font-weight:900; margin-bottom:3px; }
 .stage-row { text-align:center; color:var(--text-dark); font-size:15px; font-weight:700; margin-bottom:14px; }
-.btn-play  { display:block; width:100%; padding:15px; background:var(--purple-btn); color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:19px; font-weight:900; letter-spacing:1.5px; cursor:pointer; box-shadow:0 6px 0 var(--purple-dark); transition:transform .1s,box-shadow .1s; margin-bottom:10px; }
+.btn-play   { display:block; width:100%; padding:15px; background:var(--purple-btn); color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:19px; font-weight:900; letter-spacing:1.5px; cursor:pointer; box-shadow:0 6px 0 var(--purple-dark); transition:transform .1s,box-shadow .1s; margin-bottom:10px; }
 .btn-play:active { transform:translateY(4px); box-shadow:0 2px 0 var(--purple-dark); }
 .btn-select { display:block; width:100%; padding:14px; background:transparent; color:var(--text-dark); border:2.5px solid var(--purple-btn); border-radius:50px; font-family:'Nunito',cursive; font-size:18px; font-weight:900; letter-spacing:1.5px; cursor:pointer; transition:background .2s; }
 .btn-select:active { background:rgba(92,63,163,.08); }
@@ -60,25 +51,25 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .nav-btn:active { transform:translateY(4px); box-shadow:0 1px 0 rgba(0,0,0,.3); }
 .nav-btn img { width:100%; height:100%; object-fit:cover; display:block; }
 
-/* ── STAGE SELECT ── */
+/* ══ STAGE SELECT ══ */
 #screen-stages { display:flex; flex-direction:column; align-items:center; padding:0 16px; }
 .stage-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; width:100%; margin-top:10px; }
 .stage-card { background:var(--panel-bg); border-radius:20px; padding:18px 14px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; border:3px solid transparent; box-shadow:0 4px 12px rgba(0,0,0,.15); transition:border-color .2s,transform .15s; }
 .stage-card:active { transform:scale(.97); }
 .stage-card.active-stage { border-color:var(--yellow); }
-.stage-num  { font-size:28px; font-weight:900; color:var(--purple-dark); }
-.stage-name { font-size:13px; font-weight:900; color:var(--purple-btn); text-align:center; }
+.stage-num    { font-size:28px; font-weight:900; color:var(--purple-dark); }
+.stage-name   { font-size:13px; font-weight:900; color:var(--purple-btn); text-align:center; }
 .stage-tables { font-size:11px; color:#888; font-weight:700; text-align:center; }
-.stage-stars { font-size:14px; letter-spacing:2px; }
+.stage-stars  { font-size:14px; letter-spacing:2px; }
 
-/* ── CHAR SELECT ── */
+/* ══ CHAR SELECT ══ */
 #screen-chars { display:flex; flex-direction:column; align-items:center; padding:0 16px; }
 .chars-header { width:100%; display:flex; align-items:center; justify-content:space-between; padding:14px 0 0; }
 .back-btn { width:46px; height:46px; background:var(--yellow); border:none; border-radius:12px; font-size:22px; font-weight:900; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 0 var(--yellow-dark); transition:transform .1s,box-shadow .1s; }
 .back-btn:active { transform:translateY(3px); box-shadow:0 2px 0 var(--yellow-dark); }
 .coins-badge { background:var(--purple-dark); color:white; border-radius:50px; padding:8px 16px; font-size:15px; font-weight:900; }
 .chars-title-wrap { width:100%; text-align:center; margin:10px 0 4px; }
-.chars-title-sub { font-size:13px; font-weight:700; color:var(--text-dark); background:rgba(255,255,255,.75); border-radius:20px; padding:4px 14px; display:inline-block; }
+.chars-title-sub  { font-size:13px; font-weight:700; color:var(--text-dark); background:rgba(255,255,255,.75); border-radius:20px; padding:4px 14px; display:inline-block; }
 .chars-title-main { display:block; font-size:38px; font-weight:900; color:white; text-shadow:0 4px 0 var(--purple-dark); letter-spacing:1px; margin-top:4px; }
 .char-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:100%; margin-top:10px; }
 .char-card { background:#fdf6e3; border-radius:18px; padding:10px 6px 8px; display:flex; flex-direction:column; align-items:center; cursor:pointer; border:3px solid transparent; transition:border-color .2s,transform .15s; position:relative; box-shadow:0 4px 12px rgba(0,0,0,.15); }
@@ -102,200 +93,132 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .hdr-coins  { background:var(--yellow-dark); color:white; border-radius:50px; padding:8px 14px; font-weight:900; font-size:14px; display:flex; align-items:center; gap:4px; }
 .progress-track { position:absolute; top:74px; left:5%; right:5%; height:16px; background:rgba(0,0,0,.2); border-radius:8px; overflow:hidden; z-index:20; }
 .progress-fill  { height:100%; background:var(--yellow); border-radius:8px; width:0%; transition:width .4s; }
-
-/* Question panel */
-.question-panel { position:absolute; top:36%; left:50%; transform:translate(-50%,-50%); width:88%; background:var(--panel-bg); border-radius:24px; padding:18px 24px 14px; box-shadow:0 8px 32px rgba(0,0,0,.2); text-align:center; z-index:20; }
-.question-top { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px; }
-.question-hint-label { font-size:13px; color:#888; font-weight:700; }
-.hint-btn { background:var(--yellow); color:#7a4e00; border:none; border-radius:20px; padding:4px 12px; font-size:11px; font-weight:900; font-family:'Nunito',cursive; cursor:pointer; transition:background .2s; }
-.hint-btn:active { background:var(--yellow-dark); color:white; }
-.question-text { font-size:46px; font-weight:900; color:var(--text-dark); line-height:1.1; }
-.hint-grid { display:none; flex-wrap:wrap; gap:5px; justify-content:center; margin-top:12px; padding:10px; background:rgba(92,63,163,.08); border-radius:12px; }
-.hint-grid.visible { display:flex; }
-.hint-row { display:flex; gap:5px; width:100%; justify-content:center; }
-.hint-dot { width:14px; height:14px; background:var(--purple-btn); border-radius:50%; animation:dotPop .3s ease backwards; }
-@keyframes dotPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
-
-/* SRS badge */
 .srs-badge { position:absolute; top:76px; right:5%; background:#ff7043; color:white; border-radius:20px; padding:3px 10px; font-size:11px; font-weight:900; z-index:25; opacity:0; transition:opacity .3s; }
 .srs-badge.visible { opacity:1; }
 
-/* Answer buttons */
-.answer-grid { position:absolute; bottom:85px; left:50%; transform:translateX(-50%); width:90%; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; z-index:20; }
-.ans-btn { color:white; border:none; border-radius:16px; padding:18px 0; font-size:28px; font-weight:900; font-family:'Nunito',cursive; cursor:pointer; box-shadow:0 5px 0 rgba(0,0,0,.25); transition:transform .1s,box-shadow .1s; }
-.ans-btn:active:not(:disabled) { transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,.25); }
+/* Question panel — grows to show hint */
+.question-panel {
+  position:absolute; top:33%; left:50%; transform:translate(-50%,-50%);
+  width:90%; background:var(--panel-bg); border-radius:24px;
+  padding:16px 20px 14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.2); text-align:center; z-index:20;
+  transition:top .3s ease;
+}
+.question-panel.hint-open { top:42%; }
+
+.question-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.q-hint-label { font-size:12px; color:#aaa; font-weight:700; text-align:left; }
+.hint-btn {
+  flex-shrink:0;
+  background:var(--yellow); color:#7a4e00;
+  border:none; border-radius:20px;
+  padding:5px 14px; font-size:11px; font-weight:900;
+  font-family:'Nunito',cursive; cursor:pointer;
+  transition:background .2s, color .2s;
+  white-space:nowrap;
+}
+.hint-btn:active  { transform:scale(.95); }
+.hint-btn.on { background:var(--purple-btn); color:white; }
+
+.question-text { font-size:46px; font-weight:900; color:var(--text-dark); line-height:1.1; }
+
+/* ── Number Line Hint (inline) ── */
+.nl-hint {
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  margin-top:12px;
+  padding:10px 8px 6px;
+  background:rgba(61,39,120,.06);
+  border-radius:14px;
+  width:100%;
+}
+.nl-hint.visible { display:flex; }
+
+.nl-hint-heading {
+  font-size:10px; font-weight:900; color:var(--purple-btn);
+  letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:8px; width:100%; text-align:left;
+}
+
+/* Scrollable stone track */
+.nl-track {
+  display:flex; gap:0; align-items:flex-end;
+  overflow-x:auto; width:100%;
+  padding:4px 4px 6px;
+  scrollbar-width:none;
+  position:relative;
+}
+.nl-track::-webkit-scrollbar { display:none; }
+
+/* Rail line behind stones */
+.nl-track::before {
+  content:'';
+  position:absolute;
+  bottom:22px; left:0; right:0; height:4px;
+  background:rgba(92,63,163,.18);
+  border-radius:2px;
+  z-index:0;
+}
+
+/* Individual stone */
+.nl-stone {
+  flex-shrink:0; width:52px;
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  position:relative; z-index:1;
+}
+.nl-stone-circle {
+  width:40px; height:40px; border-radius:50%;
+  background:rgba(255,255,255,.85);
+  border:2.5px solid rgba(92,63,163,.2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:900; color:var(--text-dark);
+  transition:background .25s, border-color .25s, transform .3s;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+/* Zero stone — subtle */
+.nl-stone.zero .nl-stone-circle { background:rgba(255,255,255,.5); color:#aaa; }
+/* Passed stones — lit up yellow */
+.nl-stone.passed .nl-stone-circle { background:var(--yellow); border-color:var(--yellow-dark); }
+/* Answer stone — pulse purple */
+.nl-stone.answer .nl-stone-circle {
+  background:var(--purple-btn); color:white; border-color:var(--purple-dark);
+  animation:answerPulse .9s ease-in-out infinite;
+  transform:scale(1.2);
+  box-shadow:0 4px 14px rgba(108,77,191,.5);
+}
+@keyframes answerPulse { 0%,100%{transform:scale(1.2)} 50%{transform:scale(1.3)} }
+/* Non-relevant stones — dimmed */
+.nl-stone.dim .nl-stone-circle { opacity:.35; }
+
+/* Jumping character emoji above active stone */
+.nl-stone-char {
+  font-size:18px; line-height:1;
+  min-height:20px;
+  animation:charBounce .8s ease-in-out infinite;
+}
+@keyframes charBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+/* Stone tick mark */
+.nl-stone-tick { width:2px; height:6px; background:rgba(92,63,163,.2); border-radius:1px; }
+
+/* Equation breakdown below the track */
+.nl-equation {
+  margin-top:8px;
+  font-size:12px; font-weight:900; color:var(--purple-btn);
+  background:rgba(92,63,163,.08); border-radius:10px;
+  padding:5px 14px; width:100%; text-align:center;
+}
 
 /* Streak banner */
 .streak-banner { position:absolute; top:92px; left:50%; transform:translateX(-50%) scale(0); background:linear-gradient(135deg,#ff6b35,#f7c59f); color:white; border-radius:30px; padding:12px 28px; font-size:22px; font-weight:900; letter-spacing:1px; box-shadow:0 6px 20px rgba(0,0,0,.3); z-index:50; white-space:nowrap; pointer-events:none; transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s; opacity:0; }
 .streak-banner.show { transform:translateX(-50%) scale(1); opacity:1; }
 .streak-banner.hide { transform:translateX(-50%) scale(.8); opacity:0; }
 
+.answer-grid { position:absolute; bottom:85px; left:50%; transform:translateX(-50%); width:90%; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; z-index:20; }
+.ans-btn { color:white; border:none; border-radius:16px; padding:18px 0; font-size:28px; font-weight:900; font-family:'Nunito',cursive; cursor:pointer; box-shadow:0 5px 0 rgba(0,0,0,.25); transition:transform .1s,box-shadow .1s; }
+.ans-btn:active:not(:disabled) { transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,.25); }
 .score-badge { position:absolute; bottom:18px; left:50%; transform:translateX(-50%); background:var(--purple-dark); color:white; border-radius:50px; padding:8px 24px; font-weight:900; font-size:16px; z-index:20; }
-
-/* ══════════════════════════════════════
-   NUMBER LINE BONUS ROUND SCREEN
-══════════════════════════════════════ */
-#screen-numline { display:flex; flex-direction:column; align-items:center; }
-
-/* Full-screen background uses same bg, lower half is the "path zone" */
-.nl-header { width:100%; padding:14px 16px 0; display:flex; justify-content:space-between; align-items:center; z-index:20; }
-.nl-title-card {
-  position:absolute; top:90px; left:50%; transform:translateX(-50%);
-  background:var(--panel-bg); border-radius:20px; padding:12px 24px;
-  box-shadow:0 6px 24px rgba(0,0,0,.2); z-index:20; text-align:center;
-  width:88%;
-}
-.nl-title-card .nl-mode-label { font-size:11px; font-weight:900; color:var(--purple-btn); letter-spacing:2px; text-transform:uppercase; margin-bottom:2px; }
-.nl-sequence { font-size:36px; font-weight:900; color:var(--text-dark); }
-.nl-sequence .nl-blank { display:inline-block; border:3px dashed var(--yellow-dark); border-radius:10px; padding:0 14px; color:var(--yellow-dark); }
-
-/* Number line track — overlays the path area */
-.nl-track-wrap {
-  position:absolute;
-  bottom:168px; left:0; right:0;
-  height:210px;
-  z-index:18;
-  overflow:hidden;
-}
-
-/* Scrolling container — wider than screen */
-.nl-track {
-  position:absolute;
-  bottom:0; left:0;
-  height:100%;
-  display:flex;
-  align-items:flex-end;
-  gap:0;
-  transition:transform .55s cubic-bezier(.4,0,.2,1);
-}
-
-/* The horizontal rail line */
-.nl-rail {
-  position:absolute;
-  bottom:54px; left:0; right:0;
-  height:6px;
-  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.7) 20%,rgba(255,255,255,.7) 80%,rgba(255,255,255,0));
-  border-radius:3px;
-  z-index:1;
-  width:100%;
-}
-
-/* Each stepping stone */
-.nl-stone {
-  flex-shrink:0;
-  width:72px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  position:relative;
-  padding-bottom:10px;
-}
-.nl-stone-circle {
-  width:52px; height:52px;
-  border-radius:50%;
-  background:rgba(255,255,255,.85);
-  border:3px solid rgba(92,63,163,.4);
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px; font-weight:900; color:var(--text-dark);
-  box-shadow:0 4px 12px rgba(0,0,0,.2);
-  transition:background .3s, border-color .3s, transform .2s;
-  position:relative; z-index:2;
-}
-.nl-stone.landed .nl-stone-circle {
-  background:var(--yellow);
-  border-color:var(--yellow-dark);
-  transform:scale(1.15);
-}
-.nl-stone.target .nl-stone-circle {
-  background:rgba(108,77,191,.15);
-  border-color:var(--purple-btn);
-  animation:stonePulse 1s ease-in-out infinite;
-}
-@keyframes stonePulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-.nl-stone-tick { width:2px; height:14px; background:rgba(255,255,255,.5); margin-top:2px; }
-.nl-stone-num  { font-size:11px; font-weight:900; color:rgba(255,255,255,.9); margin-top:2px; text-shadow:0 1px 4px rgba(0,0,0,.5); }
-
-/* Character sprite on the number line */
-.nl-char {
-  position:absolute;
-  bottom:56px; /* sits on top of stones */
-  left:0;
-  width:56px; height:56px;
-  z-index:25;
-  transition:left .55s cubic-bezier(.4,0,.2,1);
-  display:flex; align-items:flex-end; justify-content:center;
-  pointer-events:none;
-}
-.nl-char img {
-  width:52px; height:52px;
-  object-fit:contain;
-  filter:drop-shadow(0 4px 8px rgba(0,0,0,.3));
-}
-/* Jump arc — applied during animation */
-.nl-char.jumping { animation:nlJumpArc .55s cubic-bezier(.4,0,.2,1) forwards; }
-@keyframes nlJumpArc {
-  0%   { transform:translateY(0) scaleX(1); }
-  40%  { transform:translateY(-60px) scaleX(0.9); }
-  70%  { transform:translateY(-30px) scaleX(1.05); }
-  100% { transform:translateY(0) scaleX(1); }
-}
-/* Wrong answer shake */
-.nl-char.wrong { animation:nlShake .4s ease; }
-@keyframes nlShake {
-  0%,100%{ transform:translateX(0); }
-  20%    { transform:translateX(-8px); }
-  40%    { transform:translateX(8px); }
-  60%    { transform:translateX(-6px); }
-  80%    { transform:translateX(6px); }
-}
-
-/* Dust/star burst on landing */
-.nl-dust {
-  position:absolute;
-  bottom:52px;
-  left:0;
-  width:60px; height:40px;
-  pointer-events:none;
-  z-index:26;
-  opacity:0;
-}
-.nl-dust.pop { animation:dustPop .5s ease forwards; }
-@keyframes dustPop {
-  0%  { opacity:1; transform:scale(0.5); }
-  60% { opacity:0.8; transform:scale(1.4); }
-  100%{ opacity:0; transform:scale(1.8); }
-}
-
-/* Number callout pop */
-.nl-callout {
-  position:absolute;
-  top:58px; left:50%; transform:translateX(-50%) scale(0);
-  background:var(--purple-btn); color:white;
-  border-radius:24px; padding:10px 24px;
-  font-size:26px; font-weight:900;
-  box-shadow:0 6px 20px rgba(0,0,0,.3);
-  z-index:30; pointer-events:none;
-  transition:transform .25s cubic-bezier(.34,1.56,.64,1), opacity .25s;
-  opacity:0;
-}
-.nl-callout.show { transform:translateX(-50%) scale(1); opacity:1; }
-.nl-callout.hide { transform:translateX(-50%) scale(.7); opacity:0; }
-
-/* Bonus answer buttons */
-.nl-answer-grid {
-  position:absolute; bottom:85px; left:50%; transform:translateX(-50%);
-  width:90%; display:grid; grid-template-columns:repeat(4,1fr);
-  gap:10px; z-index:20;
-}
-
-/* Bonus coins ticker */
-.nl-bonus-bar {
-  position:absolute; bottom:18px; left:50%; transform:translateX(-50%);
-  background:var(--yellow-dark); color:white;
-  border-radius:50px; padding:8px 24px;
-  font-weight:900; font-size:15px; z-index:20;
-  white-space:nowrap;
-}
 
 /* ══════════════════════════════════════
    SHOP MODAL
@@ -308,7 +231,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .modal-sub   { font-size:13px; color:#888; font-weight:700; text-align:center; margin-bottom:16px; }
 .modal-coins { text-align:center; color:var(--yellow-dark); font-size:17px; font-weight:900; margin-bottom:16px; }
 .skin-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-.skin-card { border-radius:16px; padding:14px 8px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; border:3px solid transparent; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,.1); transition:border-color .2s,transform .15s; position:relative; }
+.skin-card  { border-radius:16px; padding:14px 8px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; border:3px solid transparent; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,.1); transition:border-color .2s,transform .15s; }
 .skin-card:active { transform:scale(.96); }
 .skin-card.equipped { border-color:var(--yellow); }
 .skin-cube  { width:54px; height:54px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:28px; box-shadow:0 4px 0 rgba(0,0,0,.2); }
@@ -333,8 +256,14 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <img class="logo" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-logo.png" alt="Maths Jumper"/>
   <img class="num-two"   src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numbertwo.png" alt="2"/>
   <img class="num-three" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numberthree.png" alt="3"/>
-  <div class="block-left"><img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/><div class="sym-block">×</div></div>
-  <div class="block-right"><img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/><div class="sym-block">=</div></div>
+  <div class="block-left">
+    <img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/>
+    <div class="sym-block">×</div>
+  </div>
+  <div class="block-right">
+    <img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/>
+    <div class="sym-block">=</div>
+  </div>
   <div class="jump-trail"></div>
   <div class="redy-wrap"><img class="redy-img" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/></div>
   <div class="panel">
@@ -387,54 +316,30 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   </div>
   <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
   <div class="srs-badge" id="srs-badge">🔄 Retry!</div>
-  <div class="question-panel">
+
+  <!-- Question card — contains all hint modes -->
+  <div class="question-panel" id="question-panel">
     <div class="question-top">
-      <span class="question-hint-label" id="q-hint-label">Let's multiply! 🐦</span>
-      <button class="hint-btn" onclick="toggleHint()">💡 Hint</button>
+      <span class="q-hint-label" id="q-hint-label">Let's multiply! 🐦</span>
+      <button class="hint-btn" id="hint-btn" onclick="toggleHint()">💡 Hint</button>
     </div>
-    <div class="question-text" id="question-text">1 × 1 = <span style="border:3px dashed #d4940a;border-radius:12px;padding:2px 14px;color:#d4940a">?</span></div>
-    <div class="hint-grid" id="hint-grid"></div>
+
+    <!-- Question equation -->
+    <div class="question-text" id="question-text">
+      1 × 1 = <span style="border:3px dashed #d4940a;border-radius:12px;padding:2px 14px;color:#d4940a">?</span>
+    </div>
+
+    <!-- Number line hint (hidden until tapped) -->
+    <div class="nl-hint" id="nl-hint">
+      <div class="nl-hint-heading">⟶ Skip count to find the answer</div>
+      <div class="nl-track" id="nl-track"></div>
+      <div class="nl-equation" id="nl-equation"></div>
+    </div>
   </div>
+
   <div class="streak-banner" id="streak-banner">🔥 STREAK!</div>
   <div class="answer-grid" id="answer-grid"></div>
   <div class="score-badge">⭐ <span id="score">0</span></div>
-</div>
-
-<!-- ══ NUMBER LINE BONUS ROUND ══ -->
-<div class="screen hidden" id="screen-numline">
-  <!-- Header -->
-  <div class="nl-header">
-    <button class="back-btn" onclick="skipBonus()">✕</button>
-    <div class="hdr-badge" style="background:#ff6b35">🏃 BONUS!</div>
-    <div class="hdr-coins">⭐ <span id="nl-coins-val">0</span></div>
-  </div>
-
-  <!-- Sequence prompt card -->
-  <div class="nl-title-card">
-    <div class="nl-mode-label">🎯 Number Line — Count by <span id="nl-table-label">2</span>s!</div>
-    <div class="nl-sequence" id="nl-sequence">2, 4, 6, <span class="nl-blank">?</span></div>
-  </div>
-
-  <!-- Number callout pop -->
-  <div class="nl-callout" id="nl-callout">Eight!</div>
-
-  <!-- Number line track -->
-  <div class="nl-track-wrap">
-    <div class="nl-rail"></div>
-    <div class="nl-track" id="nl-track"></div>
-    <!-- Character sprite -->
-    <div class="nl-char" id="nl-char">
-      <img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy" id="nl-char-img"/>
-    </div>
-    <!-- Dust burst -->
-    <div class="nl-dust" id="nl-dust">💥</div>
-  </div>
-
-  <!-- Answer buttons -->
-  <div class="nl-answer-grid" id="nl-answer-grid"></div>
-
-  <!-- Bonus coin bar -->
-  <div class="nl-bonus-bar">Bonus Coins: ⭐ <span id="nl-bonus-coins">0</span></div>
 </div>
 
 <!-- ══ SHOP MODAL ══ -->
@@ -454,9 +359,9 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 <script>
 /* ═══════════════════════════════════════════
-   DATA & CONSTANTS
+   CONSTANTS & DATA
 ═══════════════════════════════════════════ */
-const BASE = 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/';
+const BASE   = 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/';
 const COLORS = ['#4caf50','#2196f3','#f5c518','#e91e63'];
 
 const STAGES = [
@@ -485,26 +390,27 @@ const CHARACTERS = [
   { id:'leo',  name:'Leo',  emoji:'🦁', img:null },
 ];
 
-const NUMBER_WORDS = ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
-  'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen','Twenty',
-  'Twenty-One','Twenty-Two','Twenty-Three','Twenty-Four','Twenty-Five','Twenty-Six','Twenty-Seven',
-  'Twenty-Eight','Twenty-Nine','Thirty','Thirty-One','Thirty-Two','Thirty-Three','Thirty-Four',
-  'Thirty-Five','Thirty-Six','Forty-Four','Forty-Eight','Fifty-Five','Sixty','Sixty-Six','Seventy-Seven',
-  'Eighty-Eight','Ninety-Nine','One Hundred','One-Ten','One-Twenty','One-Thirty','One-Forty','One-Forty-Four'];
-
-function numWord(n) { return NUMBER_WORDS[n] || String(n); }
+// Number words for equation readout
+const NUM_WORDS = ['zero','one','two','three','four','five','six','seven','eight','nine','ten',
+  'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen',
+  'twenty','twenty-one','twenty-two','twenty-three','twenty-four','twenty-five','twenty-six',
+  'twenty-seven','twenty-eight','twenty-nine','thirty','thirty-one','thirty-two','thirty-three',
+  'thirty-four','thirty-five','thirty-six','forty-eight','fifty-five','sixty','sixty-six',
+  'seventy-seven','eighty-eight','ninety-nine','one hundred','one hundred and ten','one hundred and twenty',
+  'one hundred and thirty-two','one hundred and forty-four'];
+function numWord(n) { return NUM_WORDS[n] !== undefined ? NUM_WORDS[n] : String(n); }
 
 /* ═══════════════════════════════════════════
    PERSISTENCE
 ═══════════════════════════════════════════ */
-function loadState() { try { return JSON.parse(localStorage.getItem('mj_state'))||{}; } catch { return {}; } }
-function saveState(p) { const s={...loadState(),...p}; localStorage.setItem('mj_state',JSON.stringify(s)); return s; }
-const getCoins         = () => loadState().coins          ?? 0;
-const getHighestStage  = () => loadState().highestStage   ?? 1;
-const getUnlockedSkins = () => loadState().unlockedSkins  ?? ['red'];
-const getEquippedSkin  = () => loadState().equippedSkin   ?? 'red';
-const getCurrentStage  = () => loadState().currentStage   ?? 1;
-const getSelectedChar  = () => loadState().selectedChar   ?? 'redy';
+function loadState()    { try { return JSON.parse(localStorage.getItem('mj_state'))||{}; } catch { return {}; } }
+function saveState(p)   { const s={...loadState(),...p}; localStorage.setItem('mj_state',JSON.stringify(s)); return s; }
+const getCoins        = () => loadState().coins         ?? 0;
+const getHighestStage = () => loadState().highestStage  ?? 1;
+const getUnlockedSkins= () => loadState().unlockedSkins ?? ['red'];
+const getEquippedSkin = () => loadState().equippedSkin  ?? 'red';
+const getCurrentStage = () => loadState().currentStage  ?? 1;
+const getSelectedChar = () => loadState().selectedChar  ?? 'redy';
 
 /* ═══════════════════════════════════════════
    UTILITIES
@@ -522,13 +428,12 @@ function showScreen(id) {
   if(id==='screen-stages') renderStages();
   if(id==='screen-chars')  renderChars();
   if(id==='screen-game')   startGame();
-  if(id==='screen-numline'){/* started externally */}
 }
 
 function showToast(msg, dur=1800) {
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),dur);
+  setTimeout(()=>t.classList.remove('show'), dur);
 }
 
 /* ═══════════════════════════════════════════
@@ -537,25 +442,25 @@ function showToast(msg, dur=1800) {
 function refreshHome() {
   document.getElementById('home-coins').textContent = `Coins ⭐: ${getCoins()}`;
   document.getElementById('home-stage').textContent = `Highest Stage: ${getHighestStage()}`;
-  const btn=document.getElementById('btn-play-home');
-  btn.textContent=`PLAY STAGE ${getCurrentStage()}`;
-  btn.onclick=()=>showScreen('screen-game');
+  const btn = document.getElementById('btn-play-home');
+  btn.textContent = `PLAY STAGE ${getCurrentStage()}`;
+  btn.onclick = () => showScreen('screen-game');
 }
 
 /* ═══════════════════════════════════════════
    STAGE SELECT
 ═══════════════════════════════════════════ */
 function renderStages() {
-  document.getElementById('stage-coins-badge').textContent=`⭐ ${getCoins()}`;
-  const grid=document.getElementById('stage-grid');
-  const cur=getCurrentStage();
-  grid.innerHTML='';
-  STAGES.forEach(st=>{
-    const card=document.createElement('div');
-    card.className='stage-card'+(st.id===cur?' active-stage':'');
-    const stars='⭐'.repeat(Math.min(3,Math.max(0,getHighestStage()-st.id+1)));
-    card.innerHTML=`<div class="stage-num">${st.emoji} Stage ${st.id}</div><div class="stage-name">${st.name}</div><div class="stage-tables">${st.desc}</div><div class="stage-stars">${stars||'○○○'}</div>`;
-    card.onclick=()=>{ saveState({currentStage:st.id}); showScreen('screen-game'); };
+  document.getElementById('stage-coins-badge').textContent = `⭐ ${getCoins()}`;
+  const grid = document.getElementById('stage-grid');
+  const cur  = getCurrentStage();
+  grid.innerHTML = '';
+  STAGES.forEach(st => {
+    const card = document.createElement('div');
+    card.className = 'stage-card' + (st.id===cur?' active-stage':'');
+    const stars = '⭐'.repeat(Math.min(3, Math.max(0, getHighestStage()-st.id+1)));
+    card.innerHTML = `<div class="stage-num">${st.emoji} Stage ${st.id}</div><div class="stage-name">${st.name}</div><div class="stage-tables">${st.desc}</div><div class="stage-stars">${stars||'○○○'}</div>`;
+    card.onclick = () => { saveState({currentStage:st.id}); showScreen('screen-game'); };
     grid.appendChild(card);
   });
 }
@@ -564,15 +469,15 @@ function renderStages() {
    CHAR SELECT
 ═══════════════════════════════════════════ */
 function renderChars() {
-  document.getElementById('chars-coins-badge').textContent=`⭐ ${getCoins()}`;
-  const grid=document.getElementById('char-grid');
-  const sel=getSelectedChar();
-  grid.innerHTML='';
-  CHARACTERS.forEach(ch=>{
-    const card=document.createElement('div');
-    card.className='char-card'+(ch.id===sel?' selected':'');
-    card.innerHTML=`<div class="check">✓</div>${ch.img?`<img src="${ch.img}" alt="${ch.name}"/>`:`<div class="char-emoji">${ch.emoji}</div>`}<div class="char-name">${ch.name}</div>`;
-    card.onclick=()=>{ document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected')); card.classList.add('selected'); saveState({selectedChar:ch.id}); };
+  document.getElementById('chars-coins-badge').textContent = `⭐ ${getCoins()}`;
+  const grid = document.getElementById('char-grid');
+  const sel  = getSelectedChar();
+  grid.innerHTML = '';
+  CHARACTERS.forEach(ch => {
+    const card = document.createElement('div');
+    card.className = 'char-card' + (ch.id===sel?' selected':'');
+    card.innerHTML = `<div class="check">✓</div>${ch.img?`<img src="${ch.img}" alt="${ch.name}"/>`:`<div class="char-emoji">${ch.emoji}</div>`}<div class="char-name">${ch.name}</div>`;
+    card.onclick = () => { document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected')); card.classList.add('selected'); saveState({selectedChar:ch.id}); };
     grid.appendChild(card);
   });
 }
@@ -580,44 +485,46 @@ function renderChars() {
 /* ═══════════════════════════════════════════
    SHOP
 ═══════════════════════════════════════════ */
-function openShop() { renderShop(); document.getElementById('shop-modal').classList.add('open'); }
+function openShop()  { renderShop(); document.getElementById('shop-modal').classList.add('open'); }
 function closeShop() { document.getElementById('shop-modal').classList.remove('open'); refreshHome(); }
 function renderShop() {
   const coins=getCoins(), unlocked=getUnlockedSkins(), equipped=getEquippedSkin();
-  document.getElementById('shop-coins-display').textContent=`Your coins: ⭐ ${coins}`;
-  const grid=document.getElementById('skin-grid'); grid.innerHTML='';
-  SKINS.forEach(sk=>{
+  document.getElementById('shop-coins-display').textContent = `Your coins: ⭐ ${coins}`;
+  const grid = document.getElementById('skin-grid'); grid.innerHTML='';
+  SKINS.forEach(sk => {
     const isOwned=unlocked.includes(sk.id), isEquipped=sk.id===equipped, canAfford=coins>=sk.cost;
-    const card=document.createElement('div');
-    card.className='skin-card'+(isEquipped?' equipped':'');
-    const bg=sk.color.startsWith('linear')?`background:${sk.color}`:`background:${sk.color}`;
-    card.innerHTML=`<div class="skin-cube" style="${bg}">${sk.emoji}</div><div class="skin-label">${sk.label}</div>${isEquipped?`<div class="skin-owned">✓ ON</div>`:isOwned?`<div class="skin-owned">Owned</div>`:canAfford?`<div class="skin-cost">⭐ ${sk.cost}</div>`:`<div class="skin-cost" style="color:#ccc">⭐ ${sk.cost}</div>`}`;
-    card.onclick=()=>{
+    const card = document.createElement('div');
+    card.className = 'skin-card'+(isEquipped?' equipped':'');
+    const bg = sk.color.startsWith('linear') ? `background:${sk.color}` : `background:${sk.color}`;
+    card.innerHTML = `<div class="skin-cube" style="${bg}">${sk.emoji}</div><div class="skin-label">${sk.label}</div>${isEquipped?`<div class="skin-owned">✓ ON</div>`:isOwned?`<div class="skin-owned">Owned</div>`:canAfford?`<div class="skin-cost">⭐ ${sk.cost}</div>`:`<div class="skin-cost" style="color:#ccc">⭐ ${sk.cost}</div>`}`;
+    card.onclick = () => {
       if(isEquipped) return;
-      if(isOwned){ saveState({equippedSkin:sk.id}); showToast(`Equipped ${sk.label}! ${sk.emoji}`); renderShop(); }
-      else if(canAfford){ saveState({coins:getCoins()-sk.cost, unlockedSkins:[...getUnlockedSkins(),sk.id], equippedSkin:sk.id}); showToast(`Unlocked ${sk.label}! ${sk.emoji}`); renderShop(); }
-      else showToast(`Need ⭐ ${sk.cost-getCoins()} more coins!`);
+      if(isOwned)        { saveState({equippedSkin:sk.id}); showToast(`Equipped ${sk.label}! ${sk.emoji}`); renderShop(); }
+      else if(canAfford) { saveState({coins:getCoins()-sk.cost, unlockedSkins:[...getUnlockedSkins(),sk.id], equippedSkin:sk.id}); showToast(`Unlocked ${sk.label}! ${sk.emoji}`); renderShop(); }
+      else               showToast(`Need ⭐ ${sk.cost-getCoins()} more coins!`);
     };
     grid.appendChild(card);
   });
 }
 
 /* ═══════════════════════════════════════════
-   GAME ENGINE (Standard Mode)
+   GAME ENGINE
 ═══════════════════════════════════════════ */
 let gameScore=0, sessionCoins=0, streak=0, answered=0;
 let currentQ=null, questionQueue=[], srsQueue=[];
-let hintVisible=false;
+let hintOpen=false;
 const TOTAL=10;
 
 function makeQ(stage) {
-  const tables=STAGES[stage-1].tables;
-  const a=tables[Math.floor(Math.random()*tables.length)];
-  const b=Math.ceil(Math.random()*12);
-  return {a,b,ans:a*b};
+  const tables = STAGES[stage-1].tables;
+  const a = tables[Math.floor(Math.random()*tables.length)];
+  const b = Math.ceil(Math.random()*12);
+  return {a, b, ans:a*b};
 }
-function buildQueue(stage) { questionQueue=[]; for(let i=0;i<TOTAL;i++) questionQueue.push(makeQ(stage)); }
-
+function buildQueue(stage) {
+  questionQueue=[];
+  for(let i=0;i<TOTAL;i++) questionQueue.push(makeQ(stage));
+}
 function injectSRS(wrongQ) {
   const at2=Math.min(2,questionQueue.length);
   const at5=Math.min(5,questionQueue.length+1);
@@ -625,337 +532,213 @@ function injectSRS(wrongQ) {
   questionQueue.splice(at5,0,{...wrongQ});
 }
 
-const STREAK_MSGS={3:'3-STREAK! 🎉',5:'SUPER JUMPER! 🔥',10:'MATHS MASTER! 🏆'};
+const STREAK_MSGS = {3:'3-STREAK! 🎉', 5:'SUPER JUMPER! 🔥', 10:'MATHS MASTER! 🏆'};
 function checkStreak(n) {
-  const msg=STREAK_MSGS[n]; if(!msg) return;
-  const banner=document.getElementById('streak-banner');
+  const msg = STREAK_MSGS[n]; if(!msg) return;
+  const banner = document.getElementById('streak-banner');
   banner.textContent=msg; banner.classList.remove('hide'); banner.classList.add('show');
-  const bonus=n>=10?15:n>=5?8:4;
-  sessionCoins+=bonus;
-  document.getElementById('hdr-coins-val').textContent=getCoins()+sessionCoins;
-  setTimeout(()=>{ banner.classList.remove('show'); banner.classList.add('hide'); },2000);
+  const bonus = n>=10?15 : n>=5?8 : 4;
+  sessionCoins += bonus;
+  document.getElementById('hdr-coins-val').textContent = getCoins()+sessionCoins;
+  setTimeout(()=>{ banner.classList.remove('show'); banner.classList.add('hide'); }, 2000);
 }
 
+/* ── Number Line Hint ─────────────────────────────────────────
+   Shows a skip-counting track inside the question card.
+   e.g. 3×4: step=3, stones=[0,3,6,9,12], answer=12 highlighted.
+   Character emoji sits on the answer stone.
+─────────────────────────────────────────────────────────────── */
 function toggleHint() {
-  hintVisible=!hintVisible;
-  const grid=document.getElementById('hint-grid');
-  if(hintVisible && currentQ) {
-    grid.innerHTML=''; grid.classList.add('visible');
-    for(let r=0;r<currentQ.a;r++){
-      const row=document.createElement('div'); row.className='hint-row';
-      for(let c=0;c<currentQ.b;c++){
-        const dot=document.createElement('div'); dot.className='hint-dot';
-        dot.style.animationDelay=`${(r*currentQ.b+c)*25}ms`; row.appendChild(dot);
-      }
-      grid.appendChild(row);
-    }
-  } else { grid.classList.remove('visible'); grid.innerHTML=''; }
+  hintOpen = !hintOpen;
+  const nlHint    = document.getElementById('nl-hint');
+  const panel     = document.getElementById('question-panel');
+  const btn       = document.getElementById('hint-btn');
+
+  if (hintOpen && currentQ) {
+    buildNLHint(currentQ);
+    nlHint.classList.add('visible');
+    panel.classList.add('hint-open');
+    btn.textContent = '❌ Hide';
+    btn.classList.add('on');
+  } else {
+    nlHint.classList.remove('visible');
+    panel.classList.remove('hint-open');
+    btn.textContent = '💡 Hint';
+    btn.classList.remove('on');
+    document.getElementById('nl-track').innerHTML = '';
+    document.getElementById('nl-equation').textContent = '';
+  }
 }
 
+function buildNLHint(q) {
+  // Decide which factor to skip-count by.
+  // Prefer the smaller factor (fewer steps → fits better on screen).
+  // But if one factor is 1, use the other so the line is meaningful.
+  let step = Math.min(q.a, q.b);
+  let reps = Math.max(q.a, q.b);
+  if(step===1) { step=reps; reps=1; } // e.g. 1×7 → just show [0,7]
+
+  // Build stone values: 0, step, step*2 … up to answer
+  const stones = [];
+  for(let i=0; i<=reps; i++) stones.push(i*step);
+
+  const track = document.getElementById('nl-track');
+  track.innerHTML = '';
+
+  // Emoji for the character (use selected character)
+  const charId  = getSelectedChar();
+  const charObj = CHARACTERS.find(c=>c.id===charId);
+  const charEmoji = charObj?.emoji || '🟥';
+
+  stones.forEach((val, idx) => {
+    const isAnswer = val===q.ans;
+    const isZero   = idx===0;
+    const isPassed = !isZero && val < q.ans; // stones before the answer
+
+    const stone = document.createElement('div');
+    stone.className = 'nl-stone'
+      + (isZero   ? ' zero'   : '')
+      + (isPassed ? ' passed' : '')
+      + (isAnswer ? ' answer' : '');
+
+    stone.innerHTML = `
+      <div class="nl-stone-char">${isAnswer ? charEmoji : ''}</div>
+      <div class="nl-stone-circle">${val}</div>
+      <div class="nl-stone-tick"></div>
+    `;
+    track.appendChild(stone);
+  });
+
+  // Scroll so the answer stone is centred
+  setTimeout(() => {
+    const ansStone = track.querySelector('.answer');
+    if(ansStone) ansStone.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  }, 60);
+
+  // Equation readout below the track
+  // e.g. "Count by 3s → 3, 6, 9, 12 = Twelve!"
+  const seq = stones.slice(1).join(' → ');
+  document.getElementById('nl-equation').textContent =
+    `Count by ${step}s: ${seq}  (= ${numWord(q.ans)}!)`;
+}
+
+function hideHint() {
+  hintOpen = false;
+  document.getElementById('nl-hint').classList.remove('visible');
+  document.getElementById('question-panel').classList.remove('hint-open');
+  const btn = document.getElementById('hint-btn');
+  btn.textContent = '💡 Hint'; btn.classList.remove('on');
+  document.getElementById('nl-track').innerHTML = '';
+  document.getElementById('nl-equation').textContent = '';
+}
+
+/* ── Start game ───────────────────────────────────────────── */
 function startGame() {
-  const stage=getCurrentStage();
-  gameScore=0; sessionCoins=0; streak=0; answered=0; hintVisible=false; srsQueue=[];
-  document.getElementById('hdr-stage').textContent=`STAGE ${stage}`;
-  document.getElementById('hdr-coins-val').textContent=getCoins();
-  document.getElementById('score').textContent=0;
-  document.getElementById('progress-fill').style.width='0%';
-  document.getElementById('hint-grid').classList.remove('visible');
-  document.getElementById('hint-grid').innerHTML='';
+  const stage = getCurrentStage();
+  gameScore=0; sessionCoins=0; streak=0; answered=0; srsQueue=[];
+  document.getElementById('hdr-stage').textContent      = `STAGE ${stage}`;
+  document.getElementById('hdr-coins-val').textContent  = getCoins();
+  document.getElementById('score').textContent          = 0;
+  document.getElementById('progress-fill').style.width  = '0%';
   document.getElementById('srs-badge').classList.remove('visible');
   document.getElementById('streak-banner').classList.remove('show','hide');
-  document.getElementById('q-hint-label').textContent=STAGE_HINTS[stage-1]||"Let's go! 🐦";
+  document.getElementById('q-hint-label').textContent   = STAGE_HINTS[stage-1] || "Let's go! 🐦";
+  hideHint();
   buildQueue(stage);
   nextQ();
 }
 
 function nextQ() {
-  hintVisible=false;
-  document.getElementById('hint-grid').classList.remove('visible');
-  document.getElementById('hint-grid').innerHTML='';
-  const due=srsQueue.filter(r=>r.retryAt<=answered);
-  if(due.length){ currentQ=due[0].q; srsQueue=srsQueue.filter(r=>r.retryAt>answered); document.getElementById('srs-badge').classList.add('visible'); }
-  else { if(!questionQueue.length){ endGame(); return; } currentQ=questionQueue.shift(); document.getElementById('srs-badge').classList.remove('visible'); }
+  hideHint();
+  // Pull from SRS queue if something is due
+  const due = srsQueue.filter(r=>r.retryAt<=answered);
+  if(due.length) {
+    currentQ = due[0].q;
+    srsQueue = srsQueue.filter(r=>r.retryAt>answered);
+    document.getElementById('srs-badge').classList.add('visible');
+  } else {
+    if(!questionQueue.length) { endGame(); return; }
+    currentQ = questionQueue.shift();
+    document.getElementById('srs-badge').classList.remove('visible');
+  }
   renderQ(currentQ);
 }
 
 function renderQ(q) {
-  document.getElementById('question-text').innerHTML=
+  document.getElementById('question-text').innerHTML =
     `${q.a} × ${q.b} = <span style="border:3px dashed #d4940a;border-radius:12px;padding:2px 14px;color:#d4940a">?</span>`;
-  const opts=new Set([q.ans]);
-  while(opts.size<4) opts.add(Math.max(1, q.ans + (Math.floor(Math.random()*10)-5) || Math.ceil(Math.random()*50)));
-  const grid=document.getElementById('answer-grid'); grid.innerHTML='';
+
+  // Generate 4 answer choices — plausible near-misses
+  const opts = new Set([q.ans]);
+  const candidates = [
+    q.ans-q.a, q.ans+q.a, q.ans-q.b, q.ans+q.b,
+    q.ans-1, q.ans+1, q.ans+2, q.ans-2,
+  ].filter(v=>v>0 && v!==q.ans);
+  for(const c of candidates) { if(opts.size>=4) break; opts.add(c); }
+  while(opts.size<4) opts.add(q.ans + Math.ceil(Math.random()*10));
+
+  const grid = document.getElementById('answer-grid'); grid.innerHTML='';
   [...opts].sort(()=>Math.random()-.5).forEach((v,i)=>{
-    const btn=document.createElement('button'); btn.className='ans-btn';
-    btn.textContent=v; btn.style.background=COLORS[i%4];
-    btn.onclick=()=>checkAns(v,q,btn); grid.appendChild(btn);
+    const btn = document.createElement('button');
+    btn.className='ans-btn'; btn.textContent=v;
+    btn.style.background=COLORS[i%4];
+    btn.onclick=()=>checkAns(v,q,btn);
+    grid.appendChild(btn);
   });
 }
 
-function checkAns(chosen,q,btn) {
+function checkAns(chosen, q, btn) {
   document.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);
-  if(chosen===q.ans){
+
+  if(chosen===q.ans) {
     btn.style.background='#4caf50'; btn.textContent='✓ '+chosen;
     gameScore+=10; sessionCoins+=2; streak++; answered++;
-    document.getElementById('score').textContent=gameScore;
-    document.getElementById('hdr-coins-val').textContent=getCoins()+sessionCoins;
-    document.getElementById('progress-fill').style.width=(answered/TOTAL*100)+'%';
+    document.getElementById('score').textContent          = gameScore;
+    document.getElementById('hdr-coins-val').textContent  = getCoins()+sessionCoins;
+    document.getElementById('progress-fill').style.width  = (answered/TOTAL*100)+'%';
     checkStreak(streak);
   } else {
     btn.style.background='#f44336'; btn.textContent='✗ '+chosen;
     document.querySelectorAll('.ans-btn').forEach(b=>{ if(parseInt(b.textContent)===q.ans) b.style.background='#4caf50'; });
     streak=0; answered++;
-    document.getElementById('progress-fill').style.width=(answered/TOTAL*100)+'%';
+    document.getElementById('progress-fill').style.width = (answered/TOTAL*100)+'%';
     injectSRS(q);
     const badge=document.getElementById('srs-badge'); badge.classList.add('visible');
-    setTimeout(()=>badge.classList.remove('visible'),1200);
+    setTimeout(()=>badge.classList.remove('visible'),1400);
   }
-  setTimeout(()=>{ if(answered<TOTAL||questionQueue.length) nextQ(); else endGame(); },900);
+
+  setTimeout(()=>{ if(answered<TOTAL||questionQueue.length) nextQ(); else endGame(); }, 900);
 }
 
 function endGame() {
-  const totalCoins=getCoins()+sessionCoins;
-  const stage=getCurrentStage();
-  const hi=Math.max(getHighestStage(),stage);
+  const totalCoins = getCoins()+sessionCoins;
+  const stage      = getCurrentStage();
+  const hi         = Math.max(getHighestStage(), stage);
   saveState({coins:totalCoins, highestStage:hi});
 
-  document.getElementById('question-text').innerHTML=`🎉 Score: ${gameScore}!<br><span style="font-size:18px;color:#888">+${sessionCoins} ⭐ coins</span>`;
-  document.getElementById('hint-grid').classList.remove('visible');
+  document.getElementById('question-text').innerHTML =
+    `🎉 Score: ${gameScore}!<br><span style="font-size:18px;color:#888">+${sessionCoins} ⭐ coins</span>`;
+  hideHint();
 
-  const grid=document.getElementById('answer-grid'); grid.innerHTML='';
+  const grid = document.getElementById('answer-grid'); grid.innerHTML='';
 
-  // ── Trigger bonus round after a short pause ──
-  const bonusBtn=document.createElement('button');
-  bonusBtn.className='ans-btn';
-  bonusBtn.style.cssText='grid-column:span 4;background:linear-gradient(135deg,#ff6b35,#f7c59f);font-size:17px;padding:18px;';
-  bonusBtn.textContent='🏃 BONUS ROUND!';
-  bonusBtn.onclick=()=>startBonusRound(stage);
-  grid.appendChild(bonusBtn);
+  const playAgain = document.createElement('button');
+  playAgain.className='ans-btn';
+  playAgain.style.cssText='grid-column:span 2;background:#4caf50;font-size:17px;padding:18px;';
+  playAgain.textContent='▶ Play Again'; playAgain.onclick=startGame;
+  grid.appendChild(playAgain);
 
-  const homeBtn=document.createElement('button');
+  const homeBtn = document.createElement('button');
   homeBtn.className='ans-btn';
-  homeBtn.style.cssText='grid-column:span 4;background:var(--purple-btn);font-size:16px;padding:14px;';
-  homeBtn.textContent='🏠 Skip — Go Home';
-  homeBtn.onclick=()=>showScreen('screen-home');
+  homeBtn.style.cssText='grid-column:span 2;background:var(--purple-btn);font-size:17px;padding:18px;';
+  homeBtn.textContent='🏠 Home'; homeBtn.onclick=()=>showScreen('screen-home');
   grid.appendChild(homeBtn);
 
-  document.getElementById('hdr-coins-val').textContent=totalCoins;
+  document.getElementById('hdr-coins-val').textContent = totalCoins;
 }
 
-function endSession() { saveState({coins:getCoins()+sessionCoins}); showScreen('screen-home'); }
-
-/* ═══════════════════════════════════════════
-   NUMBER LINE BONUS ROUND
-═══════════════════════════════════════════ */
-let nlTable=2, nlStep=0, nlSteps=[], nlBonusCoins=0, nlLocked=false;
-const NL_STONES=16;   // number of stones visible in total track
-const STONE_W=72;     // px width per stone
-
-function startBonusRound(stage) {
-  // Pick table from the stage's tables
-  const stageData=STAGES[stage-1];
-  nlTable=stageData.tables[Math.floor(Math.random()*stageData.tables.length)];
-
-  // Build sequence: 0 + 8 multiples
-  nlSteps=[0];
-  for(let i=1;i<=8;i++) nlSteps.push(nlTable*i);
-
-  nlStep=0;
-  nlBonusCoins=0;
-  nlLocked=false;
-
-  document.getElementById('nl-table-label').textContent=nlTable;
-  document.getElementById('nl-coins-val').textContent=getCoins();
-  document.getElementById('nl-bonus-coins').textContent=0;
-
-  // Hide/show screens
-  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
-  document.getElementById('screen-numline').classList.remove('hidden');
-
-  buildNLTrack();
-  updateNLChar(0, false);
-  renderNLSequence();
-  renderNLAnswers();
-}
-
-function buildNLTrack() {
-  const track=document.getElementById('nl-track');
-  track.innerHTML='';
-  track.style.transform='translateX(0)';
-
-  // Build enough stones to cover all multiples (extend to max multiple + buffer)
-  const maxVal=nlSteps[nlSteps.length-1];
-  const totalStones=maxVal+3;
-
-  for(let n=0;n<=totalStones;n++){
-    const stone=document.createElement('div');
-    stone.className='nl-stone';
-    stone.id=`nl-stone-${n}`;
-    const isMultiple=nlSteps.includes(n);
-    stone.innerHTML=`
-      <div class="nl-stone-circle" style="${isMultiple&&n>0?'border-color:rgba(108,77,191,0.5)':''}">${n}</div>
-      <div class="nl-stone-tick"></div>
-      <div class="nl-stone-num"></div>
-    `;
-    track.appendChild(stone);
-  }
-
-  // Mark stone 0 as landed
-  const s0=document.getElementById('nl-stone-0');
-  if(s0) s0.classList.add('landed');
-}
-
-// Scroll track so current position is visible (keep char at ~25% from left)
-function scrollTrackTo(stoneIndex) {
-  const track=document.getElementById('nl-track');
-  const targetLeft=stoneIndex*STONE_W - 80; // 80px = char offset from left edge
-  const offset=Math.max(0,targetLeft);
-  track.style.transform=`translateX(-${offset}px)`;
-
-  // Also move the char and dust elements
-  const charLeft=stoneIndex*STONE_W-offset+10;
-  const nlChar=document.getElementById('nl-char');
-  const nlDust=document.getElementById('nl-dust');
-  nlChar.style.left=charLeft+'px';
-  nlDust.style.left=charLeft+'px';
-}
-
-// Position char on a stone index (0-indexed by stone number = value / table index)
-function updateNLChar(stoneValue, animate) {
-  const track=document.getElementById('nl-track');
-  const nlChar=document.getElementById('nl-char');
-  const nlDust=document.getElementById('nl-dust');
-
-  // Which stone position (index = value for sequential, step index for multiples)
-  const stoneIdx=stoneValue; // stone numbers equal their values
-  const trackOffset=Math.max(0, stoneIdx*STONE_W-80);
-
-  if(animate){
-    nlChar.classList.remove('wrong');
-    nlChar.classList.add('jumping');
-    setTimeout(()=>{
-      nlChar.classList.remove('jumping');
-      // Dust pop
-      nlDust.classList.remove('pop');
-      void nlDust.offsetWidth; // reflow
-      nlDust.classList.add('pop');
-      // Land on stone
-      const st=document.getElementById(`nl-stone-${stoneValue}`);
-      if(st){ st.classList.add('landed'); }
-    }, 520);
-  }
-
-  // Scroll after short delay on animate
-  setTimeout(()=>{
-    track.style.transform=`translateX(-${trackOffset}px)`;
-    const charLeft=stoneIdx*STONE_W-trackOffset+10;
-    nlChar.style.left=Math.max(10,charLeft)+'px';
-    nlDust.style.left=Math.max(10,charLeft)+'px';
-  }, animate?100:0);
-}
-
-function renderNLSequence() {
-  const shown=nlSteps.slice(0, Math.min(nlStep+3, nlSteps.length));
-  const seqEl=document.getElementById('nl-sequence');
-  const shownStr=shown.map((v,i)=>i<shown.length-1?v:`${v}`).join(', ');
-  seqEl.innerHTML=shownStr+', <span class="nl-blank">?</span>';
-
-  // Highlight the next target stone
-  document.querySelectorAll('.nl-stone').forEach(s=>s.classList.remove('target'));
-  const nextVal=nlSteps[nlStep+1];
-  if(nextVal!==undefined){
-    const tgt=document.getElementById(`nl-stone-${nextVal}`);
-    if(tgt) tgt.classList.add('target');
-  }
-}
-
-function renderNLAnswers() {
-  const nextVal=nlSteps[nlStep+1];
-  if(nextVal===undefined){ finishBonus(); return; }
-
-  const grid=document.getElementById('nl-answer-grid'); grid.innerHTML='';
-
-  // 4 choices: correct + 3 plausible distractors
-  const opts=new Set([nextVal]);
-  const nearMisses=[nextVal-1,nextVal+1,nextVal+nlTable,nextVal-nlTable,nextVal+2,nextVal-2];
-  for(const nm of nearMisses){ if(nm>0&&nm!==nextVal) opts.add(nm); if(opts.size>=4) break; }
-  while(opts.size<4) opts.add(nextVal+Math.ceil(Math.random()*5));
-
-  [...opts].sort(()=>Math.random()-.5).forEach((v,i)=>{
-    const btn=document.createElement('button'); btn.className='ans-btn';
-    btn.textContent=v; btn.style.background=COLORS[i%4];
-    btn.onclick=()=>handleNLAnswer(v,nextVal,btn);
-    grid.appendChild(btn);
-  });
-}
-
-function handleNLAnswer(chosen, correct, btn) {
-  if(nlLocked) return;
-
-  if(chosen===correct){
-    nlLocked=true;
-    btn.style.background='#4caf50'; btn.textContent='✓ '+chosen;
-    document.querySelectorAll('.nl-answer-grid .ans-btn').forEach(b=>b.disabled=true);
-
-    // Animate character jump to the stone
-    updateNLChar(correct, true);
-
-    // Show number callout
-    showNLCallout(numWord(correct));
-
-    // Award bonus coins
-    nlBonusCoins+=5;
-    document.getElementById('nl-bonus-coins').textContent=nlBonusCoins;
-
-    nlStep++;
-
-    setTimeout(()=>{
-      nlLocked=false;
-      renderNLSequence();
-      if(nlStep>=nlSteps.length-1){ setTimeout(finishBonus,600); }
-      else { renderNLAnswers(); }
-    },1100);
-
-  } else {
-    // Wrong: shake character
-    const nlChar=document.getElementById('nl-char');
-    nlChar.classList.remove('wrong');
-    void nlChar.offsetWidth;
-    nlChar.classList.add('wrong');
-    btn.style.background='#f44336';
-    setTimeout(()=>{ btn.style.background=COLORS[Array.from(document.querySelectorAll('.nl-answer-grid .ans-btn')).indexOf(btn)%4]; },600);
-    showToast('Not quite — try again! 🙈',1200);
-  }
-}
-
-function showNLCallout(word) {
-  const el=document.getElementById('nl-callout');
-  el.textContent=word+'!';
-  el.classList.remove('hide'); el.classList.add('show');
-  setTimeout(()=>{ el.classList.remove('show'); el.classList.add('hide'); },900);
-}
-
-function finishBonus() {
-  // Save bonus coins
-  const total=getCoins()+nlBonusCoins;
-  saveState({coins:total});
-
-  // Show congrats in the sequence card
-  document.getElementById('nl-sequence').innerHTML=`🎉 +${nlBonusCoins} ⭐ Bonus!`;
-  document.getElementById('nl-table-label').textContent='Done';
-  const grid=document.getElementById('nl-answer-grid'); grid.innerHTML='';
-
-  const homeBtn=document.createElement('button');
-  homeBtn.className='ans-btn';
-  homeBtn.style.cssText='grid-column:span 4;background:#4caf50;font-size:18px;padding:18px;';
-  homeBtn.textContent='🏠 Back to Home';
-  homeBtn.onclick=()=>showScreen('screen-home');
-  grid.appendChild(homeBtn);
-
-  showToast(`+${nlBonusCoins} bonus coins! 🌟`,2500);
-}
-
-function skipBonus() {
-  if(nlBonusCoins>0){ saveState({coins:getCoins()+nlBonusCoins}); }
+function endSession() {
+  saveState({coins:getCoins()+sessionCoins});
   showScreen('screen-home');
 }
 
