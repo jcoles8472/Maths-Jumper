@@ -20,6 +20,15 @@
   --text-dark:   #3d2778;
   --green-btn:   #4caf50;
   --green-dark:  #388e3c;
+  /* Answer button candy palette */
+  --ans-green:   #5dce44;
+  --ans-green-dk:#36a020;
+  --ans-blue:    #3aabf0;
+  --ans-blue-dk: #1a7fc4;
+  --ans-yellow:  #ffc72c;
+  --ans-yellow-dk:#d4900a;
+  --ans-pink:    #f54b6e;
+  --ans-pink-dk: #c01a45;
 }
 html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursive,sans-serif; background:#1a1a2e; }
 .phone-wrap { display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
@@ -28,81 +37,375 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .screen.hidden { opacity:0; pointer-events:none; transform:scale(.96); }
 
 /* ─────────────────────────────────────────────
-   HOME SCREEN  (unchanged layout)
+   HOME SCREEN  — Juicy 3D mobile game aesthetic
 ───────────────────────────────────────────── */
-.home-bg { position:absolute; inset:0; background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center top/cover no-repeat; z-index:0; }
-.logo { position:absolute; top:32px; left:50%; transform:translateX(-50%); width:350px; z-index:20; filter:drop-shadow(0 6px 16px rgba(0,0,0,.3)); animation:logoBob 2.4s ease-in-out infinite; }
-@keyframes logoBob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-7px)} }
-.num-two   { position:absolute; top:205px; left:28px;  width:64px; z-index:22; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); animation:tileWobble 3.5s ease-in-out infinite .2s; }
-.num-three { position:absolute; top:185px; right:28px; width:64px; z-index:22; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); animation:tileWobble 3.5s ease-in-out infinite .9s; }
-@keyframes tileWobble { 0%,100%{transform:rotate(-5deg) translateY(0)} 50%{transform:rotate(5deg) translateY(-10px)} }
-.block-left  { position:absolute; left:28px;  bottom:350px; width:110px; z-index:18; display:flex; flex-direction:column; align-items:center; }
-.block-right { position:absolute; right:28px; bottom:375px; width:110px; z-index:18; display:flex; flex-direction:column; align-items:center; }
-.char-side { width:130px; margin-bottom:-10px; filter:drop-shadow(0 6px 12px rgba(0,0,0,.25)); animation:sideFloat 3s ease-in-out infinite; position:relative; z-index:2; }
-.block-left .char-side { animation-delay:.3s; }
-.block-right .char-side { animation-delay:.7s; }
-@keyframes sideFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-.sym-block { display:none; }
-.redy-home { position:absolute; bottom:425px; left:50%; transform:translateX(-50%); width:150px; z-index:20; animation:redyBob 2s ease-in-out infinite; }
-@keyframes redyBob { 0%,100%{transform:translateX(-50%) translateY(0)} 45%{transform:translateX(-50%) translateY(-28px)} }
 
-/* ── Player name input ──────────────────────────────── */
-.name-input-wrap {
-  margin-bottom: 12px;
-  position: relative;
-  display: flex;
-  align-items: center;
+/* Background */
+.home-bg {
+  position: absolute; inset: 0;
+  background: url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center top/cover no-repeat;
+  z-index: 0;
 }
-.name-input-wrap .name-icon {
+
+/* ── Top-left Settings button ── */
+.home-settings-btn {
   position: absolute;
-  left: 14px;
-  font-size: 18px;
-  pointer-events: none;
-  z-index: 2;
+  top: 18px; left: 18px;
+  width: 52px; height: 52px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 0 rgba(100,160,220,.5), 0 6px 18px rgba(0,0,0,.18);
+  cursor: pointer;
+  z-index: 30;
+  transition: transform .1s, box-shadow .1s;
 }
+.home-settings-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(100,160,220,.5); }
+.home-settings-btn svg { width: 26px; height: 26px; fill: #5c6b7a; }
+
+/* ── Top-right Coin counter ── */
+.home-coin-counter {
+  position: absolute;
+  top: 18px; right: 18px;
+  background: #2e1760;
+  border-radius: 50px;
+  padding: 8px 14px 8px 10px;
+  display: flex; align-items: center; gap: 7px;
+  box-shadow: 0 4px 0 #1a0d3a, 0 6px 18px rgba(0,0,0,.3);
+  z-index: 30;
+  border: 2px solid rgba(255,255,255,.12);
+}
+.home-coin-gold {
+  width: 30px; height: 30px;
+  background: radial-gradient(circle at 38% 32%, #ffe96e, #f5a500 60%, #c87800);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3), inset 0 1px 3px rgba(255,255,255,.4);
+  flex-shrink: 0;
+}
+.home-coin-gold::after { content: '★'; color: rgba(255,255,255,.7); font-size: 13px; }
+.home-coin-num {
+  font-size: 20px; font-weight: 900;
+  color: white;
+  letter-spacing: .5px;
+  text-shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+
+/* ── Logo ── */
+.logo {
+  position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
+  width: 300px; z-index: 20;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,.3));
+  animation: logoBob 2.4s ease-in-out infinite;
+}
+@keyframes logoBob {
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(-7px)}
+}
+
+/* CSS-only logo (shown when image missing / as fallback layer) */
+.logo-css {
+  position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
+  z-index: 19; text-align: center; pointer-events: none;
+  animation: logoBob 2.4s ease-in-out infinite;
+  white-space: nowrap;
+}
+.logo-css-maths {
+  display: block;
+  font-size: 62px; font-weight: 900;
+  color: white;
+  -webkit-text-stroke: 5px #0d2a6e;
+  text-shadow: 0 6px 0 #0d2a6e, 0 10px 20px rgba(0,0,0,.4);
+  letter-spacing: 3px;
+  line-height: 1;
+}
+.logo-css-jumper {
+  display: block;
+  font-size: 62px; font-weight: 900;
+  background: linear-gradient(180deg, #ffe84d 0%, #ff9a00 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 4px #b35a00;
+  text-shadow: none;
+  filter: drop-shadow(0 5px 0 #7a3800);
+  letter-spacing: 3px;
+  line-height: 1;
+  position: relative;
+}
+
+/* ── Number tiles ── */
+.num-two {
+  position: absolute; top: 190px; left: 22px;
+  width: 64px; z-index: 22;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.25));
+  animation: tileWobble 3.5s ease-in-out infinite .2s;
+}
+.num-three {
+  position: absolute; top: 170px; right: 22px;
+  width: 64px; z-index: 22;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.25));
+  animation: tileWobble 3.5s ease-in-out infinite .9s;
+}
+@keyframes tileWobble {
+  0%,100%{transform:rotate(-5deg) translateY(0)}
+  50%{transform:rotate(5deg) translateY(-10px)}
+}
+
+/* ── Character placeholders ── */
+.block-left {
+  position: absolute; left: 22px; bottom: 340px;
+  width: 110px; z-index: 18;
+  display: flex; flex-direction: column; align-items: center;
+}
+.block-right {
+  position: absolute; right: 22px; bottom: 360px;
+  width: 110px; z-index: 18;
+  display: flex; flex-direction: column; align-items: center;
+}
+.char-side {
+  width: 130px; margin-bottom: -10px;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,.25));
+  animation: sideFloat 3s ease-in-out infinite;
+  position: relative; z-index: 2;
+}
+.block-left .char-side { animation-delay: .3s; }
+.block-right .char-side { animation-delay: .7s; }
+@keyframes sideFloat {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+.sym-block { display: none; }
+.redy-home {
+  position: absolute; bottom: 415px; left: 50%; transform: translateX(-50%);
+  width: 145px; z-index: 20;
+  animation: redyBob 2s ease-in-out infinite;
+}
+@keyframes redyBob {
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  45%{transform:translateX(-50%) translateY(-28px)}
+}
+
+/* ─────────────────────────────────────────────
+   HOME PANEL — white card
+───────────────────────────────────────────── */
+.home-panel {
+  position: absolute;
+  bottom: 100px; left: 16px; right: 16px;
+  background: white;
+  border-radius: 32px;
+  padding: 0;
+  box-shadow: 0 -3px 0 rgba(255,255,255,.6), 0 12px 40px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.9);
+  z-index: 25;
+  overflow: hidden;
+}
+
+/* ── Name input section ── */
+.home-name-section {
+  padding: 16px 18px 14px;
+  display: flex; align-items: center; gap: 14px;
+}
+.home-avatar {
+  width: 54px; height: 54px; flex-shrink: 0;
+  background: white;
+  border: 3px solid #9b6de0;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 3px 10px rgba(120,80,200,.25);
+}
+.home-name-right {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.home-name-label {
+  font-size: 14px; font-weight: 900;
+  color: #2a1760;
+  letter-spacing: .3px;
+}
+.name-input-wrap {
+  position: relative;
+  display: flex; align-items: center;
+}
+.name-input-wrap .name-icon { display: none; }
 #player-name-input {
   width: 100%;
-  padding: 12px 16px 12px 42px;
+  padding: 10px 44px 10px 16px;
   font-family: 'Nunito', cursive;
-  font-size: 16px;
-  font-weight: 800;
+  font-size: 14px; font-weight: 700;
   color: var(--purple-dark);
-  background: white;
-  border: 3px solid var(--purple-btn);
+  background: #f5f0ff;
+  border: 2px solid #d4beff;
   border-radius: 50px;
   outline: none;
   transition: border-color .2s, box-shadow .2s;
-  box-shadow: 0 3px 0 var(--purple-dark);
 }
-#player-name-input::placeholder {
-  color: #bbb;
-  font-weight: 700;
+#player-name-input::placeholder { color: #bbb; font-weight: 600; }
+#player-name-input:focus { border-color: #9b6de0; box-shadow: 0 0 0 3px rgba(155,109,224,.15); }
+.name-edit-icon {
+  position: absolute; right: 10px;
+  width: 28px; height: 28px;
+  background: #7c44d6;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
 }
-#player-name-input:focus {
-  border-color: var(--yellow);
-  box-shadow: 0 3px 0 var(--yellow-dark), 0 0 0 3px rgba(245,197,24,.2);
-}
-/* Greeting shown below input */
+.name-edit-icon svg { width: 14px; height: 14px; fill: white; }
+
+/* Greeting */
 #name-greeting {
-  text-align: center;
-  font-size: 13px;
-  font-weight: 900;
-  color: var(--purple-btn);
-  min-height: 18px;
-  margin-bottom: 4px;
-  transition: opacity .3s;
+  text-align: center; font-size: 12px; font-weight: 900;
+  color: var(--purple-btn); min-height: 0; display: none;
 }
-.home-panel { position:absolute; bottom:135px; left:20px; right:20px; background:var(--panel-bg); border-radius:28px; padding:18px 22px 20px; box-shadow:0 -2px 0 rgba(255,255,255,.5),0 10px 40px rgba(0,0,0,.2); z-index:25; }
-.coins-row  { text-align:center; color:var(--yellow-dark); font-size:20px; font-weight:900; margin-bottom:3px; }
-.stage-row  { text-align:center; color:var(--text-dark); font-size:15px; font-weight:700; margin-bottom:14px; }
-.btn-play   { display:block; width:100%; padding:15px; background:var(--purple-btn); color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:19px; font-weight:900; letter-spacing:1.5px; cursor:pointer; box-shadow:0 6px 0 var(--purple-dark); transition:transform .1s,box-shadow .1s; margin-bottom:10px; }
-.btn-play:active { transform:translateY(4px); box-shadow:0 2px 0 var(--purple-dark); }
-.btn-select { display:block; width:100%; padding:14px; background:transparent; color:var(--text-dark); border:2.5px solid var(--purple-btn); border-radius:50px; font-family:'Nunito',cursive; font-size:18px; font-weight:900; letter-spacing:1.5px; cursor:pointer; }
-.btn-select:active { background:rgba(92,63,163,.08); }
-.bottom-nav { position:absolute; bottom:35px; left:20px; right:20px; display:flex; justify-content:space-between; z-index:30; }
-.nav-btn { width:75px; height:75px; border-radius:18px; border:none; outline:none; background:none; cursor:pointer; padding:0; overflow:hidden; box-shadow:0 5px 0 rgba(0,0,0,.3); transition:transform .1s,box-shadow .1s; }
-.nav-btn:active { transform:translateY(4px); box-shadow:0 1px 0 rgba(0,0,0,.3); }
-.nav-btn img { width:100%; height:100%; object-fit:cover; display:block; }
+
+/* ── Stats row ── */
+.home-stats-row {
+  margin: 0 14px 14px;
+  background: #fdf6e8;
+  border-radius: 18px;
+  display: flex; align-items: stretch;
+  overflow: hidden;
+  border: 1.5px solid #f0e6c8;
+}
+.home-stat {
+  flex: 1;
+  padding: 12px 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.home-stat + .home-stat {
+  border-left: 1.5px solid #e8dcc0;
+}
+.home-stat-icon-coin {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: radial-gradient(circle at 38% 32%, #ffe96e, #f5a500 60%, #c87800);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.2), inset 0 1px 3px rgba(255,255,255,.4);
+}
+.home-stat-icon-coin::after { content: '★'; color: rgba(255,255,255,.8); font-size: 14px; }
+.home-stat-icon-trophy {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: #e8d8ff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 3px 8px rgba(120,80,200,.2);
+}
+.home-stat-text { display: flex; flex-direction: column; }
+.home-stat-label { font-size: 10px; font-weight: 900; color: #999; letter-spacing: 1px; text-transform: uppercase; }
+.home-stat-value { font-size: 20px; font-weight: 900; color: #2a1760; line-height: 1.1; }
+.home-stat-value-sm { font-size: 14px; font-weight: 900; color: #2a1760; line-height: 1.2; }
+
+/* ── Action buttons ── */
+.home-buttons {
+  padding: 0 14px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* PLAY button — blue */
+.btn-play {
+  display: flex; align-items: center;
+  width: 100%; padding: 0;
+  background: linear-gradient(180deg, #4dc8ff 0%, #1a9fe0 40%, #0d7ab8 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Nunito', cursive;
+  font-size: 20px; font-weight: 900;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 7px 0 #075a8a, 0 10px 24px rgba(0,100,200,.3), inset 0 2px 0 rgba(255,255,255,.3);
+  transition: transform .1s, box-shadow .1s;
+  overflow: hidden;
+  position: relative;
+}
+.btn-play:active { transform: translateY(5px); box-shadow: 0 2px 0 #075a8a; }
+.btn-play-icon {
+  width: 52px; height: 52px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.2);
+  border-right: 2px solid rgba(255,255,255,.15);
+}
+.btn-play-icon-inner {
+  width: 34px; height: 34px;
+  background: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-play-icon-inner svg { width: 14px; height: 14px; fill: #1a9fe0; margin-left: 2px; }
+.btn-play-label {
+  flex: 1; text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,.25);
+  padding-right: 8px;
+}
+
+/* SELECT STAGE button — purple */
+.btn-select {
+  display: flex; align-items: center;
+  width: 100%; padding: 0;
+  background: linear-gradient(180deg, #a06df0 0%, #7c44d6 40%, #5e28b8 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Nunito', cursive;
+  font-size: 20px; font-weight: 900;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 7px 0 #3d1680, 0 10px 24px rgba(100,50,200,.3), inset 0 2px 0 rgba(255,255,255,.25);
+  transition: transform .1s, box-shadow .1s;
+  overflow: hidden;
+}
+.btn-select:active { transform: translateY(5px); box-shadow: 0 2px 0 #3d1680; }
+.btn-select-icon {
+  width: 52px; height: 52px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.15);
+  border-right: 2px solid rgba(255,255,255,.12);
+  font-size: 24px;
+}
+.btn-select-label {
+  flex: 1; text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,.25);
+  padding-right: 8px;
+}
+
+/* ─────────────────────────────────────────────
+   BOTTOM NAV  — floating squircle tabs
+───────────────────────────────────────────── */
+.bottom-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 100px;
+  display: flex; justify-content: space-around; align-items: flex-start;
+  padding: 10px 10px 0;
+  z-index: 30;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,.15) 100%);
+}
+.nav-btn {
+  width: 74px; height: 78px;
+  border-radius: 22px;
+  border: none; outline: none;
+  background: white;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 5px 0 rgba(0,0,0,.18), 0 8px 20px rgba(0,0,0,.15);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  transition: transform .1s, box-shadow .1s;
+}
+.nav-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.18); }
+.nav-btn-icon { font-size: 28px; line-height: 1; display: block; }
+.nav-btn-label {
+  font-size: 9.5px; font-weight: 900;
+  color: #2a1760;
+  font-family: 'Nunito', cursive;
+  letter-spacing: .3px;
+  display: block; text-align: center;
+  line-height: 1;
+}
+.nav-btn img { display: none; } /* hide old image tags if still present */
 
 /* ─────────────────────────────────────────────
    STAGE SELECT / CHAR SELECT  (shared chrome)
@@ -156,16 +459,59 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .g-header {
   position:absolute; top:0; left:0; right:0;
   padding:14px 14px 0;
-  display:flex; align-items:center; gap:10px;
+  display:flex; align-items:center; gap:8px;
   z-index:30;
 }
-.g-back { width:46px; height:46px; background:var(--yellow); border:none; border-radius:12px; font-size:22px; font-weight:900; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 0 var(--yellow-dark); flex-shrink:0; transition:transform .1s,box-shadow .1s; }
+/* Back button — perfect yellow circle */
+.g-back {
+  width:48px; height:48px;
+  background:var(--yellow);
+  border:none; border-radius:50%;
+  font-size:22px; font-weight:900; color:white;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 5px 0 var(--yellow-dark), 0 2px 8px rgba(0,0,0,.18);
+  flex-shrink:0;
+  transition:transform .1s,box-shadow .1s;
+}
 .g-back:active { transform:translateY(3px); box-shadow:0 2px 0 var(--yellow-dark); }
-.g-coins { background:var(--purple-dark); color:white; border-radius:50px; padding:8px 14px; font-size:15px; font-weight:900; display:flex; align-items:center; gap:6px; flex-shrink:0; }
-.g-world { background:var(--purple-dark); color:white; border-radius:12px; padding:6px 16px; font-size:13px; font-weight:900; text-align:center; flex:1; }
-.g-world-label { font-size:9px; letter-spacing:1px; opacity:.7; display:block; }
-.g-world-val   { font-size:16px; font-weight:900; display:block; }
-.g-timer { background:var(--purple-dark); color:white; border-radius:50px; padding:8px 14px; font-size:15px; font-weight:900; display:flex; align-items:center; gap:6px; flex-shrink:0; }
+/* Coin counter — white pill with yellow star, dark text */
+.g-coins {
+  background:white;
+  color:var(--purple-dark);
+  border-radius:50px;
+  padding:8px 14px;
+  font-size:15px; font-weight:900;
+  display:flex; align-items:center; gap:5px;
+  flex-shrink:0;
+  box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+.g-coins-star { font-size:18px; line-height:1; }
+/* World pill — purple */
+.g-world {
+  background:var(--purple-btn);
+  color:white;
+  border-radius:50px;
+  padding:6px 18px;
+  font-size:13px; font-weight:900;
+  text-align:center;
+  flex:1;
+  box-shadow:0 4px 0 var(--purple-dark);
+}
+.g-world-label { font-size:9px; letter-spacing:1.5px; opacity:.85; display:block; text-transform:uppercase; }
+.g-world-val   { font-size:17px; font-weight:900; display:block; line-height:1.1; }
+/* Timer — bright blue pill */
+.g-timer {
+  background:#3aabf0;
+  color:white;
+  border-radius:50px;
+  padding:8px 14px;
+  font-size:15px; font-weight:900;
+  display:flex; align-items:center; gap:6px;
+  flex-shrink:0;
+  box-shadow:0 4px 0 #1a7fc4, 0 2px 8px rgba(0,0,0,.15);
+}
+.g-timer-icon { font-size:17px; line-height:1; }
 
 /* ── Progress bar with 3 star markers ── */
 .g-progress-wrap {
@@ -247,15 +593,41 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   box-shadow:0 8px 32px rgba(0,0,0,.2);
   z-index:25; text-align:center;
 }
+/* Yellow border glow when hint is open */
+.g-question-card.hint-active {
+  border:3px solid var(--yellow);
+}
 .g-equation {
   font-size:52px; font-weight:900; color:var(--purple-dark);
   line-height:1.1; display:flex; align-items:center; justify-content:center; gap:12px;
 }
 .g-blank {
-  border:3px dashed var(--yellow-dark); border-radius:14px;
-  padding:2px 16px; color:var(--yellow-dark); font-size:52px;
-  min-width:70px; text-align:center;
+  border:4px dashed var(--yellow);
+  border-radius:14px;
+  padding:2px 16px;
+  min-width:76px; text-align:center;
+  background:linear-gradient(160deg,#fff8e0,#ffe98a 80%);
+  color:var(--yellow);
+  font-size:52px; font-weight:900;
 }
+
+/* ── "HIDE HINT" pill overlapping top-right of card ── */
+.g-hide-hint-btn {
+  position:absolute;
+  top:-18px; right:14px;
+  background:var(--purple-btn);
+  color:white;
+  border:none; border-radius:50px;
+  padding:8px 18px;
+  font-size:13px; font-weight:900;
+  font-family:'Nunito',cursive; cursor:pointer;
+  box-shadow:0 4px 0 var(--purple-dark);
+  z-index:30; white-space:nowrap;
+  display:none;
+  transition:transform .1s, box-shadow .1s;
+}
+.g-hide-hint-btn:active { transform:translateY(2px); box-shadow:0 2px 0 var(--purple-dark); }
+.g-hide-hint-btn.visible { display:block; }
 
 /* ── SRS retry badge ── */
 .g-srs { position:absolute; top:74px; right:14px; background:#ff7043; color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:900; z-index:31; opacity:0; transition:opacity .3s; pointer-events:none; }
@@ -300,23 +672,36 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 @keyframes signWobble { 0%,100%{transform:rotate(-2deg)} 50%{transform:rotate(2deg)} }
 
-/* ── Show Hint button — below sun, right side ── */
+/* ── Show Hint button — glossy purple pill + cost badge ── */
 .g-hint-btn {
   position:absolute; top:196px; right:14px;
-  background:var(--yellow); color:#7a4e00;
+  background:linear-gradient(180deg,#8b65e0 0%,var(--purple-btn) 45%,var(--purple-dark) 100%);
+  color:white;
   border:none; border-radius:50px;
-  padding:8px 16px; font-size:12px; font-weight:900;
+  padding:10px 18px 10px 14px;
+  font-size:13px; font-weight:900;
   font-family:'Nunito',cursive; cursor:pointer;
-  box-shadow:0 4px 0 var(--yellow-dark);
+  box-shadow:0 5px 0 #2a1a5e, inset 0 2px 4px rgba(255,255,255,.25);
   z-index:26; white-space:nowrap;
+  display:flex; align-items:center; gap:6px;
   transition:transform .1s, box-shadow .1s, opacity .3s;
-  /* hidden until triggered */
   opacity:0; pointer-events:none;
 }
 .g-hint-btn.visible { opacity:1; pointer-events:auto; }
-.g-hint-btn.on { background:var(--purple-btn); color:white; box-shadow:0 4px 0 var(--purple-dark); }
-.g-hint-btn:active { transform:translateY(3px); box-shadow:0 1px 0 var(--yellow-dark); }
-.g-hint-btn.on:active { box-shadow:0 1px 0 var(--purple-dark); }
+.g-hint-btn:active { transform:translateY(3px); box-shadow:0 2px 0 #2a1a5e; }
+/* The cost badge attached below/right */
+.g-hint-cost {
+  position:absolute;
+  bottom:-14px; right:4px;
+  background:#2a1a5e;
+  color:white;
+  border-radius:50px;
+  padding:3px 10px;
+  font-size:11px; font-weight:900;
+  white-space:nowrap;
+  pointer-events:none;
+}
+.g-hint-cost .cost-star { color:var(--yellow); font-size:12px; }
 
 /* ─────────────────────────────────────────────
    NUMBER LINE HINT  (overlays the path area)
@@ -447,13 +832,73 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .nl-stone.interactive .nl-stone-circle { cursor:pointer; }
 .nl-stone.interactive .nl-stone-circle:hover { background:rgba(255,255,255,1); transform:scale(1.08); }
 /* Stone states */
-.nl-stone.zero    .nl-stone-circle { background:rgba(255,255,255,.45); color:#aaa; font-size:13px; }
-.nl-stone.passed  .nl-stone-circle { background:var(--yellow); border-color:var(--yellow-dark); }
-.nl-stone.current .nl-stone-circle { background:var(--purple-btn); color:white; border-color:var(--purple-dark); transform:scale(1.15); box-shadow:0 4px 14px rgba(108,77,191,.55); }
+.nl-stone.zero    .nl-stone-circle { background:white; color:var(--text-dark); font-size:13px; }
+.nl-stone.passed  .nl-stone-circle { background:var(--yellow); border-color:var(--yellow-dark); color:#7a4e00; }
+.nl-stone.current .nl-stone-circle {
+  background:var(--purple-btn); color:white;
+  border:3px solid var(--purple-dark);
+  transform:scale(1.15);
+  box-shadow:0 0 0 4px var(--yellow), 0 4px 14px rgba(108,77,191,.55);
+}
+/* Triangle pointer below active stone */
+.nl-stone.current::after {
+  content:'';
+  position:absolute;
+  bottom:-12px; left:50%;
+  transform:translateX(-50%);
+  width:0; height:0;
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+  border-bottom:10px solid white;
+}
 .nl-stone.next    .nl-stone-circle { border-color:var(--purple-btn); animation:stPulse .9s ease-in-out infinite; }
 .nl-stone.dim     .nl-stone-circle { opacity:.3; }
 @keyframes stPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
 .nl-stone-tick { width:2px; height:8px; background:rgba(255,255,255,.35); border-radius:1px; }
+
+/* ── Active number tile shown above the track ── */
+.nl-active-tile {
+  background:white;
+  border-radius:18px;
+  padding:10px 22px;
+  font-size:42px; font-weight:900; color:var(--purple-dark);
+  box-shadow:0 6px 0 var(--purple-dark), 0 4px 20px rgba(0,0,0,.2);
+  min-width:72px; text-align:center;
+  display:none;
+}
+.nl-active-tile.visible { display:block; }
+/* Stars row under the tile */
+.nl-tile-stars {
+  display:flex; gap:4px; justify-content:center;
+  margin-top:4px; font-size:14px;
+  min-height:20px;
+}
+
+/* ── "TAP THE NEXT NUMBER!" ribbon banner ── */
+.nl-tap-banner {
+  background:var(--purple-btn);
+  color:white;
+  border-radius:50px;
+  padding:6px 16px;
+  font-size:11px; font-weight:900; letter-spacing:1px;
+  text-transform:uppercase;
+  box-shadow:0 3px 0 var(--purple-dark);
+  white-space:nowrap;
+  display:none;
+  position:relative;
+}
+.nl-tap-banner.visible { display:block; }
+/* Downward pointer from banner */
+.nl-tap-banner::after {
+  content:'';
+  position:absolute;
+  bottom:-8px; left:50%;
+  transform:translateX(-50%);
+  width:0; height:0;
+  border-left:8px solid transparent;
+  border-right:8px solid transparent;
+  border-top:8px solid var(--purple-dark);
+}
 
 /* Dust pop on landing */
 .nl-dust { font-size:18px; position:absolute; bottom:-2px; left:50%; transform:translateX(-50%); opacity:0; pointer-events:none; }
@@ -485,29 +930,46 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   border:3px solid white;
 }
 /* ─────────────────────────────────────────────
-   ANSWER BUTTONS  — bottom of game screen
+   ANSWER BUTTONS  — 3D candy squarcles
    Generated ONCE per question, NEVER mutated by hint
 ───────────────────────────────────────────── */
 .g-answers {
-  position:absolute; bottom:80px; left:14px; right:14px;
+  position:absolute; bottom:56px; left:14px; right:14px;
   display:grid; grid-template-columns:repeat(4,1fr);
   gap:10px; z-index:30;
 }
 .ans-btn {
-  color:white; border:none; border-radius:16px;
+  color:white; border:none; border-radius:22px;
   padding:18px 0; font-size:28px; font-weight:900;
   font-family:'Nunito',cursive; cursor:pointer;
-  box-shadow:0 6px 0 rgba(0,0,0,.25);
+  /* thick bottom border 3D effect */
+  box-shadow:0 8px 0 rgba(0,0,0,.28), inset 0 3px 6px rgba(255,255,255,.35);
   transition:transform .1s, box-shadow .1s;
   position:relative;
+  /* top gloss highlight */
+  background-image:linear-gradient(180deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,0) 55%);
 }
-.ans-btn:active:not(:disabled) { transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.25); }
+.ans-btn:active:not(:disabled) {
+  transform:translateY(6px);
+  box-shadow:0 2px 0 rgba(0,0,0,.28), inset 0 3px 6px rgba(255,255,255,.35);
+}
 /* State feedback */
-.ans-btn.correct { background:#4caf50 !important; }
-.ans-btn.wrong   { background:#f44336 !important; }
+.ans-btn.correct { background-color:#4caf50 !important; box-shadow:0 8px 0 #267326 !important; }
+.ans-btn.wrong   { background-color:#f44336 !important; box-shadow:0 8px 0 #9a1515 !important; }
+
+/* Candy colour variants applied via JS index */
+.ans-btn[data-cidx="0"] { background-color:var(--ans-green);  box-shadow:0 8px 0 var(--ans-green-dk), inset 0 3px 6px rgba(255,255,255,.35); }
+.ans-btn[data-cidx="1"] { background-color:var(--ans-blue);   box-shadow:0 8px 0 var(--ans-blue-dk),  inset 0 3px 6px rgba(255,255,255,.35); }
+.ans-btn[data-cidx="2"] { background-color:var(--ans-yellow); box-shadow:0 8px 0 var(--ans-yellow-dk),inset 0 3px 6px rgba(255,255,255,.35); }
+.ans-btn[data-cidx="3"] { background-color:var(--ans-pink);   box-shadow:0 8px 0 var(--ans-pink-dk),  inset 0 3px 6px rgba(255,255,255,.35); }
+.ans-btn[data-cidx="0"]:active:not(:disabled) { box-shadow:0 2px 0 var(--ans-green-dk), inset 0 3px 6px rgba(255,255,255,.35); }
+.ans-btn[data-cidx="1"]:active:not(:disabled) { box-shadow:0 2px 0 var(--ans-blue-dk),  inset 0 3px 6px rgba(255,255,255,.35); }
+.ans-btn[data-cidx="2"]:active:not(:disabled) { box-shadow:0 2px 0 var(--ans-yellow-dk),inset 0 3px 6px rgba(255,255,255,.35); }
+.ans-btn[data-cidx="3"]:active:not(:disabled) { box-shadow:0 2px 0 var(--ans-pink-dk),  inset 0 3px 6px rgba(255,255,255,.35); }
 
 /* Score badge */
-.g-score { position:absolute; bottom:30px; left:50%; transform:translateX(-50%); background:var(--purple-dark); color:white; border-radius:50px; padding:7px 22px; font-weight:900; font-size:15px; z-index:30; white-space:nowrap; }
+.g-score { position:absolute; bottom:18px; left:50%; transform:translateX(-50%); background:var(--purple-dark); color:white; border-radius:50px; padding:7px 22px; font-weight:900; font-size:15px; z-index:30; white-space:nowrap; box-shadow:0 3px 0 #1a0d40; display:flex; align-items:center; gap:6px; }
+.g-score-star { color:var(--yellow); font-size:16px; }
 
 /* ─────────────────────────────────────────────
    SHOP MODAL
@@ -539,41 +1001,158 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 <div class="phone" id="phone">
 
 <!-- ══════════════════════════════════════
-     HOME SCREEN
+     HOME SCREEN  — Juicy 3D redesign
 ══════════════════════════════════════ -->
 <div class="screen" id="screen-home">
+
+  <!-- Sky background -->
   <div class="home-bg"></div>
-  <img class="logo" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-logo.png" alt="Maths Jumper"/>
-  <img class="num-two"   src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numbertwo.png" alt="2"/>
-  <img class="num-three" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numberthree.png" alt="3"/>
-  <div class="block-left"><img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/><div class="sym-block"></div></div>
-  <div class="block-right"><img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/><div class="sym-block"></div></div>
-  <div class="redy-home"><img style="width:100%" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/></div>
+
+  <!-- Settings button (top-left white circle) -->
+  <button class="home-settings-btn" aria-label="Settings">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.69.07-1.08s-.03-.74-.07-1.08l2.32-1.82c.21-.16.27-.46.13-.7l-2.2-3.81c-.14-.24-.42-.32-.66-.24l-2.74 1.1c-.57-.43-1.18-.8-1.84-1.07l-.42-2.92A.54.54 0 0 0 14 3h-4c-.27 0-.5.2-.54.47l-.42 2.92c-.66.27-1.27.64-1.84 1.07l-2.74-1.1c-.24-.08-.52 0-.66.24l-2.2 3.81c-.14.24-.08.54.13.7l2.32 1.82c-.04.34-.07.69-.07 1.08s.03.74.07 1.08L2.4 14.84c-.21.16-.27.46-.13.7l2.2 3.81c.14.24.42.32.66.24l2.74-1.1c.57.43 1.18.8 1.84 1.07l.42 2.92c.04.27.27.47.54.47h4c.27 0 .5-.2.54-.47l.42-2.92c.66-.27 1.27-.64 1.84-1.07l2.74 1.1c.24.08.52 0 .66-.24l2.2-3.81c.14-.24.08-.54-.13-.7l-2.32-1.82z"/>
+    </svg>
+  </button>
+
+  <!-- Coin counter (top-right dark purple pill) -->
+  <div class="home-coin-counter">
+    <div class="home-coin-gold"></div>
+    <span class="home-coin-num" id="home-coin-num">0</span>
+  </div>
+
+  <!-- Logo image (falls back to CSS logo) -->
+  <img class="logo"
+    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-logo.png"
+    alt="Maths Jumper"
+    onerror="this.style.display='none'"/>
+
+  <!-- Number tiles — drop your PNG assets here -->
+  <img class="num-two"
+    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numbertwo.png"
+    alt="2"
+    onerror="this.style.display='none'"/>
+  <img class="num-three"
+    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numberthree.png"
+    alt="3"
+    onerror="this.style.display='none'"/>
+
+  <!-- Left character (Pip the Penguin) — drop asset here -->
+  <div class="block-left">
+    <img class="char-side"
+      src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png"
+      alt="Pip the Penguin"
+      onerror="this.style.display='none'"/>
+    <div class="sym-block"></div>
+  </div>
+
+  <!-- Right character (Unia the Unicorn) — drop asset here -->
+  <div class="block-right">
+    <img class="char-side"
+      src="https://raw.githubusercontent.com/jcoles8imperi/Maths-Jumper/main/mj-start-character-unia.png"
+      alt="Unia the Unicorn"
+      onerror="this.style.display='none'"/>
+    <div class="sym-block"></div>
+  </div>
+
+  <!-- Centre character (Redy the Block) — drop asset here -->
+  <div class="redy-home">
+    <img style="width:100%"
+      src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png"
+      alt="Redy"/>
+  </div>
+
+  <!-- ── Main white card ── -->
   <div class="home-panel">
-    <div class="name-input-wrap">
-      <span class="name-icon">🧒</span>
-      <input
-        id="player-name-input"
-        type="text"
-        maxlength="16"
-        placeholder="Enter your name..."
-        autocomplete="off"
-        spellcheck="false"
-        oninput="onNameInput(this.value)"
-      />
+
+    <!-- Name input section -->
+    <div class="home-name-section">
+      <!-- Avatar circle with star icon -->
+      <div class="home-avatar">⭐</div>
+      <!-- Name label + input -->
+      <div class="home-name-right">
+        <span class="home-name-label">What's your name?</span>
+        <div class="name-input-wrap">
+          <span class="name-icon"></span>
+          <input
+            id="player-name-input"
+            type="text"
+            maxlength="16"
+            placeholder="Type your name here..."
+            autocomplete="off"
+            spellcheck="false"
+            oninput="onNameInput(this.value)"
+          />
+          <div class="name-edit-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+          </div>
+        </div>
+        <div id="name-greeting"></div>
+      </div>
     </div>
-    <div id="name-greeting"></div>
-    <div class="coins-row" id="home-coins">Coins ⭐: 0</div>
-    <div class="stage-row" id="home-stage">Highest Stage: 1</div>
-    <button class="btn-play" id="btn-play-home">PLAY STAGE 1</button>
-    <button class="btn-select" onclick="showScreen('screen-stages')">SELECT STAGE</button>
-  </div>
+
+    <!-- Stats dashboard row -->
+    <div class="home-stats-row">
+      <!-- Coins -->
+      <div class="home-stat">
+        <div class="home-stat-icon-coin"></div>
+        <div class="home-stat-text">
+          <span class="home-stat-label">COINS</span>
+          <span class="home-stat-value" id="home-coins">0</span>
+        </div>
+      </div>
+      <!-- Highest Stage -->
+      <div class="home-stat">
+        <div class="home-stat-icon-trophy">🏆</div>
+        <div class="home-stat-text">
+          <span class="home-stat-label">HIGHEST STAGE</span>
+          <span class="home-stat-value-sm" id="home-stage">Stage 1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="home-buttons">
+      <!-- PLAY button -->
+      <button class="btn-play" id="btn-play-home">
+        <div class="btn-play-icon">
+          <div class="btn-play-icon-inner">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="btn-play-label">PLAY, HERO!</span>
+      </button>
+      <!-- SELECT STAGE button -->
+      <button class="btn-select" onclick="showScreen('screen-stages')">
+        <div class="btn-select-icon">🗺️</div>
+        <span class="btn-select-label">SELECT STAGE</span>
+      </button>
+    </div>
+
+  </div><!-- /.home-panel -->
+
+  <!-- Bottom navigation tabs -->
   <div class="bottom-nav">
-    <button class="nav-btn" onclick="openShop()"><img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-icon.png" alt="Shop"/></button>
-    <button class="nav-btn"><img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-leaderboard-icon.png" alt="Leaderboard"/></button>
-    <button class="nav-btn"><img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-achievements-icon.png" alt="Achievements"/></button>
-    <button class="nav-btn"><img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-settings-icon.png" alt="Settings"/></button>
+    <button class="nav-btn" onclick="openShop()">
+      <span class="nav-btn-icon">🐉</span>
+      <span class="nav-btn-label">Friends</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nav-btn-icon">🏆</span>
+      <span class="nav-btn-label">Achievements</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nav-btn-icon">⭐</span>
+      <span class="nav-btn-label">Rewards</span>
+    </button>
+    <button class="nav-btn">
+      <span class="nav-btn-icon">📘</span>
+      <span class="nav-btn-label">How to Play</span>
+    </button>
   </div>
+
 </div>
 
 <!-- ══════════════════════════════════════
@@ -620,12 +1199,12 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Header -->
   <div class="g-header">
     <button class="g-back" onclick="endSession()">←</button>
-    <div class="g-coins">⭐ <span id="g-coins-val">0</span></div>
+    <div class="g-coins"><span class="g-coins-star">⭐</span><span id="g-coins-val">0</span></div>
     <div class="g-world">
       <span class="g-world-label">WORLD</span>
       <span class="g-world-val" id="g-world-val">1 - 1</span>
     </div>
-    <div class="g-timer">⏱ <span id="g-timer">240</span></div>
+    <div class="g-timer"><span class="g-timer-icon">⏱</span><span id="g-timer">240</span></div>
   </div>
 
   <!-- Progress bar -->
@@ -657,7 +1236,9 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <div class="g-srs" id="g-srs">🔄 Try again!</div>
 
   <!-- Question card -->
-  <div class="g-question-card">
+  <div class="g-question-card" id="g-question-card">
+    <!-- "HIDE HINT" pill overlapping top-right border when hint is open -->
+    <button class="g-hide-hint-btn" id="g-hide-hint-btn" onclick="toggleHint()">❌ HIDE HINT</button>
     <div class="g-equation" id="g-equation">
       <span id="eq-a">1</span>
       <span>×</span>
@@ -668,7 +1249,10 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   </div>
 
   <!-- Hint button (below sun, right) -->
-  <button class="g-hint-btn" id="g-hint-btn" onclick="toggleHint()">💡 Show Hint</button>
+  <button class="g-hint-btn" id="g-hint-btn" onclick="toggleHint()">
+    💡 HINT
+    <span class="g-hint-cost"><span class="cost-star">⭐</span> -1</span>
+  </button>
 
   <!-- Streak banner -->
   <div class="streak-banner" id="streak-banner">🔥 STREAK!</div>
@@ -676,6 +1260,11 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Number line overlay (on path) -->
   <div class="nl-overlay" id="nl-overlay">
     <div class="nl-phase-label" id="nl-phase-label">Watch Redy count!</div>
+    <div class="nl-tap-banner" id="nl-tap-banner">TAP THE NEXT NUMBER! 👆</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:6px;">
+      <div class="nl-active-tile" id="nl-active-tile">5</div>
+      <div class="nl-tile-stars" id="nl-tile-stars"></div>
+    </div>
     <div class="nl-hop-counter" id="nl-hop-counter"></div>
     <div id="nl-visual-groups"></div>
     <div class="nl-track-wrap">
@@ -700,8 +1289,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Answer buttons (generated once per question, NEVER touched by hint) -->
   <div class="g-answers" id="g-answers"></div>
 
-  <!-- Score -->
-  <div class="g-score">⭐ <span id="g-score">0</span></div>
+  <!-- Bottom coin counter pill -->
+  <div class="g-score"><span class="g-score-star">⭐</span><span id="g-score">0</span></div>
 
 </div>
 
@@ -939,12 +1528,21 @@ function refreshHome(){
   if(nameInput) nameInput.value = savedName;
   updateNameGreeting(savedName);
 
-  document.getElementById('home-coins').textContent = `Coins ⭐: ${getCoins()}`;
-  document.getElementById('home-stage').textContent = `Highest Stage: ${getHighestStage()}`;
+  const coins = getCoins();
+  // Update stats panel
+  const coinsEl = document.getElementById('home-coins');
+  if (coinsEl) coinsEl.textContent = coins;
+  const stageEl = document.getElementById('home-stage');
+  if (stageEl) stageEl.textContent = `Stage ${getHighestStage()}`;
+  // Update top coin counter
+  const topCoinEl = document.getElementById('home-coin-num');
+  if (topCoinEl) topCoinEl.textContent = coins;
+  // Update play button label (keep icon, just change text span)
   const btn = document.getElementById('btn-play-home');
   const displayName = savedName || 'Hero';
-  btn.textContent = `PLAY, ${displayName.toUpperCase()}! ▶`;
-  btn.onclick = ()=>showScreen('screen-game');
+  const labelEl = btn ? btn.querySelector('.btn-play-label') : null;
+  if (labelEl) labelEl.textContent = `PLAY, ${displayName.toUpperCase()}!`;
+  if (btn) btn.onclick = ()=>showScreen('screen-game');
 }
 
 /* Called on every keystroke in the name input */
@@ -954,7 +1552,10 @@ function onNameInput(val) {
   updateNameGreeting(trimmed);
   // Update play button live
   const btn = document.getElementById('btn-play-home');
-  if(btn) btn.textContent = `PLAY, ${(trimmed || 'Hero').toUpperCase()}! ▶`;
+  if(btn) {
+    const labelEl = btn.querySelector('.btn-play-label');
+    if(labelEl) labelEl.textContent = `PLAY, ${(trimmed || 'Hero').toUpperCase()}!`;
+  }
 }
 
 function updateNameGreeting(name) {
@@ -1125,13 +1726,18 @@ function renderQ(q){
   // Build answer buttons — only place buttons are created
   const grid = document.getElementById('g-answers');
   grid.innerHTML = '';
+  const CANDY_BG = [
+    'var(--ans-green)','var(--ans-blue)','var(--ans-yellow)','var(--ans-pink)'
+  ];
+  const CANDY_SH = [
+    'var(--ans-green-dk)','var(--ans-blue-dk)','var(--ans-yellow-dk)','var(--ans-pink-dk)'
+  ];
   currentChoices.forEach((v,i)=>{
     const btn = document.createElement('button');
     btn.className = 'ans-btn';
     btn.dataset.val = v;
+    btn.dataset.cidx = i;
     btn.textContent = v;
-    btn.style.background = ANS_COLORS[i];
-    btn.style.boxShadow  = `0 6px 0 ${ANS_SHADOW[i]}`;
     btn.onclick = ()=>checkAns(v, q, btn);
     grid.appendChild(btn);
   });
@@ -1331,8 +1937,15 @@ function setHintVisible(){
   document.getElementById('g-hint-btn').classList.add('visible');
 }
 function setHintHidden(){
-  document.getElementById('g-hint-btn').classList.remove('visible','on');
-  document.getElementById('g-hint-btn').textContent='💡 Show Hint';
+  const hb = document.getElementById('g-hint-btn');
+  hb.classList.remove('visible');
+  // Restore default hint button content
+  hb.innerHTML = '💡 HINT<span class="g-hint-cost"><span class="cost-star">⭐</span> -1</span>';
+  // Hide the "hide hint" pill
+  const hhb = document.getElementById('g-hide-hint-btn');
+  if(hhb) hhb.classList.remove('visible');
+  const qcard = document.getElementById('g-question-card');
+  if(qcard) qcard.classList.remove('hint-active');
 }
 function cancelHintTimer(){
   if(hintTimer){ clearTimeout(hintTimer); hintTimer=null; }
@@ -1347,8 +1960,15 @@ function cancelDemoTimer(){
 function toggleHint(){
   if(!hintOpen){
     hintOpen=true;
-    const btn=document.getElementById('g-hint-btn');
-    btn.textContent='❌ Hide Hint'; btn.classList.add('on');
+    // Hide the show-hint pill
+    const showBtn = document.getElementById('g-hint-btn');
+    showBtn.classList.remove('visible');
+    // Show the "HIDE HINT" pill on the card
+    const hideBtn = document.getElementById('g-hide-hint-btn');
+    if(hideBtn) hideBtn.classList.add('visible');
+    // Yellow border on card
+    const qcard = document.getElementById('g-question-card');
+    if(qcard) qcard.classList.add('hint-active');
     buildNL(currentQ);
     document.getElementById('nl-overlay').classList.add('visible');
     document.getElementById('nl-rail').style.display='block';
@@ -1368,9 +1988,13 @@ function closeHint(){
   hideCallout();
   clearVisualGroups();
   setHintHidden();
-  document.getElementById('g-hint-btn').textContent='💡 Show Hint';
   // Restore idle Redy on path
   document.getElementById('g-redy').style.opacity='1';
+  // Hide the tap banner and active tile
+  const tapBanner = document.getElementById('nl-tap-banner');
+  if(tapBanner) tapBanner.classList.remove('visible');
+  const activeTile = document.getElementById('nl-active-tile');
+  if(activeTile) activeTile.classList.remove('visible');
 }
 
 /* ── Build number line stones ──────────────────── */
@@ -1454,6 +2078,19 @@ function clearVisualGroups(){
   if(c) c.innerHTML = '';
 }
 
+/* ── Update star row under the active tile ── */
+function updateTileStars(completedHops){
+  const el = document.getElementById('nl-tile-stars');
+  if(!el) return;
+  el.innerHTML = '';
+  for(let i=0;i<nlReps;i++){
+    const s=document.createElement('span');
+    s.textContent = i < completedHops ? '⭐' : '☆';
+    s.style.fontSize='13px';
+    el.appendChild(s);
+  }
+}
+
 function startDemo(){
   nlDemoActive=true; nlInteractive=false; nlCurrent=0;
   const scaleInfo = TABLE_SCALES[nlStep] || TABLE_SCALES[2];
@@ -1492,7 +2129,13 @@ function demoHopTo(targetIdx){
           updateStoneClasses();
           scrollToStone(0);
           document.getElementById('nl-hop-counter').textContent='Your turn!';
-          document.getElementById('nl-phase-label').textContent='Tap the next number! 👆';
+          document.getElementById('nl-phase-label').textContent='';
+          // Show tap banner + active tile
+          const tapBanner = document.getElementById('nl-tap-banner');
+          if(tapBanner) tapBanner.classList.add('visible');
+          const activeTile = document.getElementById('nl-active-tile');
+          if(activeTile){ activeTile.textContent = nlStones[1] || nlStep; activeTile.classList.add('visible'); }
+          updateTileStars(0);
           makeInteractive();
         },800);
       }
@@ -1534,6 +2177,13 @@ function interactiveHop(targetIdx){
     showCallout(numWord(nlStones[targetIdx]));
     speakNum(nlStones[targetIdx]);
     document.getElementById('nl-hop-counter').textContent=nlStones[targetIdx];
+    // Update active tile display
+    const activeTile = document.getElementById('nl-active-tile');
+    if(activeTile && nlInteractive) {
+      const nextVal = nlStones[targetIdx+1];
+      if(nextVal !== undefined) activeTile.textContent = nextVal;
+    }
+    updateTileStars(targetIdx);
     // Play melody note — final stone gets fanfare
     const _isFinalInter = targetIdx >= nlStones.length - 1;
     playHopNote(targetIdx, nlStep, _isFinalInter);
