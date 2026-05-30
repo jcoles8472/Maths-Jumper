@@ -6,27 +6,35 @@
 <title>Maths Jumper</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
 <style>
+/* ─────────────────────────────────────────────
+   RESET & ROOT
+───────────────────────────────────────────── */
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root {
+  --purple:      #5c3fa3;
   --purple-btn:  #6b4dbf;
   --purple-dark: #3d2778;
   --yellow:      #f5c518;
   --yellow-dark: #d4940a;
   --panel-bg:    #fef9ec;
   --text-dark:   #3d2778;
+  --green-btn:   #4caf50;
+  --green-dark:  #388e3c;
 }
 html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursive,sans-serif; background:#1a1a2e; }
 .phone-wrap { display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
 .phone { position:relative; width:390px; height:844px; overflow:hidden; border-radius:40px; box-shadow:0 40px 80px rgba(0,0,0,.7); transform-origin:center center; }
-.bg { position:absolute; inset:0; background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center top/cover no-repeat; z-index:0; }
-.screen { position:absolute; inset:0; z-index:10; transition:opacity .35s ease,transform .35s ease; }
+.screen { position:absolute; inset:0; z-index:10; transition:opacity .3s ease, transform .3s ease; }
 .screen.hidden { opacity:0; pointer-events:none; transform:scale(.96); }
 
-/* ══ HOME ══ */
+/* ─────────────────────────────────────────────
+   HOME SCREEN  (unchanged layout)
+───────────────────────────────────────────── */
+.home-bg { position:absolute; inset:0; background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center top/cover no-repeat; z-index:0; }
 .logo { position:absolute; top:32px; left:50%; transform:translateX(-50%); width:350px; z-index:20; filter:drop-shadow(0 6px 16px rgba(0,0,0,.3)); animation:logoBob 2.4s ease-in-out infinite; }
 @keyframes logoBob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-7px)} }
-.num-two  { position:absolute; top:205px; left:28px;  width:64px; z-index:22; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); animation:tileWobble 3.5s ease-in-out infinite .2s; }
-.num-three{ position:absolute; top:185px; right:28px; width:64px; z-index:22; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); animation:tileWobble 3.5s ease-in-out infinite .9s; }
+.num-two   { position:absolute; top:205px; left:28px;  width:64px; z-index:22; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); animation:tileWobble 3.5s ease-in-out infinite .2s; }
+.num-three { position:absolute; top:185px; right:28px; width:64px; z-index:22; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); animation:tileWobble 3.5s ease-in-out infinite .9s; }
 @keyframes tileWobble { 0%,100%{transform:rotate(-5deg) translateY(0)} 50%{transform:rotate(5deg) translateY(-10px)} }
 .block-left  { position:absolute; left:28px;  bottom:350px; width:110px; z-index:18; display:flex; flex-direction:column; align-items:center; }
 .block-right { position:absolute; right:28px; bottom:375px; width:110px; z-index:18; display:flex; flex-direction:column; align-items:center; }
@@ -35,305 +43,526 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .block-right .char-side { animation-delay:.7s; }
 @keyframes sideFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 .sym-block { display:none; }
-.redy-wrap { position:absolute; bottom:425px; left:50%; transform:translateX(-50%); width:150px; z-index:20; animation:redyJump 2s ease-in-out infinite; }
-@keyframes redyJump { 0%,100%{transform:translateX(-50%) translateY(0)} 45%{transform:translateX(-50%) translateY(-28px)} 55%{transform:translateX(-50%) translateY(-24px)} }
-.redy-img { width:100%; filter:drop-shadow(0 8px 16px rgba(0,0,0,.3)); }
-.jump-trail { display:none; }
-.panel { position:absolute; bottom:135px; left:20px; right:20px; background:var(--panel-bg); border-radius:28px; padding:18px 22px 20px; box-shadow:0 -2px 0 rgba(255,255,255,.5),0 10px 40px rgba(0,0,0,.2); z-index:25; }
-.coins-row { text-align:center; color:var(--yellow-dark); font-size:20px; font-weight:900; margin-bottom:3px; }
-.stage-row { text-align:center; color:var(--text-dark); font-size:15px; font-weight:700; margin-bottom:14px; }
+.redy-home { position:absolute; bottom:425px; left:50%; transform:translateX(-50%); width:150px; z-index:20; animation:redyBob 2s ease-in-out infinite; }
+@keyframes redyBob { 0%,100%{transform:translateX(-50%) translateY(0)} 45%{transform:translateX(-50%) translateY(-28px)} }
+
+/* ── Player name input ──────────────────────────────── */
+.name-input-wrap {
+  margin-bottom: 12px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.name-input-wrap .name-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 18px;
+  pointer-events: none;
+  z-index: 2;
+}
+#player-name-input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  font-family: 'Nunito', cursive;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--purple-dark);
+  background: white;
+  border: 3px solid var(--purple-btn);
+  border-radius: 50px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  box-shadow: 0 3px 0 var(--purple-dark);
+}
+#player-name-input::placeholder {
+  color: #bbb;
+  font-weight: 700;
+}
+#player-name-input:focus {
+  border-color: var(--yellow);
+  box-shadow: 0 3px 0 var(--yellow-dark), 0 0 0 3px rgba(245,197,24,.2);
+}
+/* Greeting shown below input */
+#name-greeting {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--purple-btn);
+  min-height: 18px;
+  margin-bottom: 4px;
+  transition: opacity .3s;
+}
+.home-panel { position:absolute; bottom:135px; left:20px; right:20px; background:var(--panel-bg); border-radius:28px; padding:18px 22px 20px; box-shadow:0 -2px 0 rgba(255,255,255,.5),0 10px 40px rgba(0,0,0,.2); z-index:25; }
+.coins-row  { text-align:center; color:var(--yellow-dark); font-size:20px; font-weight:900; margin-bottom:3px; }
+.stage-row  { text-align:center; color:var(--text-dark); font-size:15px; font-weight:700; margin-bottom:14px; }
 .btn-play   { display:block; width:100%; padding:15px; background:var(--purple-btn); color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:19px; font-weight:900; letter-spacing:1.5px; cursor:pointer; box-shadow:0 6px 0 var(--purple-dark); transition:transform .1s,box-shadow .1s; margin-bottom:10px; }
 .btn-play:active { transform:translateY(4px); box-shadow:0 2px 0 var(--purple-dark); }
-.btn-select { display:block; width:100%; padding:14px; background:transparent; color:var(--text-dark); border:2.5px solid var(--purple-btn); border-radius:50px; font-family:'Nunito',cursive; font-size:18px; font-weight:900; letter-spacing:1.5px; cursor:pointer; transition:background .2s; }
+.btn-select { display:block; width:100%; padding:14px; background:transparent; color:var(--text-dark); border:2.5px solid var(--purple-btn); border-radius:50px; font-family:'Nunito',cursive; font-size:18px; font-weight:900; letter-spacing:1.5px; cursor:pointer; }
 .btn-select:active { background:rgba(92,63,163,.08); }
 .bottom-nav { position:absolute; bottom:35px; left:20px; right:20px; display:flex; justify-content:space-between; z-index:30; }
-.nav-btn { width:75px; height:75px; border-radius:18px; border:none; outline:none; background:none; -webkit-appearance:none; cursor:pointer; padding:0; overflow:hidden; box-shadow:0 5px 0 rgba(0,0,0,.3); transition:transform .1s,box-shadow .1s; }
+.nav-btn { width:75px; height:75px; border-radius:18px; border:none; outline:none; background:none; cursor:pointer; padding:0; overflow:hidden; box-shadow:0 5px 0 rgba(0,0,0,.3); transition:transform .1s,box-shadow .1s; }
 .nav-btn:active { transform:translateY(4px); box-shadow:0 1px 0 rgba(0,0,0,.3); }
 .nav-btn img { width:100%; height:100%; object-fit:cover; display:block; }
 
-/* ══ STAGE SELECT ══ */
-#screen-stages { display:flex; flex-direction:column; align-items:center; padding:0 16px; }
-.stage-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; width:100%; margin-top:10px; }
-.stage-card { background:var(--panel-bg); border-radius:20px; padding:18px 14px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; border:3px solid transparent; box-shadow:0 4px 12px rgba(0,0,0,.15); transition:border-color .2s,transform .15s; }
-.stage-card:active { transform:scale(.97); }
-.stage-card.active-stage { border-color:var(--yellow); }
-.stage-num    { font-size:28px; font-weight:900; color:var(--purple-dark); }
-.stage-name   { font-size:13px; font-weight:900; color:var(--purple-btn); text-align:center; }
-.stage-tables { font-size:11px; color:#888; font-weight:700; text-align:center; }
-.stage-stars  { font-size:14px; letter-spacing:2px; }
-
-/* ══ CHAR SELECT ══ */
-#screen-chars { display:flex; flex-direction:column; align-items:center; padding:0 16px; }
-.chars-header { width:100%; display:flex; align-items:center; justify-content:space-between; padding:14px 0 0; }
+/* ─────────────────────────────────────────────
+   STAGE SELECT / CHAR SELECT  (shared chrome)
+───────────────────────────────────────────── */
+#screen-stages, #screen-chars { display:flex; flex-direction:column; align-items:center; padding:0 16px; }
+.screen-bg-blur { position:absolute; inset:0; background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center/cover; filter:blur(3px) brightness(.7); z-index:0; }
+.sel-header { width:100%; display:flex; align-items:center; justify-content:space-between; padding:14px 0 0; position:relative; z-index:20; }
 .back-btn { width:46px; height:46px; background:var(--yellow); border:none; border-radius:12px; font-size:22px; font-weight:900; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 0 var(--yellow-dark); transition:transform .1s,box-shadow .1s; }
 .back-btn:active { transform:translateY(3px); box-shadow:0 2px 0 var(--yellow-dark); }
 .coins-badge { background:var(--purple-dark); color:white; border-radius:50px; padding:8px 16px; font-size:15px; font-weight:900; }
-.chars-title-wrap { width:100%; text-align:center; margin:10px 0 4px; }
-.chars-title-sub  { font-size:13px; font-weight:700; color:var(--text-dark); background:rgba(255,255,255,.75); border-radius:20px; padding:4px 14px; display:inline-block; }
-.chars-title-main { display:block; font-size:38px; font-weight:900; color:white; text-shadow:0 4px 0 var(--purple-dark); letter-spacing:1px; margin-top:4px; }
-.char-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:100%; margin-top:10px; }
+.sel-title-wrap { width:100%; text-align:center; margin:10px 0 4px; position:relative; z-index:20; }
+.sel-title-sub  { font-size:13px; font-weight:700; color:var(--text-dark); background:rgba(255,255,255,.8); border-radius:20px; padding:4px 14px; display:inline-block; }
+.sel-title-main { display:block; font-size:38px; font-weight:900; color:white; text-shadow:0 4px 0 var(--purple-dark); letter-spacing:1px; margin-top:4px; }
+/* Stage grid */
+.stage-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; width:100%; margin-top:10px; position:relative; z-index:20; }
+.stage-card { background:var(--panel-bg); border-radius:20px; padding:18px 14px; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; border:3px solid transparent; box-shadow:0 4px 12px rgba(0,0,0,.2); transition:border-color .2s,transform .15s; }
+.stage-card:active { transform:scale(.97); }
+.stage-card.active-stage { border-color:var(--yellow); }
+.stage-num   { font-size:28px; font-weight:900; color:var(--purple-dark); }
+.stage-name  { font-size:13px; font-weight:900; color:var(--purple-btn); text-align:center; }
+.stage-desc  { font-size:11px; color:#888; font-weight:700; text-align:center; }
+.stage-stars { font-size:14px; letter-spacing:2px; }
+/* Char grid */
+.char-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:100%; margin-top:10px; position:relative; z-index:20; }
 .char-card { background:#fdf6e3; border-radius:18px; padding:10px 6px 8px; display:flex; flex-direction:column; align-items:center; cursor:pointer; border:3px solid transparent; transition:border-color .2s,transform .15s; position:relative; box-shadow:0 4px 12px rgba(0,0,0,.15); }
 .char-card.selected { border-color:var(--yellow); background:#fffbea; }
 .char-card:active { transform:scale(.96); }
 .char-card img { width:80%; aspect-ratio:1; object-fit:contain; }
 .char-emoji { font-size:50px; line-height:1; margin:4px 0; }
-.char-name { margin-top:6px; background:var(--purple-btn); color:white; border-radius:20px; font-size:12px; font-weight:900; padding:4px 12px; width:100%; text-align:center; }
+.char-name  { margin-top:6px; background:var(--purple-btn); color:white; border-radius:20px; font-size:12px; font-weight:900; padding:4px 12px; width:100%; text-align:center; }
 .char-card.selected .char-name { background:var(--purple-dark); }
 .check { display:none; position:absolute; top:-8px; right:-8px; width:26px; height:26px; background:#4caf50; border-radius:50%; align-items:center; justify-content:center; font-size:14px; border:2px solid white; }
 .char-card.selected .check { display:flex; }
-.lets-go-btn { display:block; width:65%; margin:14px auto 0; padding:16px; background:#4caf50; color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:20px; font-weight:900; letter-spacing:2px; cursor:pointer; box-shadow:0 5px 0 #388e3c; transition:transform .1s,box-shadow .1s; }
-.lets-go-btn:active { transform:translateY(3px); box-shadow:0 2px 0 #388e3c; }
+.lets-go-btn { display:block; width:65%; margin:14px auto 0; padding:16px; background:var(--green-btn); color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:20px; font-weight:900; letter-spacing:2px; cursor:pointer; box-shadow:0 5px 0 var(--green-dark); transition:transform .1s,box-shadow .1s; position:relative; z-index:20; }
+.lets-go-btn:active { transform:translateY(3px); box-shadow:0 2px 0 var(--green-dark); }
 
-/* ══════════════════════════════════════
-   GAME SCREEN — fixed coordinate layout
-   
-   Zones (top → bottom, px from top of 844px phone):
-   0–78:   header + progress bar
-   78–230: question panel zone
-   230–260: hint button (floating, always visible)  
-   260–430: number line zone (hidden until hint tapped)
-   430–560: skip-count sequence strip (always visible during game)
-   580–720: answer buttons
-   720–760: score badge
-══════════════════════════════════════ */
-#screen-game { display:flex; flex-direction:column; align-items:center; }
+/* ─────────────────────────────────────────────
+   GAME SCREEN  — matches ingame.png exactly
+───────────────────────────────────────────── */
+#screen-game { overflow:hidden; }
 
-/* Header */
-.game-header { width:100%; padding:14px 16px 0; display:flex; justify-content:space-between; align-items:center; z-index:20; }
-.hdr-badge { background:var(--purple-dark); color:white; border-radius:12px; padding:8px 18px; font-weight:900; font-size:14px; }
-.hdr-coins { background:var(--yellow-dark); color:white; border-radius:50px; padding:8px 14px; font-weight:900; font-size:14px; display:flex; align-items:center; gap:4px; }
-
-/* Progress bar */
-.progress-track { position:absolute; top:72px; left:5%; right:5%; height:14px; background:rgba(0,0,0,.2); border-radius:8px; overflow:hidden; z-index:20; }
-.progress-fill  { height:100%; background:var(--yellow); border-radius:8px; width:0%; transition:width .4s; }
-
-/* SRS retry badge */
-.srs-badge { position:absolute; top:74px; right:5%; background:#ff7043; color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:900; z-index:25; opacity:0; transition:opacity .3s; pointer-events:none; }
-.srs-badge.visible { opacity:1; }
-
-/* ── Question panel (equation only — clean) ── */
-.question-panel {
-  position:absolute;
-  top:95px; left:5%; right:5%;
-  background:var(--panel-bg);
-  border-radius:22px;
-  padding:16px 20px 14px;
-  box-shadow:0 6px 24px rgba(0,0,0,.18);
-  z-index:20;
-  text-align:center;
+/* Full background — ingame scene */
+.game-bg {
+  position:absolute; inset:0;
+  background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg.png') center top/cover no-repeat,
+             url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center top/cover no-repeat;
+  z-index:0;
 }
-.q-stage-label { font-size:11px; font-weight:900; color:#bbb; letter-spacing:1px; margin-bottom:6px; }
-.question-text { font-size:48px; font-weight:900; color:var(--text-dark); line-height:1.1; }
-.q-blank { display:inline-block; border:3px dashed var(--yellow-dark); border-radius:12px; padding:0 14px; color:var(--yellow-dark); }
 
-/* ── Hint button — floats below question panel, always visible ── */
-.hint-btn-wrap {
-  position:absolute;
-  top:232px; left:50%; transform:translateX(-50%);
+/* ── Header bar ── */
+.g-header {
+  position:absolute; top:0; left:0; right:0;
+  padding:14px 14px 0;
+  display:flex; align-items:center; gap:10px;
   z-index:30;
 }
-.hint-btn {
-  background:var(--yellow); color:#7a4e00;
-  border:none; border-radius:50px;
-  padding:9px 26px;
-  font-size:14px; font-weight:900;
-  font-family:'Nunito',cursive;
-  cursor:pointer;
-  box-shadow:0 5px 0 var(--yellow-dark);
-  transition:transform .1s, box-shadow .1s, background .2s;
-  white-space:nowrap;
-  letter-spacing:.5px;
-}
-.hint-btn:active { transform:translateY(3px); box-shadow:0 2px 0 var(--yellow-dark); }
-.hint-btn.on { background:var(--purple-btn); color:white; box-shadow:0 5px 0 var(--purple-dark); }
-.hint-btn.on:active { box-shadow:0 2px 0 var(--purple-dark); }
+.g-back { width:46px; height:46px; background:var(--yellow); border:none; border-radius:12px; font-size:22px; font-weight:900; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 0 var(--yellow-dark); flex-shrink:0; transition:transform .1s,box-shadow .1s; }
+.g-back:active { transform:translateY(3px); box-shadow:0 2px 0 var(--yellow-dark); }
+.g-coins { background:var(--purple-dark); color:white; border-radius:50px; padding:8px 14px; font-size:15px; font-weight:900; display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.g-world { background:var(--purple-dark); color:white; border-radius:12px; padding:6px 16px; font-size:13px; font-weight:900; text-align:center; flex:1; }
+.g-world-label { font-size:9px; letter-spacing:1px; opacity:.7; display:block; }
+.g-world-val   { font-size:16px; font-weight:900; display:block; }
+.g-timer { background:var(--purple-dark); color:white; border-radius:50px; padding:8px 14px; font-size:15px; font-weight:900; display:flex; align-items:center; gap:6px; flex-shrink:0; }
 
-/* ── Number line zone — slides in below hint button ── */
-.nl-zone {
+/* ── Progress bar with 3 star markers ── */
+.g-progress-wrap {
+  position:absolute; top:72px; left:14px; right:14px;
+  height:20px; z-index:30;
+  display:flex; align-items:center;
+}
+.g-progress-bg   { flex:1; height:16px; background:rgba(255,255,255,.25); border-radius:8px; overflow:visible; position:relative; }
+.g-progress-fill { height:100%; background:var(--yellow); border-radius:8px; width:0%; transition:width .5s ease; }
+.g-star-marker {
+  position:absolute; top:50%; transform:translate(-50%,-50%);
+  font-size:20px; filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
+  transition:filter .3s;
+}
+.g-star-marker.earned { filter:drop-shadow(0 0 6px gold); }
+
+/* ── Sun — top right, decorative ── */
+.g-sun {
+  position:absolute; top:88px; right:10px;
+  width:100px; z-index:20;
+  animation:sunWobble 4s ease-in-out infinite;
+  filter:drop-shadow(0 4px 12px rgba(255,200,0,.4));
+}
+@keyframes sunWobble { 0%,100%{transform:rotate(-4deg) scale(1)} 50%{transform:rotate(4deg) scale(1.05)} }
+
+/* ── Bird + speech bubble — top left ── */
+.g-bird-wrap {
+  position:absolute; top:108px; left:10px;
+  z-index:22; display:flex; align-items:flex-start; gap:6px;
+}
+.g-bird { width:72px; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); animation:birdBob 2.5s ease-in-out infinite; }
+@keyframes birdBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.g-bubble {
+  background:white; border-radius:18px 18px 18px 4px;
+  padding:8px 12px; font-size:13px; font-weight:900;
+  color:var(--purple-dark); box-shadow:0 4px 12px rgba(0,0,0,.15);
+  max-width:130px; line-height:1.35;
+  transition:background .3s, color .3s, transform .3s;
+}
+/* Pattern tip styling — green flash */
+.g-bubble.pattern {
+  background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+  color:#1b5e20;
+  transform:scale(1.06);
+  max-width:150px;
+}
+/* Commutativity tip styling — purple flash */
+.g-bubble.commute {
+  background:linear-gradient(135deg,#ede7f6,#d1c4e9);
+  color:var(--purple-dark);
+  transform:scale(1.06);
+  max-width:150px;
+}
+/* Coin bonus pop next to bubble */
+.bubble-coin-pop {
   position:absolute;
-  top:270px; left:0; right:0;
-  height:160px;
-  z-index:18;
-  display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
-  overflow:hidden;
-  /* hidden by default */
-  opacity:0;
-  pointer-events:none;
-  transform:translateY(-10px);
-  transition:opacity .3s ease, transform .3s ease;
+  top:-18px; right:-10px;
+  background:var(--yellow);
+  color:#7a4e00;
+  border-radius:50px;
+  padding:3px 9px;
+  font-size:11px; font-weight:900;
+  box-shadow:0 3px 8px rgba(0,0,0,.2);
+  opacity:0; transform:translateY(6px) scale(.7);
+  transition:opacity .25s ease, transform .25s ease;
+  pointer-events:none; white-space:nowrap;
 }
-.nl-zone.visible {
-  opacity:1;
-  pointer-events:auto;
-  transform:translateY(0);
+.bubble-coin-pop.show {
+  opacity:1; transform:translateY(0) scale(1);
 }
 
-/* Rail line across the zone */
-.nl-rail {
+/* ── Question card — big, centred ── */
+.g-question-card {
   position:absolute;
-  bottom:54px; left:0; right:0;
-  height:5px;
-  background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55) 15%, rgba(255,255,255,.55) 85%, rgba(255,255,255,0));
-  border-radius:3px;
-  pointer-events:none;
-}
-
-/* Scrollable stone track */
-.nl-track {
-  display:flex; gap:0; align-items:flex-end;
-  overflow-x:auto; width:100%;
-  padding:0 20px 8px;
-  scrollbar-width:none;
-  position:relative; z-index:2;
-}
-.nl-track::-webkit-scrollbar { display:none; }
-
-/* Individual stone */
-.nl-stone {
-  flex-shrink:0; width:56px;
-  display:flex; flex-direction:column; align-items:center; gap:3px;
-}
-
-/* Character above stone */
-.nl-stone-char {
-  width:44px; height:44px;
-  display:flex; align-items:flex-end; justify-content:center;
-  overflow:visible;
-}
-.nl-stone-char img {
-  width:42px; height:42px; object-fit:contain;
-  filter:drop-shadow(0 3px 6px rgba(0,0,0,.3));
-  transform-origin:bottom center;
-}
-/* Jump animation when Redy moves to a stone */
-.nl-stone-char img.jumping {
-  animation:redyStoneJump .45s cubic-bezier(.4,0,.2,1) forwards;
-}
-@keyframes redyStoneJump {
-  0%   { transform:scaleX(1.1) translateY(0); }
-  35%  { transform:scaleX(.9) translateY(-32px); }
-  70%  { transform:scaleX(1.05) translateY(-10px); }
-  100% { transform:scaleX(1) translateY(0); }
-}
-
-/* Stone circle */
-.nl-stone-circle {
-  width:44px; height:44px; border-radius:50%;
-  background:rgba(255,255,255,.82);
-  border:3px solid rgba(92,63,163,.2);
-  display:flex; align-items:center; justify-content:center;
-  font-size:13px; font-weight:900; color:var(--text-dark);
-  box-shadow:0 3px 10px rgba(0,0,0,.15);
-  transition:background .25s, border-color .25s, transform .25s, box-shadow .25s;
-  position:relative; z-index:1;
-}
-/* Stone states */
-.nl-stone.zero   .nl-stone-circle { background:rgba(255,255,255,.45); color:#bbb; font-size:11px; }
-.nl-stone.passed .nl-stone-circle { background:var(--yellow); border-color:var(--yellow-dark); }
-.nl-stone.current .nl-stone-circle {
-  background:var(--purple-btn); color:white;
-  border-color:var(--purple-dark);
-  transform:scale(1.18);
-  box-shadow:0 5px 16px rgba(108,77,191,.55);
-}
-.nl-stone.answer .nl-stone-circle {
-  border-color:rgba(108,77,191,.5);
-  animation:stonePulse .9s ease-in-out infinite;
-}
-.nl-stone.dim    .nl-stone-circle { opacity:.35; }
-@keyframes stonePulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-
-/* Dust pop under Redy on landing */
-.nl-stone.current .nl-stone-circle::after {
-  content:'✨';
-  position:absolute; bottom:-16px; left:50%;
-  transform:translateX(-50%);
-  font-size:14px;
-  animation:dustPop .5s ease forwards;
-}
-@keyframes dustPop { 0%{opacity:1;transform:translateX(-50%) scale(.5)} 80%{opacity:.6;transform:translateX(-50%) scale(1.3)} 100%{opacity:0;transform:translateX(-50%) scale(1.6)} }
-
-.nl-stone-tick { width:2px; height:8px; background:rgba(255,255,255,.35); border-radius:1px; }
-
-/* ── Skip-count sequence strip — always visible during game ── */
-.skip-strip {
-  position:absolute;
-  left:5%; right:5%;
-  z-index:20;
+  top:220px; left:14px; right:14px;
   background:var(--panel-bg);
-  border-radius:18px;
-  padding:10px 16px;
-  box-shadow:0 4px 16px rgba(0,0,0,.15);
-  text-align:center;
-  /* default position (no hint open) */
-  bottom:202px;
-  transition:bottom .3s ease;
+  border-radius:24px;
+  padding:22px 24px 20px;
+  box-shadow:0 8px 32px rgba(0,0,0,.2);
+  z-index:25; text-align:center;
 }
-.skip-strip.hint-open { bottom:202px; } /* stays put — number line appears above it */
-
-.skip-label { font-size:10px; font-weight:900; color:var(--purple-btn); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
-.skip-sequence { font-size:22px; font-weight:900; color:var(--text-dark); letter-spacing:1px; }
-.skip-blank { display:inline-block; border:3px dashed var(--yellow-dark); border-radius:10px; padding:0 12px; color:var(--yellow-dark); min-width:44px; }
-
-/* ── Answer buttons ── */
-.answer-grid {
-  position:absolute; bottom:112px; left:5%; right:5%;
-  display:grid; grid-template-columns:repeat(4,1fr);
-  gap:10px; z-index:20;
+.g-equation {
+  font-size:52px; font-weight:900; color:var(--purple-dark);
+  line-height:1.1; display:flex; align-items:center; justify-content:center; gap:12px;
 }
-.ans-btn {
-  color:white; border:none; border-radius:16px;
-  padding:16px 0; font-size:26px; font-weight:900;
-  font-family:'Nunito',cursive; cursor:pointer;
-  box-shadow:0 5px 0 rgba(0,0,0,.25);
-  transition:transform .1s,box-shadow .1s;
+.g-blank {
+  border:3px dashed var(--yellow-dark); border-radius:14px;
+  padding:2px 16px; color:var(--yellow-dark); font-size:52px;
+  min-width:70px; text-align:center;
 }
-.ans-btn:active:not(:disabled) { transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,.25); }
 
-/* Score + streak */
-.score-badge { position:absolute; bottom:64px; left:50%; transform:translateX(-50%); background:var(--purple-dark); color:white; border-radius:50px; padding:7px 22px; font-weight:900; font-size:15px; z-index:20; }
-.streak-banner { position:absolute; top:88px; left:50%; transform:translateX(-50%) scale(0); background:linear-gradient(135deg,#ff6b35,#f7c59f); color:white; border-radius:30px; padding:10px 26px; font-size:20px; font-weight:900; letter-spacing:1px; box-shadow:0 6px 20px rgba(0,0,0,.3); z-index:50; white-space:nowrap; pointer-events:none; transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s; opacity:0; }
+/* ── SRS retry badge ── */
+.g-srs { position:absolute; top:74px; right:14px; background:#ff7043; color:white; border-radius:20px; padding:2px 10px; font-size:11px; font-weight:900; z-index:31; opacity:0; transition:opacity .3s; pointer-events:none; }
+.g-srs.visible { opacity:1; }
+
+/* ── Streak banner ── */
+.streak-banner { position:absolute; top:96px; left:50%; transform:translateX(-50%) scale(0); background:linear-gradient(135deg,#ff6b35,#f7c59f); color:white; border-radius:30px; padding:10px 24px; font-size:20px; font-weight:900; box-shadow:0 6px 20px rgba(0,0,0,.3); z-index:50; white-space:nowrap; pointer-events:none; transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s; opacity:0; }
 .streak-banner.show { transform:translateX(-50%) scale(1); opacity:1; }
 .streak-banner.hide { transform:translateX(-50%) scale(.8); opacity:0; }
 
-/* ══ SHOP MODAL ══ */
-.modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,.6); z-index:80; display:flex; align-items:flex-end; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s; }
+/* ── Redy on path — bottom centre ── */
+.g-redy {
+  position:absolute; bottom:168px; left:50%; transform:translateX(-50%);
+  width:90px; z-index:22;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.3));
+  animation:redyIdle 2.2s ease-in-out infinite;
+  transition:left .45s cubic-bezier(.4,0,.2,1), bottom .45s cubic-bezier(.4,0,.2,1);
+}
+@keyframes redyIdle { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
+.g-redy.jumping  { animation:redyJumpAnim .5s cubic-bezier(.4,0,.2,1) forwards; }
+.g-redy.shaking  { animation:redyShake .4s ease forwards; }
+@keyframes redyJumpAnim {
+  0%  {transform:translateX(-50%) scaleX(1.08) translateY(0)}
+  30% {transform:translateX(-50%) scaleX(.9) translateY(-52px)}
+  65% {transform:translateX(-50%) scaleX(1.04) translateY(-16px)}
+  100%{transform:translateX(-50%) scaleX(1) translateY(0)}
+}
+@keyframes redyShake {
+  0%,100%{transform:translateX(-50%)}
+  20%{transform:translateX(calc(-50% - 10px))}
+  40%{transform:translateX(calc(-50% + 10px))}
+  60%{transform:translateX(calc(-50% - 8px))}
+  80%{transform:translateX(calc(-50% + 7px))}
+}
+
+/* ── "You got this!" sign — bottom right ── */
+.g-sign {
+  position:absolute; bottom:158px; right:12px;
+  width:110px; z-index:22;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));
+  animation:signWobble 3s ease-in-out infinite;
+}
+@keyframes signWobble { 0%,100%{transform:rotate(-2deg)} 50%{transform:rotate(2deg)} }
+
+/* ── Show Hint button — below sun, right side ── */
+.g-hint-btn {
+  position:absolute; top:196px; right:14px;
+  background:var(--yellow); color:#7a4e00;
+  border:none; border-radius:50px;
+  padding:8px 16px; font-size:12px; font-weight:900;
+  font-family:'Nunito',cursive; cursor:pointer;
+  box-shadow:0 4px 0 var(--yellow-dark);
+  z-index:26; white-space:nowrap;
+  transition:transform .1s, box-shadow .1s, opacity .3s;
+  /* hidden until triggered */
+  opacity:0; pointer-events:none;
+}
+.g-hint-btn.visible { opacity:1; pointer-events:auto; }
+.g-hint-btn.on { background:var(--purple-btn); color:white; box-shadow:0 4px 0 var(--purple-dark); }
+.g-hint-btn:active { transform:translateY(3px); box-shadow:0 1px 0 var(--yellow-dark); }
+.g-hint-btn.on:active { box-shadow:0 1px 0 var(--purple-dark); }
+
+/* ─────────────────────────────────────────────
+   NUMBER LINE HINT  (overlays the path area)
+───────────────────────────────────────────── */
+.nl-overlay {
+  position:absolute;
+  top:345px; left:0; right:0; bottom:168px;
+  z-index:28;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:0 10px;
+  opacity:0; pointer-events:none;
+  transition:opacity .35s ease;
+}
+.nl-overlay.visible { opacity:1; pointer-events:auto; }
+
+/* Phase label */
+.nl-phase-label {
+  font-size:11px; font-weight:900; color:rgba(255,255,255,.9);
+  letter-spacing:1.5px; text-transform:uppercase;
+  background:rgba(61,39,120,.55); border-radius:20px;
+  padding:4px 14px; margin-bottom:8px;
+  text-shadow:0 1px 3px rgba(0,0,0,.4);
+}
+
+/* Hop counter shown during demo */
+.nl-hop-counter {
+  font-size:34px; font-weight:900; color:white;
+  text-shadow:0 2px 8px rgba(0,0,0,.5);
+  margin-bottom:4px; min-height:36px; text-align:center;
+}
+
+/* Stone track */
+.nl-track-wrap { width:100%; overflow:hidden; }
+.nl-track {
+  display:flex; gap:0; align-items:flex-end;
+  overflow-x:auto; width:100%;
+  padding:4px 10px 4px; scrollbar-width:none;
+}
+.nl-track::-webkit-scrollbar { display:none; }
+
+/* Rail line */
+.nl-rail {
+  position:absolute;
+  bottom:calc(168px + 22px); /* sits on top of ground */
+  left:0; right:0; height:5px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55) 15%,rgba(255,255,255,.55) 85%,rgba(255,255,255,0));
+  border-radius:3px; pointer-events:none;
+}
+
+/* Each stone */
+
+/* ── Visual Groups (CRA Framework) ─────────────────────
+   Shows equal groups of stars above the number line.
+   e.g. 3rd hop of 3×4: three boxes each with 3 stars.
+──────────────────────────────────────────────────────── */
+#nl-visual-groups {
+  display:flex; gap:8px; align-items:center; justify-content:center;
+  flex-wrap:wrap; width:100%; min-height:48px;
+  margin-bottom:6px; padding:0 8px;
+}
+.vg-group {
+  display:flex; flex-wrap:wrap; gap:3px;
+  align-items:center; justify-content:center;
+  background:rgba(255,255,255,.18);
+  border:2px solid rgba(255,255,255,.4);
+  border-radius:10px; padding:5px 6px;
+  min-width:36px;
+  animation:vgPop .3s cubic-bezier(.34,1.56,.64,1) backwards;
+}
+@keyframes vgPop {
+  from{transform:scale(0);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+.vg-star {
+  font-size:13px; line-height:1;
+  animation:starSpin .4s ease backwards;
+}
+@keyframes starSpin {
+  from{transform:scale(0) rotate(-180deg);opacity:0}
+  to{transform:scale(1) rotate(0deg);opacity:1}
+}
+.nl-stone { flex-shrink:0; width:80px; display:flex; flex-direction:column; align-items:center; gap:0; }
+
+/* Character slot sitting above each stone circle */
+.nl-char-slot {
+  width:80px; height:70px;
+  display:flex; align-items:flex-end; justify-content:center;
+  position:relative; overflow:visible;
+}
+.nl-char-slot img {
+  width:64px; height:64px; object-fit:contain;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,.35));
+  transform-origin:bottom center;
+  display:block;
+}
+/* Jump arc animation for the character slot */
+.nl-char-slot.jumping img {
+  animation:nlCharJump .5s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes nlCharJump {
+  0%   { transform:scaleX(1.1) translateY(0); }
+  28%  { transform:scaleX(.88) translateY(-62px); }
+  62%  { transform:scaleX(1.05) translateY(-14px); }
+  100% { transform:scaleX(1) translateY(0); }
+}
+/* Shake on wrong tap */
+.nl-char-slot.shaking img {
+  animation:nlCharShake .38s ease forwards;
+}
+@keyframes nlCharShake {
+  0%,100%{ transform:translateX(0); }
+  20%    { transform:translateX(-9px); }
+  40%    { transform:translateX(10px); }
+  60%    { transform:translateX(-7px); }
+  80%    { transform:translateX(6px); }
+}
+.nl-stone-circle {
+  width:58px; height:58px; border-radius:50%;
+  background:rgba(255,255,255,.82); border:3px solid rgba(92,63,163,.25);
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px; font-weight:900; color:var(--text-dark);
+  box-shadow:0 3px 10px rgba(0,0,0,.15);
+  transition:background .25s, border-color .25s, transform .25s;
+  cursor:default;
+}
+/* Clickable in interactive phase */
+.nl-stone.interactive .nl-stone-circle { cursor:pointer; }
+.nl-stone.interactive .nl-stone-circle:hover { background:rgba(255,255,255,1); transform:scale(1.08); }
+/* Stone states */
+.nl-stone.zero    .nl-stone-circle { background:rgba(255,255,255,.45); color:#aaa; font-size:13px; }
+.nl-stone.passed  .nl-stone-circle { background:var(--yellow); border-color:var(--yellow-dark); }
+.nl-stone.current .nl-stone-circle { background:var(--purple-btn); color:white; border-color:var(--purple-dark); transform:scale(1.15); box-shadow:0 4px 14px rgba(108,77,191,.55); }
+.nl-stone.next    .nl-stone-circle { border-color:var(--purple-btn); animation:stPulse .9s ease-in-out infinite; }
+.nl-stone.dim     .nl-stone-circle { opacity:.3; }
+@keyframes stPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+.nl-stone-tick { width:2px; height:8px; background:rgba(255,255,255,.35); border-radius:1px; }
+
+/* Dust pop on landing */
+.nl-dust { font-size:18px; position:absolute; bottom:-2px; left:50%; transform:translateX(-50%); opacity:0; pointer-events:none; }
+.nl-dust.pop { animation:dustPop .55s ease forwards; }
+@keyframes dustPop { 0%{opacity:1;transform:translateX(-50%) scale(.3)} 60%{opacity:.8;transform:translateX(-50%) scale(1.5)} 100%{opacity:0;transform:translateX(-50%) scale(2)} }
+
+/* Number callout */
+.nl-callout {
+  position:absolute; top:370px; left:50%; transform:translateX(-50%) translateY(0) scale(0);
+  background:var(--purple-dark); color:white;
+  border-radius:50px; padding:8px 20px;
+  font-size:18px; font-weight:900;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
+  z-index:40; pointer-events:none; white-space:nowrap;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), opacity .22s;
+  opacity:0;
+}
+.nl-callout.show { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+.nl-callout.hide { opacity:0; transform:translateX(-50%) translateY(-16px) scale(.7); }
+
+
+/* Pulse animation on correct button after NL walkthrough */
+@keyframes correctPulse {
+  0%,100%{ box-shadow:0 6px 0 rgba(0,0,0,.25); transform:scale(1); }
+  50%    { box-shadow:0 6px 20px rgba(76,175,80,.8); transform:scale(1.06); }
+}
+.ans-btn.pulse-correct {
+  animation:correctPulse .7s ease-in-out infinite;
+  border:3px solid white;
+}
+/* ─────────────────────────────────────────────
+   ANSWER BUTTONS  — bottom of game screen
+   Generated ONCE per question, NEVER mutated by hint
+───────────────────────────────────────────── */
+.g-answers {
+  position:absolute; bottom:80px; left:14px; right:14px;
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:10px; z-index:30;
+}
+.ans-btn {
+  color:white; border:none; border-radius:16px;
+  padding:18px 0; font-size:28px; font-weight:900;
+  font-family:'Nunito',cursive; cursor:pointer;
+  box-shadow:0 6px 0 rgba(0,0,0,.25);
+  transition:transform .1s, box-shadow .1s;
+  position:relative;
+}
+.ans-btn:active:not(:disabled) { transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.25); }
+/* State feedback */
+.ans-btn.correct { background:#4caf50 !important; }
+.ans-btn.wrong   { background:#f44336 !important; }
+
+/* Score badge */
+.g-score { position:absolute; bottom:30px; left:50%; transform:translateX(-50%); background:var(--purple-dark); color:white; border-radius:50px; padding:7px 22px; font-weight:900; font-size:15px; z-index:30; white-space:nowrap; }
+
+/* ─────────────────────────────────────────────
+   SHOP MODAL
+───────────────────────────────────────────── */
+.modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,.6); z-index:80; display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .3s; }
 .modal-overlay.open { opacity:1; pointer-events:auto; }
 .modal-sheet { width:100%; background:var(--panel-bg); border-radius:28px 28px 0 0; padding:24px 20px 32px; transform:translateY(100%); transition:transform .35s cubic-bezier(.34,1.2,.64,1); }
 .modal-overlay.open .modal-sheet { transform:translateY(0); }
 .modal-title { font-size:22px; font-weight:900; color:var(--text-dark); text-align:center; margin-bottom:4px; }
 .modal-sub   { font-size:13px; color:#888; font-weight:700; text-align:center; margin-bottom:16px; }
-.modal-coins { text-align:center; color:var(--yellow-dark); font-size:17px; font-weight:900; margin-bottom:16px; }
+.modal-coins-row { text-align:center; color:var(--yellow-dark); font-size:17px; font-weight:900; margin-bottom:16px; }
 .skin-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 .skin-card  { border-radius:16px; padding:14px 8px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; border:3px solid transparent; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,.1); transition:border-color .2s,transform .15s; }
 .skin-card:active { transform:scale(.96); }
 .skin-card.equipped { border-color:var(--yellow); }
 .skin-cube  { width:54px; height:54px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:28px; box-shadow:0 4px 0 rgba(0,0,0,.2); }
-.skin-label { font-size:11px; font-weight:900; color:var(--text-dark); text-align:center; }
+.skin-label { font-size:11px; font-weight:900; color:var(--text-dark); }
 .skin-cost  { font-size:10px; font-weight:900; color:var(--yellow-dark); }
 .skin-owned { font-size:10px; font-weight:900; color:#4caf50; }
-.modal-close { display:block; width:100%; margin-top:18px; padding:14px; background:var(--purple-btn); color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:17px; font-weight:900; cursor:pointer; box-shadow:0 5px 0 var(--purple-dark); transition:transform .1s,box-shadow .1s; }
-.modal-close:active { transform:translateY(3px); box-shadow:0 2px 0 var(--purple-dark); }
+.modal-close { display:block; width:100%; margin-top:18px; padding:14px; background:var(--purple-btn); color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:17px; font-weight:900; cursor:pointer; box-shadow:0 5px 0 var(--purple-dark); }
 
-.toast { position:absolute; bottom:56px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:8px 20px; font-size:14px; font-weight:900; opacity:0; pointer-events:none; z-index:60; transition:all .3s ease; white-space:nowrap; }
+/* Toast */
+.toast { position:absolute; bottom:56px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:8px 20px; font-size:14px; font-weight:900; opacity:0; pointer-events:none; z-index:90; transition:all .3s; white-space:nowrap; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 <div class="phone-wrap">
 <div class="phone" id="phone">
-<div class="bg"></div>
 
-<!-- ══ HOME ══ -->
+<!-- ══════════════════════════════════════
+     HOME SCREEN
+══════════════════════════════════════ -->
 <div class="screen" id="screen-home">
+  <div class="home-bg"></div>
   <img class="logo" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-logo.png" alt="Maths Jumper"/>
   <img class="num-two"   src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numbertwo.png" alt="2"/>
   <img class="num-three" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-main-numberthree.png" alt="3"/>
-  <div class="block-left"><img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/><div class="sym-block">×</div></div>
-  <div class="block-right"><img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/><div class="sym-block">=</div></div>
-  <div class="jump-trail"></div>
-  <div class="redy-wrap"><img class="redy-img" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/></div>
-  <div class="panel">
+  <div class="block-left"><img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-pip.png" alt="Pip"/><div class="sym-block"></div></div>
+  <div class="block-right"><img class="char-side" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-unia.png" alt="Unia"/><div class="sym-block"></div></div>
+  <div class="redy-home"><img style="width:100%" src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png" alt="Redy"/></div>
+  <div class="home-panel">
+    <div class="name-input-wrap">
+      <span class="name-icon">🧒</span>
+      <input
+        id="player-name-input"
+        type="text"
+        maxlength="16"
+        placeholder="Enter your name..."
+        autocomplete="off"
+        spellcheck="false"
+        oninput="onNameInput(this.value)"
+      />
+    </div>
+    <div id="name-greeting"></div>
     <div class="coins-row" id="home-coins">Coins ⭐: 0</div>
     <div class="stage-row" id="home-stage">Highest Stage: 1</div>
     <button class="btn-play" id="btn-play-home">PLAY STAGE 1</button>
@@ -347,109 +576,286 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   </div>
 </div>
 
-<!-- ══ STAGE SELECT ══ -->
+<!-- ══════════════════════════════════════
+     STAGE SELECT
+══════════════════════════════════════ -->
 <div class="screen hidden" id="screen-stages">
-  <div class="chars-header">
+  <div class="screen-bg-blur"></div>
+  <div class="sel-header">
     <button class="back-btn" onclick="showScreen('screen-home')">←</button>
     <div class="coins-badge" id="stage-coins-badge">⭐ 0</div>
   </div>
-  <div class="chars-title-wrap">
-    <span class="chars-title-sub">Pick your challenge level!</span>
-    <span class="chars-title-main">SELECT<br/>STAGE</span>
+  <div class="sel-title-wrap">
+    <span class="sel-title-sub">Pick your challenge level!</span>
+    <span class="sel-title-main">SELECT<br/>STAGE</span>
   </div>
   <div class="stage-grid" id="stage-grid"></div>
 </div>
 
-<!-- ══ CHAR SELECT ══ -->
+<!-- ══════════════════════════════════════
+     CHAR SELECT
+══════════════════════════════════════ -->
 <div class="screen hidden" id="screen-chars">
-  <div class="chars-header">
+  <div class="screen-bg-blur"></div>
+  <div class="sel-header">
     <button class="back-btn" onclick="showScreen('screen-home')">←</button>
     <div class="coins-badge" id="chars-coins-badge">⭐ 0</div>
   </div>
-  <div class="chars-title-wrap">
-    <span class="chars-title-sub">Pick a buddy and start your maths adventure!</span>
-    <span class="chars-title-main">CHOOSE YOUR<br/>CHARACTER</span>
+  <div class="sel-title-wrap">
+    <span class="sel-title-sub">Pick a buddy and start your maths adventure!</span>
+    <span class="sel-title-main">CHOOSE YOUR<br/>CHARACTER</span>
   </div>
   <div class="char-grid" id="char-grid"></div>
   <button class="lets-go-btn" onclick="showScreen('screen-game')">LET'S GO!</button>
 </div>
 
-<!-- ══ GAME SCREEN ══ -->
+<!-- ══════════════════════════════════════
+     GAME SCREEN  — matches ingame.png
+══════════════════════════════════════ -->
 <div class="screen hidden" id="screen-game">
 
-  <!-- 1. Header -->
-  <div class="game-header">
-    <button class="back-btn" onclick="endSession()">←</button>
-    <div class="hdr-badge" id="hdr-stage">STAGE 1</div>
-    <div class="hdr-coins">⭐ <span id="hdr-coins-val">0</span></div>
+  <!-- Background -->
+  <div class="game-bg"></div>
+
+  <!-- Header -->
+  <div class="g-header">
+    <button class="g-back" onclick="endSession()">←</button>
+    <div class="g-coins">⭐ <span id="g-coins-val">0</span></div>
+    <div class="g-world">
+      <span class="g-world-label">WORLD</span>
+      <span class="g-world-val" id="g-world-val">1 - 1</span>
+    </div>
+    <div class="g-timer">⏱ <span id="g-timer">240</span></div>
   </div>
 
-  <!-- 2. Progress bar -->
-  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-  <div class="srs-badge" id="srs-badge">🔄 Retry!</div>
-
-  <!-- 3. Question panel (equation only) -->
-  <div class="question-panel" id="question-panel">
-    <div class="q-stage-label" id="q-stage-label">LET'S MULTIPLY! 🐦</div>
-    <div class="question-text" id="question-text">
-      3 × 4 = <span class="q-blank">?</span>
+  <!-- Progress bar -->
+  <div class="g-progress-wrap">
+    <div class="g-progress-bg">
+      <div class="g-progress-fill" id="g-progress-fill"></div>
+      <span class="g-star-marker" id="star1" style="left:33%">⭐</span>
+      <span class="g-star-marker" id="star2" style="left:66%">⭐</span>
+      <span class="g-star-marker" id="star3" style="left:99%">⭐</span>
     </div>
   </div>
 
-  <!-- 4. Hint button — clearly below question panel -->
-  <div class="hint-btn-wrap">
-    <button class="hint-btn" id="hint-btn" onclick="toggleHint()">💡 Show Hint</button>
+  <!-- Sun (top right) -->
+  <img class="g-sun"
+    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-sun.png"
+    onerror="this.style.fontSize='60px';this.outerHTML='<div class=\'g-sun\' style=\'font-size:64px;text-align:center\'>☀️</div>'"
+    alt="Sun"/>
+
+  <!-- Bird + speech bubble -->
+  <div class="g-bird-wrap">
+    <img class="g-bird"
+      src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bird.png"
+      onerror="this.style.fontSize='50px';this.outerHTML='<div style=\'font-size:50px\'>🐦</div>'"
+      alt="Bird"/>
+    <div class="g-bubble" id="g-bubble"><span id="bubble-text">Let's multiply!</span><span class="bubble-coin-pop" id="bubble-coin-pop"></span></div>
   </div>
 
-  <!-- 5. Number line zone (hidden until hint tapped) -->
-  <div class="nl-zone" id="nl-zone">
-    <div class="nl-rail"></div>
-    <div class="nl-track" id="nl-track"></div>
+  <!-- SRS badge -->
+  <div class="g-srs" id="g-srs">🔄 Try again!</div>
+
+  <!-- Question card -->
+  <div class="g-question-card">
+    <div class="g-equation" id="g-equation">
+      <span id="eq-a">1</span>
+      <span>×</span>
+      <span id="eq-b">1</span>
+      <span>=</span>
+      <span class="g-blank">?</span>
+    </div>
   </div>
 
-  <!-- 6. Skip-count sequence strip (always visible) -->
-  <div class="skip-strip" id="skip-strip">
-    <div class="skip-label">Skip count 🔢</div>
-    <div class="skip-sequence" id="skip-sequence">?, ?, ?, <span class="skip-blank">?</span></div>
-  </div>
+  <!-- Hint button (below sun, right) -->
+  <button class="g-hint-btn" id="g-hint-btn" onclick="toggleHint()">💡 Show Hint</button>
 
-  <!-- 7. Answer buttons -->
-  <div class="answer-grid" id="answer-grid"></div>
-
-  <!-- 8. Score + streak -->
-  <div class="score-badge">⭐ <span id="score">0</span></div>
+  <!-- Streak banner -->
   <div class="streak-banner" id="streak-banner">🔥 STREAK!</div>
+
+  <!-- Number line overlay (on path) -->
+  <div class="nl-overlay" id="nl-overlay">
+    <div class="nl-phase-label" id="nl-phase-label">Watch Redy count!</div>
+    <div class="nl-hop-counter" id="nl-hop-counter"></div>
+    <div id="nl-visual-groups"></div>
+    <div class="nl-track-wrap">
+      <div class="nl-track" id="nl-track"></div>
+    </div>
+  </div>
+  <div class="nl-rail" id="nl-rail"></div>
+  <div class="nl-callout" id="nl-callout">Eight!</div>
+
+  <!-- Redy character on path -->
+  <img class="g-redy" id="g-redy"
+    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy.png"
+    onerror="this.src='https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png'"
+    alt="Redy"/>
+
+  <!-- Wooden sign -->
+  <img class="g-sign"
+    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-sign.png"
+    onerror="this.outerHTML='<div class=\'g-sign\' style=\'background:#8B5E3C;color:white;border-radius:10px;padding:10px;font-size:13px;font-weight:900;text-align:center;bottom:158px;right:12px;position:absolute;z-index:22\'>You got<br/>this! ⭐</div>'"
+    alt="Sign"/>
+
+  <!-- Answer buttons (generated once per question, NEVER touched by hint) -->
+  <div class="g-answers" id="g-answers"></div>
+
+  <!-- Score -->
+  <div class="g-score">⭐ <span id="g-score">0</span></div>
 
 </div>
 
-<!-- ══ SHOP MODAL ══ -->
+<!-- ══════════════════════════════════════
+     SHOP MODAL
+══════════════════════════════════════ -->
 <div class="modal-overlay" id="shop-modal">
   <div class="modal-sheet">
     <div class="modal-title">🎨 Character Shop</div>
-    <div class="modal-sub">Spend coins to unlock new looks for Redy!</div>
-    <div class="modal-coins" id="shop-coins-display">Your coins: ⭐ 0</div>
+    <div class="modal-sub">Spend coins to unlock new looks!</div>
+    <div class="modal-coins-row" id="shop-coins-display">Your coins: ⭐ 0</div>
     <div class="skin-grid" id="skin-grid"></div>
     <button class="modal-close" onclick="closeShop()">CLOSE</button>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
 </div><!-- .phone -->
 </div>
 
 <script>
-/* ═══════════════════════════════════
-   CONSTANTS
-═══════════════════════════════════ */
-const BASE   = 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/';
-const COLORS = ['#4caf50','#2196f3','#f5c518','#e91e63'];
+/* ═══════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════ */
+const BASE = 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/';
 
 const STAGES = [
-  { id:1, name:'Easy Wins',  tables:[2,5,10], desc:'2s, 5s & 10s', emoji:'⭐', hint:'Count by 2s, 5s & 10s! 🐦' },
-  { id:2, name:'Doubles',    tables:[4,8],    desc:'4s & 8s',       emoji:'🔥', hint:'Double up! 🔥' },
-  { id:3, name:'Patterns',   tables:[3,6,9],  desc:'3s, 6s & 9s',   emoji:'💫', hint:'Spot the pattern! 💫' },
-  { id:4, name:'Hard Ones',  tables:[7,11,12],desc:'7s, 11s & 12s', emoji:'🏆', hint:'You got this! 🏆' },
+  { id:1, name:'Easy Wins',  tables:[2,5,10], desc:'2s, 5s & 10s', emoji:'⭐' },
+  { id:2, name:'Doubles',    tables:[4,8],    desc:'4s & 8s',       emoji:'🔥' },
+  { id:3, name:'Patterns',   tables:[3,6,9],  desc:'3s, 6s & 9s',   emoji:'💫' },
+  { id:4, name:'Hard Ones',  tables:[7,11,12],desc:'7s, 11s & 12s', emoji:'🏆' },
 ];
+
+/* ── Table patterns ─────────────────────────────────────────────
+   One memorable rule per table shown after a correct answer.
+   Uses the factor that matches the table (a or b).
+──────────────────────────────────────────────────────────────── */
+const TABLE_PATTERNS = {
+  2:  ["2s are easy — just double it! 🎉", "2s are always even numbers! 🟢", "Count by 2s: 2, 4, 6, 8… ✌️"],
+  3:  ["3s: add the digits — they sum to 3, 6, or 9! 🔢", "3s grow by 3 each time! ➕", "Odd, even, odd… 3s alternate! 🔀"],
+  4:  ["4s = double, then double again! 🔄", "4 × any number = 2 × (2 ×) it! 💡", "4s are always even! ✅"],
+  5:  ["5s always end in 0 or 5! 🖐️", "Count on one hand — 5, 10, 15… ✋", "Half of the 10s table! 🎯"],
+  6:  ["6 × even = ends in 0, 2, 4, 6, 8! 🔢", "6s = 5s + one more group! ➕", "6 × 6 = 36… six and six! 🎲"],
+  7:  ["7s are tricky — practise these most! 💪", "7 × 8 = 56: 5, 6, 7, 8! 🔢", "Learn 7 × 7 = 49 by heart! ⭐"],
+  8:  ["8s = double, double, double! ×2×2×2 🔄", "8 × 5 = 40 — half of 80! 🎯", "8s are always even! ✅"],
+  9:  ["9s trick: digits always add up to 9! 🤯", "Hold up 10 fingers, fold one down! 🖐️", "9 = 10 minus 1, so 9×6 = 60−6=54! 💡"],
+  10: ["10s — just add a zero! 🔟", "10 × anything moves one place left! ⬅️", "10s are the easiest! 🏆"],
+  11: ["11s up to 9: just double the digit! 11×7=77 🎉", "11 × 11 = 121 — palindrome! 🪞", "11s are 10s + 1 more group! ➕"],
+  12: ["12s = 10s answer + 2s answer! ➕", "12 × 5 = 60 — half of 120! 🎯", "12 × 12 = 144 — the final boss! 🏆"],
+};
+
+function getPattern(table) {
+  const opts = TABLE_PATTERNS[table] || TABLE_PATTERNS[2];
+  return opts[Math.floor(Math.random() * opts.length)];
+}
+
+/* Show bird bubble with a message, optional CSS class, optional coin pop */
+let bubbleTimeout = null;
+function showBubble(msg, cssClass, coinAmt) {
+  const bubble  = document.getElementById('g-bubble');
+  const textEl  = document.getElementById('bubble-text');
+  const coinPop = document.getElementById('bubble-coin-pop');
+
+  // Guard — elements may not exist yet during early init
+  if(!bubble || !textEl || !coinPop) return;
+
+  if(bubbleTimeout) { clearTimeout(bubbleTimeout); bubbleTimeout = null; }
+
+  // Reset classes and coin pop
+  bubble.className  = 'g-bubble';
+  coinPop.className = 'bubble-coin-pop';
+  coinPop.textContent = '';
+
+  // Set message
+  textEl.textContent = msg;
+
+  // Apply optional colour class
+  if(cssClass) bubble.classList.add(cssClass);
+
+  // Show coin bonus pop if provided
+  if(coinAmt) {
+    coinPop.textContent = `+${coinAmt} ⭐`;
+    void coinPop.offsetWidth; // force reflow so transition fires
+    coinPop.classList.add('show');
+  }
+}
+
+function resetBubble() {
+  const bubble  = document.getElementById('g-bubble');
+  const textEl  = document.getElementById('bubble-text');
+  const coinPop = document.getElementById('bubble-coin-pop');
+  if(!bubble || !textEl || !coinPop) return;
+  bubble.className    = 'g-bubble';
+  coinPop.className   = 'bubble-coin-pop';
+  coinPop.textContent = '';
+  textEl.textContent  = getBubble();
+}
+
+/* Sequence shown after correct answer:
+   900ms  → pattern tip (green)
+   2400ms → commutativity tip if a≠b (purple) + coin bonus
+   3900ms → reset to normal bubble, advance question
+*/
+function showCorrectSequence(q) {
+  const table = q.a; // the table being practised
+
+  // Auditory equation chant (runs in parallel with visual sequence)
+  speakFullEquation(q);
+
+  // Step 1 — pattern tip
+  const pattern = getPattern(table);
+  showBubble(pattern, 'pattern', null);
+
+  bubbleTimeout = setTimeout(() => {
+    // Step 2 — commutativity (only if meaningful)
+    if(q.a !== q.b) {
+      const commuteMsg = `You also know\n${q.b} × ${q.a} = ${q.ans}! 🎉`;
+      showBubble(commuteMsg, 'commute', 3);
+      sessionCoins += 3;
+      updateCoinDisplay();
+      saveState({coins: getCoins() + 3});
+
+      bubbleTimeout = setTimeout(() => {
+        resetBubble();
+        advanceQuestion();
+      }, 1600);
+    } else {
+      // Same factors — skip commute step, advance sooner
+      bubbleTimeout = setTimeout(() => {
+        resetBubble();
+        advanceQuestion();
+      }, 1200);
+    }
+  }, 1500);
+}
+
+/* BUBBLES is now a function so it can inject the player name */
+function getBubble() {
+  const n = getPlayerName() || 'Super Jumper';
+  const pool = [
+    `Let's multiply, ${n}!`,
+    `You got this, ${n}!`,
+    `Looking good, ${n}!`,
+    `Count along, ${n}!`,
+    `Think it through!`,
+    `Almost there, ${n}!`,
+    `You can do it!`,
+    `Keep going, ${n}! 🚀`,
+    `Great work, ${n}!`,
+    `Show me what you know!`,
+  ];
+  return pool[Math.floor(Math.random() * pool.length)];
+}
 
 const SKINS = [
   { id:'red',    label:'Classic', color:'#e53935', emoji:'😊', cost:0   },
@@ -469,28 +875,46 @@ const CHARACTERS = [
   { id:'leo',  name:'Leo',  emoji:'🦁', img:null },
 ];
 
-/* ═══════════════════════════════════
+const ANS_COLORS = ['#4caf50','#2196f3','#f5c518','#e91e63'];
+const ANS_SHADOW = ['#388e3c','#1565c0','#c8960a','#ad1457'];
+
+// Number words 0-144
+const NW = ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
+  'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen',
+  'Twenty','Twenty-one','Twenty-two','Twenty-three','Twenty-four','Twenty-five','Twenty-six',
+  'Twenty-seven','Twenty-eight','Twenty-nine','Thirty','Thirty-one','Thirty-two','Thirty-three',
+  'Thirty-four','Thirty-five','Thirty-six','Thirty-seven','Thirty-eight','Thirty-nine','Forty',
+  'Forty-one','Forty-two','Forty-three','Forty-four','Forty-five','Forty-six','Forty-seven',
+  'Forty-eight','Forty-nine','Fifty'];
+const NW2 = {55:'Fifty-five',60:'Sixty',66:'Sixty-six',70:'Seventy',77:'Seventy-seven',
+  80:'Eighty',84:'Eighty-four',88:'Eighty-eight',90:'Ninety',99:'Ninety-nine',
+  100:'One hundred',108:'One-oh-eight',110:'One-ten',120:'One-twenty',
+  132:'One-thirty-two',144:'One-forty-four'};
+function numWord(n){ return n<=50 ? (NW[n]||String(n)) : (NW2[n]||String(n)); }
+
+/* ═══════════════════════════════════════════════════
    PERSISTENCE
-═══════════════════════════════════ */
-function loadState()   { try { return JSON.parse(localStorage.getItem('mj_state'))||{}; } catch { return {}; } }
-function saveState(p)  { const s={...loadState(),...p}; localStorage.setItem('mj_state',JSON.stringify(s)); return s; }
+═══════════════════════════════════════════════════ */
+function loadState()  { try{ return JSON.parse(localStorage.getItem('mj_state'))||{}; }catch{ return {}; } }
+function saveState(p) { const s={...loadState(),...p}; localStorage.setItem('mj_state',JSON.stringify(s)); return s; }
 const getCoins        = () => loadState().coins         ?? 0;
 const getHighestStage = () => loadState().highestStage  ?? 1;
 const getUnlockedSkins= () => loadState().unlockedSkins ?? ['red'];
 const getEquippedSkin = () => loadState().equippedSkin  ?? 'red';
 const getCurrentStage = () => loadState().currentStage  ?? 1;
 const getSelectedChar = () => loadState().selectedChar  ?? 'redy';
+const getPlayerName   = () => loadState().playerName    || '';  // '' means not set yet
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════════════
    UTILITIES
-═══════════════════════════════════ */
-function scalePhone() {
+═══════════════════════════════════════════════════ */
+function scalePhone(){
   const s = Math.min(window.innerWidth/390, window.innerHeight/844);
   document.getElementById('phone').style.transform = `scale(${s})`;
 }
 scalePhone(); window.addEventListener('resize', scalePhone);
 
-function showScreen(id) {
+function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
   if(id==='screen-home')   refreshHome();
@@ -499,310 +923,964 @@ function showScreen(id) {
   if(id==='screen-game')   startGame();
 }
 
-function showToast(msg, dur=1800) {
+function showToast(msg, dur=1800){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), dur);
 }
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════════════
    HOME
-═══════════════════════════════════ */
-function refreshHome() {
+═══════════════════════════════════════════════════ */
+function refreshHome(){
+  // Name input — populate from localStorage
+  const savedName = getPlayerName();
+  const nameInput = document.getElementById('player-name-input');
+  if(nameInput) nameInput.value = savedName;
+  updateNameGreeting(savedName);
+
   document.getElementById('home-coins').textContent = `Coins ⭐: ${getCoins()}`;
   document.getElementById('home-stage').textContent = `Highest Stage: ${getHighestStage()}`;
   const btn = document.getElementById('btn-play-home');
-  btn.textContent = `PLAY STAGE ${getCurrentStage()}`;
-  btn.onclick = () => showScreen('screen-game');
+  const displayName = savedName || 'Hero';
+  btn.textContent = `PLAY, ${displayName.toUpperCase()}! ▶`;
+  btn.onclick = ()=>showScreen('screen-game');
 }
 
-/* ═══════════════════════════════════
+/* Called on every keystroke in the name input */
+function onNameInput(val) {
+  const trimmed = val.trim();
+  saveState({ playerName: trimmed });
+  updateNameGreeting(trimmed);
+  // Update play button live
+  const btn = document.getElementById('btn-play-home');
+  if(btn) btn.textContent = `PLAY, ${(trimmed || 'Hero').toUpperCase()}! ▶`;
+}
+
+function updateNameGreeting(name) {
+  const el = document.getElementById('name-greeting');
+  if(!el) return;
+  if(name && name.length > 0){
+    const greetings = [
+      `Hi, ${name}! Ready to jump? 🚀`,
+      `Welcome back, ${name}! 🌟`,
+      `Let's go, ${name}! 🎮`,
+    ];
+    el.textContent = greetings[name.length % greetings.length];
+    el.style.opacity = '1';
+  } else {
+    el.textContent = '';
+    el.style.opacity = '0';
+  }
+}
+
+/* ═══════════════════════════════════════════════════
    STAGE SELECT
-═══════════════════════════════════ */
-function renderStages() {
+═══════════════════════════════════════════════════ */
+function renderStages(){
   document.getElementById('stage-coins-badge').textContent = `⭐ ${getCoins()}`;
-  const grid = document.getElementById('stage-grid'), cur = getCurrentStage();
-  grid.innerHTML = '';
-  STAGES.forEach(st => {
-    const card = document.createElement('div');
-    card.className = 'stage-card'+(st.id===cur?' active-stage':'');
-    const stars = '⭐'.repeat(Math.min(3,Math.max(0,getHighestStage()-st.id+1)));
-    card.innerHTML = `<div class="stage-num">${st.emoji} Stage ${st.id}</div><div class="stage-name">${st.name}</div><div class="stage-tables">${st.desc}</div><div class="stage-stars">${stars||'○○○'}</div>`;
-    card.onclick = () => { saveState({currentStage:st.id}); showScreen('screen-game'); };
+  const grid=document.getElementById('stage-grid'), cur=getCurrentStage();
+  grid.innerHTML='';
+  STAGES.forEach(st=>{
+    const card=document.createElement('div');
+    card.className='stage-card'+(st.id===cur?' active-stage':'');
+    const stars='⭐'.repeat(Math.min(3,Math.max(0,getHighestStage()-st.id+1)));
+    card.innerHTML=`<div class="stage-num">${st.emoji} Stage ${st.id}</div><div class="stage-name">${st.name}</div><div class="stage-desc">${st.desc}</div><div class="stage-stars">${stars||'○○○'}</div>`;
+    card.onclick=()=>{ saveState({currentStage:st.id}); showScreen('screen-game'); };
     grid.appendChild(card);
   });
 }
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════════════
    CHAR SELECT
-═══════════════════════════════════ */
-function renderChars() {
-  document.getElementById('chars-coins-badge').textContent = `⭐ ${getCoins()}`;
-  const grid = document.getElementById('char-grid'), sel = getSelectedChar();
-  grid.innerHTML = '';
-  CHARACTERS.forEach(ch => {
-    const card = document.createElement('div');
-    card.className = 'char-card'+(ch.id===sel?' selected':'');
-    card.innerHTML = `<div class="check">✓</div>${ch.img?`<img src="${ch.img}" alt="${ch.name}"/>`:`<div class="char-emoji">${ch.emoji}</div>`}<div class="char-name">${ch.name}</div>`;
-    card.onclick = () => { document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected')); card.classList.add('selected'); saveState({selectedChar:ch.id}); };
+═══════════════════════════════════════════════════ */
+function renderChars(){
+  document.getElementById('chars-coins-badge').textContent=`⭐ ${getCoins()}`;
+  const grid=document.getElementById('char-grid'), sel=getSelectedChar();
+  grid.innerHTML='';
+  CHARACTERS.forEach(ch=>{
+    const card=document.createElement('div');
+    card.className='char-card'+(ch.id===sel?' selected':'');
+    card.innerHTML=`<div class="check">✓</div>${ch.img?`<img src="${ch.img}" alt="${ch.name}"/>`:`<div class="char-emoji">${ch.emoji}</div>`}<div class="char-name">${ch.name}</div>`;
+    card.onclick=()=>{ document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected')); card.classList.add('selected'); saveState({selectedChar:ch.id}); };
     grid.appendChild(card);
   });
 }
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════════════
    SHOP
-═══════════════════════════════════ */
+═══════════════════════════════════════════════════ */
 function openShop()  { renderShop(); document.getElementById('shop-modal').classList.add('open'); }
 function closeShop() { document.getElementById('shop-modal').classList.remove('open'); refreshHome(); }
-function renderShop() {
+function renderShop(){
   const coins=getCoins(), unlocked=getUnlockedSkins(), equipped=getEquippedSkin();
-  document.getElementById('shop-coins-display').textContent = `Your coins: ⭐ ${coins}`;
-  const grid = document.getElementById('skin-grid'); grid.innerHTML='';
-  SKINS.forEach(sk => {
+  document.getElementById('shop-coins-display').textContent=`Your coins: ⭐ ${coins}`;
+  const grid=document.getElementById('skin-grid'); grid.innerHTML='';
+  SKINS.forEach(sk=>{
     const isOwned=unlocked.includes(sk.id), isEquipped=sk.id===equipped, canAfford=coins>=sk.cost;
-    const card = document.createElement('div');
+    const card=document.createElement('div');
     card.className='skin-card'+(isEquipped?' equipped':'');
     const bg=sk.color.startsWith('linear')?`background:${sk.color}`:`background:${sk.color}`;
     card.innerHTML=`<div class="skin-cube" style="${bg}">${sk.emoji}</div><div class="skin-label">${sk.label}</div>${isEquipped?`<div class="skin-owned">✓ ON</div>`:isOwned?`<div class="skin-owned">Owned</div>`:canAfford?`<div class="skin-cost">⭐ ${sk.cost}</div>`:`<div class="skin-cost" style="color:#ccc">⭐ ${sk.cost}</div>`}`;
-    card.onclick = () => {
+    card.onclick=()=>{
       if(isEquipped) return;
-      if(isOwned)        { saveState({equippedSkin:sk.id}); showToast(`Equipped ${sk.label}! ${sk.emoji}`); renderShop(); }
-      else if(canAfford) { saveState({coins:getCoins()-sk.cost,unlockedSkins:[...getUnlockedSkins(),sk.id],equippedSkin:sk.id}); showToast(`Unlocked ${sk.label}! ${sk.emoji}`); renderShop(); }
-      else               showToast(`Need ⭐ ${sk.cost-getCoins()} more coins!`);
+      if(isOwned)       { saveState({equippedSkin:sk.id}); showToast(`Equipped ${sk.label}! ${sk.emoji}`); renderShop(); }
+      else if(canAfford){ saveState({coins:getCoins()-sk.cost,unlockedSkins:[...getUnlockedSkins(),sk.id],equippedSkin:sk.id}); showToast(`Unlocked ${sk.label}! ${sk.emoji}`); renderShop(); }
+      else              showToast(`Need ⭐ ${sk.cost-getCoins()} more coins!`);
     };
     grid.appendChild(card);
   });
 }
 
-/* ═══════════════════════════════════
+/* ═══════════════════════════════════════════════════
    GAME ENGINE
-═══════════════════════════════════ */
-let gameScore=0, sessionCoins=0, streak=0, answered=0;
-let currentQ=null, questionQueue=[], srsQueue=[];
-let hintOpen=false;
-const TOTAL=10;
+═══════════════════════════════════════════════════ */
 
-function makeQ(stage) {
-  const tables=STAGES[stage-1].tables;
-  const a=tables[Math.floor(Math.random()*tables.length)];
-  const b=Math.ceil(Math.random()*12);
-  return {a,b,ans:a*b};
+// ── State that lives for one game session ──────────
+let gameScore      = 0;
+let sessionCoins   = 0;
+let streak         = 0;
+let answered       = 0;
+let questionIndex  = 0;  // 1-based index of current question in session
+let timerVal    = 240;
+let timerInt    = null;
+
+// ── Per-question state ──────────────────────────────
+let currentQ    = null;   // { a, b, ans }
+// LOCKED answer choices for current question — NEVER mutated by hint
+let currentChoices = [];  // array of 4 numbers, set once in renderQ
+
+let questionQueue = [];
+let srsQueue      = [];
+
+// ── Hint state ──────────────────────────────────────
+let hintOpen    = false;
+let hintTimer      = null;   // delay before hint button appears
+let strategyTimer  = null;   // contextual strategy cue timer
+let nlDemoActive= false;  // true during scripted demo
+let nlInteractive=false;  // true after demo completes
+let nlStep      = 0;      // skip-count step size
+let nlReps      = 0;      // total hops
+let nlStones    = [];     // stone values [0, step, 2*step…]
+let nlCurrent   = 0;      // which stone index Redy is on
+let nlDemoTimer = null;
+
+const TOTAL = 10;
+
+/* ── Question generation ──────────────────────────── */
+function makeQ(stage){
+  const tables = STAGES[stage-1].tables;
+  const a = tables[Math.floor(Math.random()*tables.length)];
+  const b = Math.ceil(Math.random()*12);
+  return { a, b, ans: a*b };
 }
-function buildQueue(stage) { questionQueue=[]; for(let i=0;i<TOTAL;i++) questionQueue.push(makeQ(stage)); }
 
-function injectSRS(wrongQ) {
+function buildQueue(stage){
+  questionQueue=[];
+  for(let i=0;i<TOTAL;i++) questionQueue.push(makeQ(stage));
+}
+
+function injectSRS(wrongQ){
   questionQueue.splice(Math.min(2,questionQueue.length),0,{...wrongQ});
   questionQueue.splice(Math.min(5,questionQueue.length+1),0,{...wrongQ});
 }
 
-const STREAK_MSGS={3:'3-STREAK! 🎉',5:'SUPER JUMPER! 🔥',10:'MATHS MASTER! 🏆'};
-function checkStreak(n) {
-  const msg=STREAK_MSGS[n]; if(!msg) return;
-  const banner=document.getElementById('streak-banner');
-  banner.textContent=msg; banner.classList.remove('hide'); banner.classList.add('show');
-  const bonus=n>=10?15:n>=5?8:4;
-  sessionCoins+=bonus;
-  document.getElementById('hdr-coins-val').textContent=getCoins()+sessionCoins;
-  setTimeout(()=>{ banner.classList.remove('show'); banner.classList.add('hide'); },2000);
+/* ── Generate answer choices ONCE per question ────── 
+   Uses near-miss distractors — ±a, ±b around answer.
+   Returns a shuffled array of 4 distinct positive ints.
+   IMPORTANT: this is the only place choices are created.
+   toggleHint() and the NL hint NEVER call this.
+─────────────────────────────────────────────────────*/
+function generateChoices(q){
+  const ans = q.ans;
+  const pool = new Set([ans]);
+  const candidates = [
+    ans-q.a, ans+q.a, ans-q.b, ans+q.b,
+    ans-1, ans+1, ans+2, ans-2, ans+q.a+1, ans-q.b-1
+  ].filter(v => v>0 && v!==ans);
+  for(const c of candidates){ if(pool.size>=4) break; pool.add(c); }
+  while(pool.size<4) pool.add(ans + Math.ceil(Math.random()*10));
+  return [...pool].sort(()=>Math.random()-.5);
 }
 
-/* ═══════════════════════════════════════════════════
-   NUMBER LINE HINT
-   
-   Shows a scrollable stone track above the skip-strip.
-   Redy sits on stone 0 and the answer stone pulses.
-   Kid can see visually where the answer lives.
-═══════════════════════════════════════════════════ */
-function toggleHint() {
-  hintOpen = !hintOpen;
-  const zone = document.getElementById('nl-zone');
-  const btn  = document.getElementById('hint-btn');
+/* ── Render question & buttons ──────────────────────
+   Sets currentChoices ONCE. Builds DOM buttons.
+   These buttons are NEVER rebuilt during a question.
+─────────────────────────────────────────────────────*/
+function renderQ(q){
+  // Restore hint button visibility (may have been hidden in Speed Round)
+  const _hbEl = document.getElementById('g-hint-btn');
+  if(_hbEl) _hbEl.style.display='';
+  // Update equation
+  document.getElementById('eq-a').textContent = q.a;
+  document.getElementById('eq-b').textContent = q.b;
 
-  if (hintOpen && currentQ) {
-    buildNLHint(currentQ);
-    zone.classList.add('visible');
-    btn.textContent = '❌ Hide Hint';
-    btn.classList.add('on');
+  // Bird bubble
+  const _bt = document.getElementById('bubble-text');
+  if(_bt) _bt.textContent = getBubble();
+
+  // Generate choices once
+  currentChoices = generateChoices(q);
+
+  // Build answer buttons — only place buttons are created
+  const grid = document.getElementById('g-answers');
+  grid.innerHTML = '';
+  currentChoices.forEach((v,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.dataset.val = v;
+    btn.textContent = v;
+    btn.style.background = ANS_COLORS[i];
+    btn.style.boxShadow  = `0 6px 0 ${ANS_SHADOW[i]}`;
+    btn.onclick = ()=>checkAns(v, q, btn);
+    grid.appendChild(btn);
+  });
+
+  // ── Contextual strategy cue (4s, 8s, 12s tables) ────────
+  cancelStrategyTimer();
+  const _strategyCue = {4:"Stuck? Try doubling the 2s answer! 🤔",
+    8:"Think: double, double, double again! 🔄",
+    12:"Try adding the 10s answer and the 2s answer! ➕"}[q.a];
+  if(_strategyCue){
+    strategyTimer = setTimeout(()=>{
+      // Only show if child hasn't answered yet (buttons still enabled)
+      const _btns = document.querySelectorAll('.ans-btn');
+      const _stillActive = [..._btns].some(b=>!b.disabled);
+      if(_stillActive){
+        const _bt = document.getElementById('bubble-text');
+        if(_bt) _bt.textContent = _strategyCue;
+      }
+    }, 5000);
+  }
+
+  // ── Dynamic hint fading (scaffolded complexity) ──────────
+  cancelHintTimer();
+  if(questionIndex <= 8){
+    setHintHidden();
+    // Q1-4: 8s delay  |  Q5-8: 12s delay
+    const hintDelay = questionIndex <= 4 ? 8000 : 12000;
+    hintTimer = setTimeout(()=>setHintVisible(), hintDelay);
   } else {
-    zone.classList.remove('visible');
-    document.getElementById('nl-track').innerHTML = '';
-    btn.textContent = '💡 Show Hint';
-    btn.classList.remove('on');
+    // Q9-10: Speed Round — hint completely locked
+    setHintHidden();
+    const hintBtnEl = document.getElementById('g-hint-btn');
+    if(hintBtnEl){ hintBtnEl.style.display='none'; }
   }
 }
 
-function closeHint() {
-  hintOpen = false;
-  document.getElementById('nl-zone').classList.remove('visible');
-  document.getElementById('nl-track').innerHTML = '';
-  const btn = document.getElementById('hint-btn');
-  btn.textContent = '💡 Show Hint';
-  btn.classList.remove('on');
+/* ── Streak banners ─────────────────────────────── */
+const STREAK_MSGS = {3:'3-STREAK! 🎉', 5:'SUPER JUMPER! 🔥', 10:'MATHS MASTER! 🏆'};
+function checkStreak(n){
+  const msg=STREAK_MSGS[n]; if(!msg) return;
+  const b=document.getElementById('streak-banner');
+  b.textContent=msg; b.classList.remove('hide'); b.classList.add('show');
+  const bonus = n>=10?15 : n>=5?8 : 4;
+  sessionCoins+=bonus; updateCoinDisplay();
+  setTimeout(()=>{ b.classList.remove('show'); b.classList.add('hide'); },2000);
 }
 
-function buildNLHint(q) {
-  // Pick the smaller factor as step (better visual)
-  let step = Math.min(q.a, q.b);
-  let reps = Math.max(q.a, q.b);
-  if(step===1) { step=reps; reps=1; }
+function updateCoinDisplay(){
+  document.getElementById('g-coins-val').textContent = getCoins()+sessionCoins;
+}
 
-  // Stone values: 0, step, step*2 … answer
-  const stones=[];
-  for(let i=0;i<=reps;i++) stones.push(i*step);
+/* ── Check answer (answer buttons) ─────────────────
+   Buttons are disabled after tap — hint state untouched.
+─────────────────────────────────────────────────────*/
+function checkAns(chosen, q, btn){
+  // Disable ALL buttons immediately (prevent double-tap)
+  document.querySelectorAll('.ans-btn').forEach(b=>{ b.disabled=true; });
 
-  // Redy's character image
+  if(chosen===q.ans){
+    btn.classList.add('correct');
+    btn.textContent = '✓ '+chosen;
+    gameScore+=10; sessionCoins+=2; streak++; answered++;
+    document.getElementById('g-score').textContent = gameScore;
+    updateCoinDisplay();
+    updateProgress();
+    checkStreak(streak);
+    cancelHintTimer();
+    cancelStrategyTimer();
+    // Speed Round bonus (Q9-10)
+    if(questionIndex >= 9){
+      sessionCoins+=5; updateCoinDisplay();
+      showToast('Speed Bonus! ⚡', 2000);
+    }
+    // Speak full equation then show pattern/commute tips
+    speakFullEquation(q);
+    setTimeout(()=>showCorrectSequence(q), 400);
+  } else {
+    btn.classList.add('wrong');
+    streak=0;
+    injectSRS(q);
+    // Show SRS badge briefly
+    const srs=document.getElementById('g-srs'); srs.classList.add('visible');
+    setTimeout(()=>srs.classList.remove('visible'),1400);
+    // ── Active Correction Loop ──
+    // Cancel auto-advance; force the child through the number line instead
+    cancelHintTimer();
+    cancelStrategyTimer();
+    cancelStrategyTimer();
+    // Brief red flash, then open hint automatically
+    setTimeout(()=>{
+      if(!hintOpen) toggleHint();
+    }, 600);
+  }
+}
+
+function updateProgress(){
+  const pct = (answered/TOTAL*100);
+  document.getElementById('g-progress-fill').style.width = pct+'%';
+  // Light up star markers
+  if(answered>=Math.round(TOTAL/3))  document.getElementById('star1').classList.add('earned');
+  if(answered>=Math.round(TOTAL*2/3))document.getElementById('star2').classList.add('earned');
+  if(answered>=TOTAL)                document.getElementById('star3').classList.add('earned');
+}
+
+function advanceQuestion(){
+  cancelStrategyTimer();
+  closeHint(); // always close hint between questions
+  const due = srsQueue.filter(r=>r.retryAt<=answered);
+  if(due.length){
+    currentQ=due[0].q;
+    srsQueue=srsQueue.filter(r=>r.retryAt>answered);
+    document.getElementById('g-srs').classList.add('visible');
+    setTimeout(()=>document.getElementById('g-srs').classList.remove('visible'),1200);
+  } else {
+    if(!questionQueue.length){ endGame(); return; }
+    currentQ=questionQueue.shift();
+    document.getElementById('g-srs').classList.remove('visible');
+  }
+  questionIndex++;
+  renderQ(currentQ);
+}
+
+/* ── Start game ─────────────────────────────────── */
+function startGame(){
+  const stage=getCurrentStage();
+  gameScore=0; sessionCoins=0; streak=0; answered=0; questionIndex=0;
+  clearInterval(timerInt); timerVal=240;
+
+  document.getElementById('g-world-val').textContent = `${stage} - 1`;
+  document.getElementById('g-score').textContent     = 0;
+  document.getElementById('g-progress-fill').style.width='0%';
+  document.getElementById('g-timer').textContent     = 240;
+  ['star1','star2','star3'].forEach(id=>document.getElementById(id).classList.remove('earned'));
+  document.getElementById('streak-banner').classList.remove('show','hide');
+  document.getElementById('g-srs').classList.remove('visible');
+  updateCoinDisplay();
+
+  timerInt=setInterval(()=>{
+    document.getElementById('g-timer').textContent = --timerVal;
+    if(timerVal<=0){ clearInterval(timerInt); endGame(); }
+  },1000);
+
+  closeHint();
+  buildQueue(stage);
+  currentQ=questionQueue.shift();
+  questionIndex=1;
+  renderQ(currentQ);
+}
+
+/* ── End game ───────────────────────────────────── */
+function endGame(){
+  clearInterval(timerInt);
+  const totalCoins=getCoins()+sessionCoins;
+  const stage=getCurrentStage();
+  saveState({coins:totalCoins, highestStage:Math.max(getHighestStage(),stage)});
+
+  document.getElementById('eq-a').textContent='🎉';
+  document.getElementById('eq-b').textContent='';
+  document.querySelector('.g-blank').textContent=`${gameScore}!`;
+  document.querySelector('.g-equation').style.fontSize='32px';
+  const _bt2 = document.getElementById('bubble-text');
+  const _eName = getPlayerName() || 'Hero';
+  if(_bt2) _bt2.textContent = `Amazing work, ${_eName}! 🏆`;
+
+  closeHint();
+  const grid=document.getElementById('g-answers'); grid.innerHTML='';
+  [['▶ Play Again','#4caf50','#388e3c',startGame],['🏠 Home','#6b4dbf','#3d2778',()=>showScreen('screen-home')]].forEach(([lbl,bg,sh,fn],i)=>{
+    const btn=document.createElement('button'); btn.className='ans-btn';
+    btn.style.cssText=`grid-column:span 2;background:${bg};box-shadow:0 6px 0 ${sh};font-size:17px;padding:16px;`;
+    btn.textContent=lbl; btn.onclick=fn; grid.appendChild(btn);
+  });
+  document.getElementById('g-coins-val').textContent=totalCoins;
+}
+
+function endSession(){ clearInterval(timerInt); saveState({coins:getCoins()+sessionCoins}); closeHint(); showScreen('screen-home'); }
+
+/* ═══════════════════════════════════════════════════
+   HINT SYSTEM
+
+   Architecture:
+   • "Show Hint" button is INDEPENDENT of answer buttons.
+   • toggleHint() NEVER regenerates answer choices.
+   • Two phases: DEMO (auto) → INTERACTIVE (manual).
+
+   DEMO phase:
+     Redy automatically hops along the number line
+     one step at a time, with animation + callout.
+     The hop counter shows "3... 6... 9... 12".
+
+   INTERACTIVE phase:
+     Next-stone circles become tappable.
+     Kid taps to make Redy hop (same animation).
+     +5 coins per correct tap. Wrong tap = shake.
+     Completing the line auto-marks the Q correct.
+═══════════════════════════════════════════════════ */
+function setHintVisible(){
+  document.getElementById('g-hint-btn').classList.add('visible');
+}
+function setHintHidden(){
+  document.getElementById('g-hint-btn').classList.remove('visible','on');
+  document.getElementById('g-hint-btn').textContent='💡 Show Hint';
+}
+function cancelHintTimer(){
+  if(hintTimer){ clearTimeout(hintTimer); hintTimer=null; }
+}
+function cancelStrategyTimer(){
+  if(strategyTimer){ clearTimeout(strategyTimer); strategyTimer=null; }
+}
+function cancelDemoTimer(){
+  if(nlDemoTimer){ clearTimeout(nlDemoTimer); nlDemoTimer=null; }
+}
+
+function toggleHint(){
+  if(!hintOpen){
+    hintOpen=true;
+    const btn=document.getElementById('g-hint-btn');
+    btn.textContent='❌ Hide Hint'; btn.classList.add('on');
+    buildNL(currentQ);
+    document.getElementById('nl-overlay').classList.add('visible');
+    document.getElementById('nl-rail').style.display='block';
+    // Hide the idle path Redy while NL hint is open
+    document.getElementById('g-redy').style.opacity='0';
+    startDemo();
+  } else {
+    closeHint();
+  }
+}
+
+function closeHint(){
+  hintOpen=false; nlDemoActive=false; nlInteractive=false;
+  cancelDemoTimer(); cancelHintTimer(); cancelStrategyTimer();
+  document.getElementById('nl-overlay').classList.remove('visible');
+  document.getElementById('nl-rail').style.display='none';
+  hideCallout();
+  clearVisualGroups();
+  setHintHidden();
+  document.getElementById('g-hint-btn').textContent='💡 Show Hint';
+  // Restore idle Redy on path
+  document.getElementById('g-redy').style.opacity='1';
+}
+
+/* ── Build number line stones ──────────────────── */
+function buildNL(q){
+  // Determine step and reps (use smaller factor as step for cleaner viz)
+  nlStep = Math.min(q.a, q.b);
+  nlReps = Math.max(q.a, q.b);
+  if(nlStep===1){ nlStep=nlReps; nlReps=1; }
+
+  nlStones=[];
+  for(let i=0;i<=nlReps;i++) nlStones.push(i*nlStep);
+  nlCurrent=0;
+
+  const track=document.getElementById('nl-track');
+  track.innerHTML='';
+
+  // Get character image for the hint
   const charObj = CHARACTERS.find(c=>c.id===getSelectedChar()) || CHARACTERS[1];
-  const charImg = charObj.img
-    ? `<img src="${charObj.img}" alt="char"/>`
-    : `<span style="font-size:30px;line-height:1">${charObj.emoji}</span>`;
+  const charSrc = charObj.img
+    ? charObj.img
+    : 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png';
 
-  const track = document.getElementById('nl-track');
-  track.innerHTML = '';
-
-  stones.forEach((val,idx) => {
-    const isZero    = idx===0;
-    const isPassed  = !isZero && val<q.ans;
-    const isAnswer  = val===q.ans;
-    const isDim     = val>q.ans;
-    const isCurrent = isZero; // Redy starts on 0
-
-    let cls = 'nl-stone';
-    if(isZero)    cls+=' zero current'; // Redy on zero at start
-    if(isPassed)  cls+=' passed';
-    if(isAnswer)  cls+=' answer';
-    if(isDim)     cls+=' dim';
-
-    const stone = document.createElement('div');
-    stone.className = cls;
-    // Show Redy on stone 0, nothing on others initially
-    stone.innerHTML = `
-      <div class="nl-stone-char">${isZero ? charImg : ''}</div>
-      <div class="nl-stone-circle">${val}</div>
+  nlStones.forEach((val,idx)=>{
+    const stone=document.createElement('div');
+    stone.className='nl-stone'+(idx===0?' zero current':' dim');
+    stone.id=`nls-${idx}`;
+    // Redy starts on stone 0
+    const charHTML = idx===0
+      ? `<div class="nl-char-slot" id="nlch-${idx}"><img src="${charSrc}" alt="Redy" id="nl-redy-img"/></div>`
+      : `<div class="nl-char-slot" id="nlch-${idx}"></div>`;
+    stone.innerHTML=`
+      ${charHTML}
+      <div class="nl-stone-circle" id="nlc-${idx}">${val}</div>
+      <div class="nl-dust" id="nld-${idx}">✨</div>
       <div class="nl-stone-tick"></div>
     `;
     track.appendChild(stone);
   });
 
-  // Scroll to show answer stone centred
-  setTimeout(()=>{
-    const ansStone = track.querySelectorAll('.nl-stone')[Math.floor(stones.length/2)];
-    if(ansStone) ansStone.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  }, 80);
+  document.getElementById('nl-phase-label').textContent='Watch Redy count!';
+  document.getElementById('nl-hop-counter').textContent='';
 }
 
-/* ═══════════════════════════════════
-   SKIP COUNT SEQUENCE STRIP
-═══════════════════════════════════ */
-function renderSkipStrip(q) {
-  // e.g. 3×4: step=3, show "3, 6, 9, __?"
-  let step=Math.min(q.a,q.b), reps=Math.max(q.a,q.b);
-  if(step===1){ step=reps; reps=1; }
-
-  const shown=[];
-  for(let i=1;i<reps;i++) shown.push(i*step);
-
-  const seqStr = shown.length
-    ? shown.join(', ') + ', <span class="skip-blank">?</span>'
-    : '<span class="skip-blank">?</span>';
-
-  document.getElementById('skip-sequence').innerHTML = seqStr;
+/* ── SCRIPTED DEMO ─────────────────────────────── */
+/* ── Render concrete visual groups (CRA) ────────────────
+   groupSize = the step value (e.g. 3 for the 3s table)
+   numGroups = how many hops completed so far (1-based)
+──────────────────────────────────────────────────────── */
+function renderVisualGroups(groupSize, numGroups) {
+  const container = document.getElementById('nl-visual-groups');
+  if(!container) return;
+  container.innerHTML = '';
+  // Cap display at 6 groups and 8 items each to stay readable
+  const displayGroups = Math.min(numGroups, 6);
+  const displaySize   = Math.min(groupSize, 8);
+  for(let g = 0; g < displayGroups; g++){
+    const box = document.createElement('div');
+    box.className = 'vg-group';
+    box.style.animationDelay = (g * 0.07) + 's';
+    for(let s = 0; s < displaySize; s++){
+      const star = document.createElement('span');
+      star.className = 'vg-star';
+      star.textContent = '⭐';
+      star.style.animationDelay = (g * 0.07 + s * 0.04) + 's';
+      box.appendChild(star);
+    }
+    // If group size was capped, show an ellipsis
+    if(groupSize > displaySize){
+      const dots = document.createElement('span');
+      dots.className = 'vg-star';
+      dots.style.fontSize = '10px';
+      dots.textContent = '…';
+      box.appendChild(dots);
+    }
+    container.appendChild(box);
+  }
 }
 
-/* ═══════════════════════════════════
-   START GAME
-═══════════════════════════════════ */
-function startGame() {
-  const stage=getCurrentStage();
-  gameScore=0; sessionCoins=0; streak=0; answered=0; srsQueue=[];
-  hintOpen=false;
-  document.getElementById('hdr-stage').textContent     = `STAGE ${stage}`;
-  document.getElementById('hdr-coins-val').textContent = getCoins();
-  document.getElementById('score').textContent         = 0;
-  document.getElementById('progress-fill').style.width = '0%';
-  document.getElementById('srs-badge').classList.remove('visible');
-  document.getElementById('streak-banner').classList.remove('show','hide');
-  document.getElementById('q-stage-label').textContent = STAGES[stage-1].hint;
-  closeHint();
-  buildQueue(stage);
-  nextQ();
+function clearVisualGroups(){
+  const c = document.getElementById('nl-visual-groups');
+  if(c) c.innerHTML = '';
 }
 
-function nextQ() {
-  closeHint();
-  const due=srsQueue.filter(r=>r.retryAt<=answered);
-  if(due.length){ currentQ=due[0].q; srsQueue=srsQueue.filter(r=>r.retryAt>answered); document.getElementById('srs-badge').classList.add('visible'); }
-  else { if(!questionQueue.length){ endGame(); return; } currentQ=questionQueue.shift(); document.getElementById('srs-badge').classList.remove('visible'); }
-  renderQ(currentQ);
+function startDemo(){
+  nlDemoActive=true; nlInteractive=false; nlCurrent=0;
+  const scaleInfo = TABLE_SCALES[nlStep] || TABLE_SCALES[2];
+  document.getElementById('nl-phase-label').textContent=
+    `Watch Redy count! ${scaleInfo.label}`;
+  demoHopTo(1); // first hop
 }
 
-function renderQ(q) {
-  document.getElementById('question-text').innerHTML =
-    `${q.a} × ${q.b} = <span class="q-blank">?</span>`;
+function demoHopTo(targetIdx){
+  if(!hintOpen || targetIdx>=nlStones.length) return;
 
-  renderSkipStrip(q);
+  nlDemoTimer=setTimeout(()=>{
+    if(!hintOpen) return;
+    animateHop(nlCurrent, targetIdx, ()=>{
+      nlCurrent=targetIdx;
+      updateStoneClasses();
+      showCallout(numWord(nlStones[targetIdx]));
+      speakNum(nlStones[targetIdx]);
+      document.getElementById('nl-hop-counter').textContent=nlStones[targetIdx];
+      // Play melody note — final stone gets fanfare
+      const _isFinalDemo = targetIdx >= nlStones.length - 1;
+      playHopNote(targetIdx, nlStep, _isFinalDemo);
+      // CRA visual groups: show targetIdx groups of nlStep stars
+      renderVisualGroups(nlStep, targetIdx);
+      scrollToStone(targetIdx);
 
-  // Answer options — plausible near-misses
-  const opts=new Set([q.ans]);
-  const candidates=[q.ans-q.a,q.ans+q.a,q.ans-q.b,q.ans+q.b,q.ans-1,q.ans+1,q.ans+2,q.ans-2].filter(v=>v>0&&v!==q.ans);
-  for(const c of candidates){ if(opts.size>=4) break; opts.add(c); }
-  while(opts.size<4) opts.add(q.ans+Math.ceil(Math.random()*8));
+      if(targetIdx < nlStones.length-1){
+        demoHopTo(targetIdx+1);
+      } else {
+        // Demo done — switch to interactive
+        setTimeout(()=>{
+          if(!hintOpen) return;
+          nlDemoActive=false; nlInteractive=true;
+          // Reset Redy to stone 0 for interactive practice
+          nlCurrent=0;
+          updateStoneClasses();
+          scrollToStone(0);
+          document.getElementById('nl-hop-counter').textContent='Your turn!';
+          document.getElementById('nl-phase-label').textContent='Tap the next number! 👆';
+          makeInteractive();
+        },800);
+      }
+    });
+  }, 700);
+}
 
-  const grid=document.getElementById('answer-grid'); grid.innerHTML='';
-  [...opts].sort(()=>Math.random()-.5).forEach((v,i)=>{
-    const btn=document.createElement('button'); btn.className='ans-btn';
-    btn.textContent=v; btn.style.background=COLORS[i%4];
-    btn.onclick=()=>checkAns(v,q,btn); grid.appendChild(btn);
+/* ── INTERACTIVE PHASE ──────────────────────────── */
+function makeInteractive(){
+  // Mark only the next stone as tappable
+  nlStones.forEach((_,i)=>{
+    const el=document.getElementById(`nls-${i}`);
+    const circle=document.getElementById(`nlc-${i}`);
+    if(!el||!circle) return;
+    if(i===nlCurrent+1){
+      el.classList.add('next','interactive');
+      circle.onclick=()=>interactiveHop(i);
+    } else if(i>nlCurrent+1){
+      el.classList.remove('interactive');
+      // Tapping a wrong (future) stone shakes Redy
+      circle.onclick=()=>{ shakeRedy(); showToast('Count one step at a time! 🐾',1000); };
+    } else {
+      el.classList.remove('interactive');
+      circle.onclick=null;
+    }
   });
 }
 
-function checkAns(chosen,q,btn) {
-  document.querySelectorAll('.ans-btn').forEach(b=>b.disabled=true);
+function interactiveHop(targetIdx){
+  if(!nlInteractive || targetIdx!==nlCurrent+1) return;
 
-  if(chosen===q.ans){
-    btn.style.background='#4caf50'; btn.textContent='✓ '+chosen;
-    gameScore+=10; sessionCoins+=2; streak++; answered++;
-    document.getElementById('score').textContent         = gameScore;
-    document.getElementById('hdr-coins-val').textContent = getCoins()+sessionCoins;
-    document.getElementById('progress-fill').style.width = (answered/TOTAL*100)+'%';
-    checkStreak(streak);
-  } else {
-    btn.style.background='#f44336'; btn.textContent='✗ '+chosen;
-    document.querySelectorAll('.ans-btn').forEach(b=>{ if(parseInt(b.textContent)===q.ans) b.style.background='#4caf50'; });
-    streak=0; answered++;
-    document.getElementById('progress-fill').style.width=(answered/TOTAL*100)+'%';
-    injectSRS(q);
-    const badge=document.getElementById('srs-badge'); badge.classList.add('visible');
-    setTimeout(()=>badge.classList.remove('visible'),1400);
+  // Clear click on current next stone
+  document.getElementById(`nlc-${targetIdx}`).onclick=null;
+  document.getElementById(`nls-${targetIdx}`).classList.remove('next','interactive');
+
+  animateHop(nlCurrent, targetIdx, ()=>{
+    nlCurrent=targetIdx;
+    updateStoneClasses();
+    showCallout(numWord(nlStones[targetIdx]));
+    speakNum(nlStones[targetIdx]);
+    document.getElementById('nl-hop-counter').textContent=nlStones[targetIdx];
+    // Play melody note — final stone gets fanfare
+    const _isFinalInter = targetIdx >= nlStones.length - 1;
+    playHopNote(targetIdx, nlStep, _isFinalInter);
+    // CRA visual groups
+    renderVisualGroups(nlStep, targetIdx);
+    sessionCoins+=5; updateCoinDisplay();
+    saveState({coins:getCoins()+5});
+    scrollToStone(targetIdx);
+
+    if(targetIdx>=nlStones.length-1){
+      // Reached the answer — auto-complete the question
+      setTimeout(()=>{
+        closeHint();
+        autoCorrect();
+      },700);
+    } else {
+      makeInteractive();
+    }
+  });
+}
+
+/* Auto-complete question after successful NL walkthrough */
+function autoCorrect(){
+  // Close the hint overlay
+  closeHint();
+  // Re-enable buttons and pulse the correct one — child must tap it
+  document.querySelectorAll('.ans-btn').forEach(b=>{
+    b.disabled=false;
+    b.classList.remove('wrong','correct');
+    if(parseInt(b.dataset.val)===currentQ.ans){
+      b.classList.add('pulse-correct');
+      // Bird bubble cue
+      const _bt=document.getElementById('bubble-text');
+      if(_bt) _bt.textContent='Tap the glowing answer! ✨';
+      // Re-wire onclick so this final tap scores correctly
+      b.onclick=()=>finalTapAfterHint(currentQ, b);
+    } else {
+      // Wrong buttons disabled so only correct is tappable
+      b.disabled=true;
+    }
+  });
+}
+
+/* Called when child taps the pulsing correct button after NL walkthrough */
+function finalTapAfterHint(q, btn){
+  document.querySelectorAll('.ans-btn').forEach(b=>{ b.disabled=true; b.classList.remove('pulse-correct'); });
+  btn.classList.add('correct');
+  btn.textContent='✓ '+q.ans;
+  gameScore+=10; sessionCoins+=2; streak++; answered++;
+  document.getElementById('g-score').textContent=gameScore;
+  updateCoinDisplay(); updateProgress(); checkStreak(streak);
+  speakFullEquation(q);
+  setTimeout(()=>showCorrectSequence(q), 400);
+}
+
+/* ── Stone animation helpers ────────────────────── */
+function animateHop(fromIdx, toIdx, onDone){
+  const fromSlot = document.getElementById(`nlch-${fromIdx}`);
+  const toSlot   = document.getElementById(`nlch-${toIdx}`);
+  const charSrc  = document.getElementById('nl-redy-img')?.src
+    || 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png';
+
+  if(!fromSlot || !toSlot){ if(onDone) onDone(); return; }
+
+  // Trigger jump on the FROM slot's img
+  const img = fromSlot.querySelector('img');
+  if(img){
+    img.style.animation='none'; void img.offsetWidth;
+    fromSlot.classList.add('jumping');
   }
 
-  setTimeout(()=>{ if(answered<TOTAL||questionQueue.length) nextQ(); else endGame(); },900);
+  setTimeout(()=>{
+    // Move img to TO slot
+    fromSlot.innerHTML=''; fromSlot.classList.remove('jumping');
+    toSlot.innerHTML=`<img src="${charSrc}" alt="Redy" id="nl-redy-img"/>`;
+
+    // Land animation (quick squish)
+    const newImg=toSlot.querySelector('img');
+    if(newImg){
+      newImg.style.animation='nlCharJump .01s forwards';
+      setTimeout(()=>{ if(newImg) newImg.style.animation=''; },50);
+    }
+
+    // Dust pop under landing stone
+    const dust=document.getElementById(`nld-${toIdx}`);
+    if(dust){ dust.classList.remove('pop'); void dust.offsetWidth; dust.classList.add('pop'); setTimeout(()=>dust.classList.remove('pop'),600); }
+
+    if(onDone) onDone();
+  }, 480);
 }
 
-function endGame() {
-  const totalCoins=getCoins()+sessionCoins;
-  const stage=getCurrentStage();
-  saveState({coins:totalCoins, highestStage:Math.max(getHighestStage(),stage)});
-
-  document.getElementById('question-text').innerHTML=`🎉 Score: ${gameScore}!`;
-  document.getElementById('skip-sequence').innerHTML=`<span style="font-size:16px;color:#888">+${sessionCoins} ⭐ coins earned!</span>`;
-  closeHint();
-
-  const grid=document.getElementById('answer-grid'); grid.innerHTML='';
-  const p=document.createElement('button'); p.className='ans-btn';
-  p.style.cssText='grid-column:span 2;background:#4caf50;font-size:17px;padding:16px;';
-  p.textContent='▶ Play Again'; p.onclick=startGame; grid.appendChild(p);
-  const h=document.createElement('button'); h.className='ans-btn';
-  h.style.cssText='grid-column:span 2;background:var(--purple-btn);font-size:17px;padding:16px;';
-  h.textContent='🏠 Home'; h.onclick=()=>showScreen('screen-home'); grid.appendChild(h);
-
-  document.getElementById('hdr-coins-val').textContent=totalCoins;
+function shakeRedy(){
+  const slot = document.getElementById(`nlch-${nlCurrent}`);
+  if(!slot) return;
+  slot.classList.remove('shaking'); void slot.offsetWidth; slot.classList.add('shaking');
+  setTimeout(()=>slot.classList.remove('shaking'),400);
 }
 
-function endSession() { saveState({coins:getCoins()+sessionCoins}); showScreen('screen-home'); }
+function updateStoneClasses(){
+  nlStones.forEach((_,i)=>{
+    const el=document.getElementById(`nls-${i}`);
+    if(!el) return;
+    el.className='nl-stone';
+    if(i<nlCurrent)       el.classList.add('passed');
+    else if(i===nlCurrent)el.classList.add('current');
+    else if(i===0&&nlCurrent>0) el.classList.add('passed');
+    else                  el.classList.add('dim');
+    if(i===0)             el.classList.add('zero');
+  });
+}
 
-/* ═══════════════════════════════════
+function scrollToStone(idx){
+  const el=document.getElementById(`nls-${Math.min(idx+1,nlStones.length-1)}`);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+/* ── Callout ──────────────────────────────────── */
+function showCallout(word){
+  const el=document.getElementById('nl-callout');
+  el.textContent=word+'!';
+  el.classList.remove('hide'); el.classList.add('show');
+  setTimeout(()=>{ el.classList.remove('show'); el.classList.add('hide'); },1100);
+}
+function hideCallout(){
+  document.getElementById('nl-callout').classList.remove('show','hide');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RHYTHM / MUSIC ENGINE
+   Uses Web Audio API — no files, all generated in-browser.
+
+   Each times table has:
+   • A unique scale (set of frequency ratios)
+   • A unique timbre (waveform type + envelope)
+   • A boing landing sound on every hop
+   • A 3-note fanfare on the final (answer) stone
+
+   The root pitch shifts up slightly with each hop so
+   kids audibly hear the count rising.
+═══════════════════════════════════════════════════════════ */
+
+let audioCtx = null;
+
+function getAudioCtx() {
+  if(!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  // Resume if suspended (browser autoplay policy)
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+/* ── Scale definitions per table ──────────────────────────
+   Each entry: { wave, notes[], baseHz, gain }
+   notes[] = semitone offsets from root.
+   We cycle through notes[] as the kid hops, so the melody
+   loops naturally for longer tables.
+──────────────────────────────────────────────────────────*/
+const TABLE_SCALES = {
+  2:  { wave:'sine',     notes:[0,4,7,12,16,19,24],  baseHz:261.63, gain:.55, label:'✨ Bright & Bouncy'  },
+  3:  { wave:'triangle', notes:[0,3,7,10,14,17,21],  baseHz:220.00, gain:.5,  label:'🌀 Waltz Time'       },
+  4:  { wave:'sine',     notes:[0,5,7,12,17,19,24],  baseHz:293.66, gain:.5,  label:'💪 Power Chords'     },
+  5:  { wave:'triangle', notes:[0,5,7,12,17,24],     baseHz:261.63, gain:.55, label:'🖐️ Pentatonic Path'  },
+  6:  { wave:'sine',     notes:[0,4,7,9,12,16,19],   baseHz:246.94, gain:.5,  label:'🎸 Jazzy Sixths'     },
+  7:  { wave:'sawtooth', notes:[0,2,5,7,9,12,14],    baseHz:233.08, gain:.35, label:'🔮 Mysterious 7s'    },
+  8:  { wave:'triangle', notes:[0,4,7,12,16,24,28],  baseHz:261.63, gain:.5,  label:'⚡ Octave Leaps'     },
+  9:  { wave:'sine',     notes:[0,2,4,7,9,11,14],    baseHz:220.00, gain:.5,  label:'🌙 Minor Mystery'    },
+  10: { wave:'sine',     notes:[0,7,12,19,24,31,36], baseHz:261.63, gain:.55, label:'🔟 Big Jumps'        },
+  11: { wave:'triangle', notes:[0,4,7,12,16,19,24],  baseHz:293.66, gain:.5,  label:'🪞 Echo Twins'       },
+  12: { wave:'sine',     notes:[0,3,7,10,12,15,19],  baseHz:261.63, gain:.5,  label:'🏆 Grand Finale'     },
+};
+
+/* Convert semitone offset to Hz */
+function semitoneToHz(baseHz, semitones) {
+  return baseHz * Math.pow(2, semitones / 12);
+}
+
+/* ── Play a single melodic note ────────────────────────── */
+function playNote(hz, wave='sine', gainVal=0.5, duration=0.22, startDelay=0) {
+  try {
+    const ctx = getAudioCtx();
+    const t   = ctx.currentTime + startDelay;
+
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type      = wave;
+    osc.frequency.setValueAtTime(hz, t);
+
+    // Envelope: quick attack, sustain, release
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(gainVal, t + 0.025);
+    gain.gain.setValueAtTime(gainVal, t + duration * 0.6);
+    gain.gain.linearRampToValueAtTime(0, t + duration);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + duration + 0.01);
+  } catch(e) { /* audio not available */ }
+}
+
+/* ── Boing landing sound ────────────────────────────────── */
+function playBoing() {
+  try {
+    const ctx = getAudioCtx();
+    const t   = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain= ctx.createGain();
+    osc.type  = 'sine';
+    // Pitch swoops down: boing!
+    osc.frequency.setValueAtTime(520, t);
+    osc.frequency.exponentialRampToValueAtTime(180, t + 0.18);
+    gain.gain.setValueAtTime(0.45, t);
+    gain.gain.linearRampToValueAtTime(0, t + 0.2);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(t); osc.stop(t + 0.22);
+  } catch(e) {}
+}
+
+/* ── 3-note fanfare for the answer stone ───────────────── */
+function playFanfare(table) {
+  const scale = TABLE_SCALES[table] || TABLE_SCALES[2];
+  // Play a little arpeggio: root, fifth, octave
+  const chordSemitones = [0, 7, 12];
+  chordSemitones.forEach((semi, i) => {
+    const hz = semitoneToHz(scale.baseHz * 1.5, semi); // higher octave
+    playNote(hz, scale.wave, scale.gain * 1.1, 0.35, i * 0.12);
+  });
+  // Final sparkle
+  setTimeout(() => playNote(semitoneToHz(scale.baseHz * 3, 0), 'sine', 0.3, 0.25), 420);
+}
+
+/* ── Play the hop melody note ───────────────────────────── */
+/* hopIdx = which hop this is (1-based), table = times table being practised */
+function playHopNote(hopIdx, table, isFinal) {
+  if(isFinal) {
+    playBoing();
+    setTimeout(() => playFanfare(table), 80);
+    return;
+  }
+  const scale     = TABLE_SCALES[table] || TABLE_SCALES[2];
+  const notePool  = scale.notes;
+  const semitone  = notePool[(hopIdx - 1) % notePool.length];
+  // Shift base up slightly every full cycle for a sense of climbing
+  const octaveBoost = Math.floor((hopIdx - 1) / notePool.length) * 12;
+  const hz        = semitoneToHz(scale.baseHz, semitone + octaveBoost);
+  playBoing();
+  setTimeout(() => playNote(hz, scale.wave, scale.gain, 0.28), 40);
+}
+
+/* ── Unlock audio on first user interaction ─────────────
+   Required by browser autoplay policy.
+──────────────────────────────────────────────────────── */
+function unlockAudio() {
+  getAudioCtx();
+  document.removeEventListener('touchstart', unlockAudio);
+  document.removeEventListener('mousedown',  unlockAudio);
+}
+document.addEventListener('touchstart', unlockAudio, { once:true });
+document.addEventListener('mousedown',  unlockAudio, { once:true });
+
+/* ═══════════════════════════════════════════════════
+   SPEECH & VOICE ENGINE (OPTIMISED FOR NATURAL TONE)
+═══════════════════════════════════════════════════ */
+let bestFemaleVoice = null;
+function loadBestVoice() {
+  if (!window.speechSynthesis) return;
+  const voices = window.speechSynthesis.getVoices();
+  const englishVoices = voices.filter(v => v.lang.startsWith('en'));
+  // Tiered preference list of high-quality, natural female voices across OS platforms
+  const premiumFemaleVoices = [
+    'Google UK English Female', // Beautifully natural on Chrome/Android
+    'Microsoft Hazel',          // Natural UK English on Windows
+    'Siri',                     // iOS / macOS
+    'Samantha',                 // Classic clear iOS / macOS
+    'Google US English',        // High-quality US fallback
+    'Microsoft Zira'            // Clean US English on Windows
+  ];
+  // Try to find the highest tier voice available on the user's device
+  for (const name of premiumFemaleVoices) {
+    const found = englishVoices.find(v => v.name.includes(name));
+    if (found) {
+      bestFemaleVoice = found;
+      break;
+    }
+  }
+  // Generic fallback if no premium voices are explicitly found
+  if (!bestFemaleVoice) {
+    bestFemaleVoice = englishVoices.find(v => v.lang.includes('GB') && v.name.toLowerCase().includes('female'))
+                      || englishVoices.find(v => v.lang.includes('GB'))
+                      || englishVoices.find(v => v.name.toLowerCase().includes('female'))
+                      || englishVoices[0];
+  }
+}
+// Handle asynchronous voice loading in Chrome, Edge, and mobile browsers
+if (window.speechSynthesis) {
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = loadBestVoice;
+  }
+  loadBestVoice();
+}
+/* ── Full equation chant ────────────────────────────────
+   Speaks "Three times four... is twelve!" with human pacing.
+──────────────────────────────────────────────────────── */
+function speakFullEquation(q){
+  if(!window.speechSynthesis) return;
+  const name     = getPlayerName();
+
+  // Strategic punctuation pauses prevent the robotic, flat delivery
+  const equation = `${numWord(q.a)} times... ${numWord(q.b)}, is... ${numWord(q.ans)}!`;
+
+  const prefixes = name ? [
+    `Wow, ${name}! `,
+    `Yes, ${name}! `,
+    ``,
+  ] : [''];
+  const prefix   = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const sentence = prefix + equation;
+
+  const u = new SpeechSynthesisUtterance(sentence);
+  if (bestFemaleVoice) u.voice = bestFemaleVoice;
+  // Dropping pitch to 1.02 removes metallic distortion, rate 0.92 sounds like a patient teacher
+  u.rate = 0.92;
+  u.pitch = 1.02;
+  u.volume = 1;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+/* ── Single number counting ─────────────────────────── */
+function speakNum(n){
+  if(!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(numWord(n));
+  if (bestFemaleVoice) u.voice = bestFemaleVoice;
+
+  u.rate = 0.95;
+  u.pitch = 1.02;
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+/* ═══════════════════════════════════════════════════
    INIT
-═══════════════════════════════════ */
+═══════════════════════════════════════════════════ */
+// Hide rail initially
+document.getElementById('nl-rail').style.display='none';
 refreshHome();
 </script>
 </body>
