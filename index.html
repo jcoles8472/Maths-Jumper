@@ -51,7 +51,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .home-settings-btn {
   position: absolute;
   top: 18px; left: 18px;
-  width: 52px; height: 52px;
+  width: 40px; height: 40px;
   background: white;
   border: none;
   border-radius: 50%;
@@ -303,11 +303,11 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   display: flex; flex-direction: column; gap: 10px;
 }
 
-/* PLAY button — blue */
+/* PLAY button — blue glossy 3D */
 .btn-play {
   display: flex; align-items: center;
   width: 100%; padding: 0;
-  background: linear-gradient(180deg, #4dc8ff 0%, #1a9fe0 40%, #0d7ab8 100%);
+  background: linear-gradient(to bottom, #61b2ff 0%, #1a9fe0 55%, #0d7ab8 100%);
   color: white;
   border: none;
   border-radius: 50px;
@@ -315,12 +315,21 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   font-size: 20px; font-weight: 900;
   letter-spacing: 2px;
   cursor: pointer;
-  box-shadow: 0 7px 0 #075a8a, 0 10px 24px rgba(0,100,200,.3), inset 0 2px 0 rgba(255,255,255,.3);
-  transition: transform .1s, box-shadow .1s;
-  overflow: hidden;
-  position: relative;
+  position: relative; overflow: hidden;
+  text-shadow: 0 3px 0 rgba(0,0,0,.1), 0 5px 12px rgba(0,0,0,.18);
+  box-shadow:
+    0 14px 28px rgba(0,100,200,.25),
+    inset 0 3px 0 rgba(255,255,255,.28),
+    inset 0 -5px 0 rgba(0,0,0,.1);
+  transition: transform .12s ease, box-shadow .12s ease;
 }
-.btn-play:active { transform: translateY(5px); box-shadow: 0 2px 0 #075a8a; }
+.btn-play::after {
+  content:""; position:absolute; inset:8px; border-radius:40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,.32) 0%, rgba(255,255,255,.14) 18%, rgba(255,255,255,0) 44%);
+  pointer-events:none;
+}
+.btn-play:hover  { transform:translateY(-2px); }
+.btn-play:active { transform: translateY(4px); box-shadow: 0 5px 12px rgba(0,100,200,.2), inset 0 3px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.08); }
 .btn-play-icon {
   width: 52px; height: 52px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
@@ -340,11 +349,11 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   padding-right: 8px;
 }
 
-/* SELECT STAGE button — purple */
+/* SELECT STAGE button — purple glossy 3D */
 .btn-select {
   display: flex; align-items: center;
   width: 100%; padding: 0;
-  background: linear-gradient(180deg, #a06df0 0%, #7c44d6 40%, #5e28b8 100%);
+  background: linear-gradient(to bottom, #b580f8 0%, #7c44d6 55%, #5e28b8 100%);
   color: white;
   border: none;
   border-radius: 50px;
@@ -352,11 +361,21 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   font-size: 20px; font-weight: 900;
   letter-spacing: 2px;
   cursor: pointer;
-  box-shadow: 0 7px 0 #3d1680, 0 10px 24px rgba(100,50,200,.3), inset 0 2px 0 rgba(255,255,255,.25);
-  transition: transform .1s, box-shadow .1s;
-  overflow: hidden;
+  position: relative; overflow: hidden;
+  text-shadow: 0 3px 0 rgba(0,0,0,.1), 0 5px 12px rgba(0,0,0,.18);
+  box-shadow:
+    0 14px 28px rgba(100,50,200,.25),
+    inset 0 3px 0 rgba(255,255,255,.25),
+    inset 0 -5px 0 rgba(0,0,0,.1);
+  transition: transform .12s ease, box-shadow .12s ease;
 }
-.btn-select:active { transform: translateY(5px); box-shadow: 0 2px 0 #3d1680; }
+.btn-select::after {
+  content:""; position:absolute; inset:8px; border-radius:40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,.28) 0%, rgba(255,255,255,.12) 18%, rgba(255,255,255,0) 44%);
+  pointer-events:none;
+}
+.btn-select:hover  { transform:translateY(-2px); }
+.btn-select:active { transform: translateY(4px); box-shadow: 0 5px 12px rgba(100,50,200,.2), inset 0 3px 0 rgba(255,255,255,.22), inset 0 -2px 0 rgba(0,0,0,.08); }
 .btn-select-icon {
   width: 52px; height: 52px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
@@ -428,23 +447,346 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .stage-name  { font-size:13px; font-weight:900; color:var(--purple-btn); text-align:center; }
 .stage-desc  { font-size:11px; color:#888; font-weight:700; text-align:center; }
 .stage-stars { font-size:14px; letter-spacing:2px; }
-/* Char grid */
-.char-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:100%; margin-top:10px; position:relative; z-index:20; }
-.char-card { background:#fdf6e3; border-radius:18px; padding:10px 6px 8px; display:flex; flex-direction:column; align-items:center; cursor:pointer; border:3px solid transparent; transition:border-color .2s,transform .15s; position:relative; box-shadow:0 4px 12px rgba(0,0,0,.15); }
-.char-card.selected { border-color:var(--yellow); background:#fffbea; }
-.char-card:active { transform:scale(.96); }
-.char-card img { width:80%; aspect-ratio:1; object-fit:contain; }
-.char-emoji { font-size:50px; line-height:1; margin:4px 0; }
-.char-name  { margin-top:6px; background:var(--purple-btn); color:white; border-radius:20px; font-size:12px; font-weight:900; padding:4px 12px; width:100%; text-align:center; }
-.char-card.selected .char-name { background:var(--purple-dark); }
-.check { display:none; position:absolute; top:-8px; right:-8px; width:26px; height:26px; background:#4caf50; border-radius:50%; align-items:center; justify-content:center; font-size:14px; border:2px solid white; }
+/* Char grid — matches character select screenshot */
+.char-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  margin-top: 12px;
+  position: relative; z-index: 20;
+}
+.char-card {
+  background: #fdf6e3;
+  border-radius: 20px;
+  padding: 12px 8px 10px;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: border-color .2s, transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s ease;
+  position: relative;
+  box-shadow: 0 5px 16px rgba(0,0,0,.18);
+}
+/* Hover / focus — smooth scale-up like the "Redy" card in screenshot */
+.char-card:hover,
+.char-card:focus-within {
+  transform: scale(1.09);
+  box-shadow: 0 12px 30px rgba(0,0,0,.28);
+  border-color: rgba(255,220,0,.6);
+  z-index: 5;
+}
+/* Selected card — strong yellow border + scale like Redy in screenshot */
+.char-card.selected {
+  border-color: var(--yellow);
+  background: #fffbea;
+  transform: scale(1.10);
+  box-shadow: 0 0 0 4px rgba(245,197,24,.35), 0 14px 32px rgba(0,0,0,.28);
+  z-index: 5;
+}
+.char-card img { width:85%; aspect-ratio:1; object-fit:contain; }
+.char-emoji { font-size:54px; line-height:1; margin:4px 0; }
+.char-name  {
+  margin-top: 7px;
+  background: var(--purple-btn); color: white;
+  border-radius: 20px; font-size: 12px; font-weight: 900;
+  padding: 5px 12px; width: 100%; text-align: center;
+}
+.char-card.selected .char-name { background: var(--purple-dark); }
+/* "Selected" sub-label that shows under the name — matches screenshot */
+.char-card.selected .char-selected-tag { display: block; }
+.char-selected-tag {
+  display: none;
+  margin-top: 4px;
+  background: var(--yellow); color: #7a4e00;
+  border-radius: 20px; font-size: 10px; font-weight: 900;
+  padding: 3px 10px; width: 100%; text-align: center;
+}
+.check { display:none; position:absolute; top:-9px; right:-9px; width:28px; height:28px; background:#4caf50; border-radius:50%; align-items:center; justify-content:center; font-size:15px; border:2.5px solid white; box-shadow:0 2px 6px rgba(0,0,0,.25); }
 .char-card.selected .check { display:flex; }
-.lets-go-btn { display:block; width:65%; margin:14px auto 0; padding:16px; background:var(--green-btn); color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:20px; font-weight:900; letter-spacing:2px; cursor:pointer; box-shadow:0 5px 0 var(--green-dark); transition:transform .1s,box-shadow .1s; position:relative; z-index:20; }
-.lets-go-btn:active { transform:translateY(3px); box-shadow:0 2px 0 var(--green-dark); }
+.lets-go-btn {
+  display:block; width:72%; margin:14px auto 0;
+  padding:18px 24px;
+  background: linear-gradient(to bottom, #8be43c 0%, #68d326 55%, #4ab915 100%);
+  color:white; border:none; border-radius:50px;
+  font-family:'Nunito',cursive; font-size:22px; font-weight:900; letter-spacing:2px;
+  cursor:pointer; position:relative; z-index:20; overflow:hidden;
+  text-shadow: 0 3px 0 rgba(0,0,0,.1), 0 5px 10px rgba(0,0,0,.15);
+  box-shadow:
+    0 14px 28px rgba(0,0,0,.2),
+    inset 0 3px 0 rgba(255,255,255,.28),
+    inset 0 -5px 0 rgba(0,0,0,.1);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.lets-go-btn::after {
+  content:""; position:absolute; inset:8px; border-radius:40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,.32) 0%, rgba(255,255,255,.14) 18%, rgba(255,255,255,0) 44%);
+  pointer-events:none;
+}
+.lets-go-btn:hover  { transform:translateY(-2px); }
+.lets-go-btn:active { transform:translateY(4px); box-shadow:0 5px 12px rgba(0,0,0,.2), inset 0 3px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.08); }
 
 /* ─────────────────────────────────────────────
-   GAME SCREEN  — matches ingame.png exactly
+   NEW CHARACTER SELECT SCREEN
 ───────────────────────────────────────────── */
+#screen-chars { overflow: hidden; }
+
+/* Sky gradient background */
+.chars-bg {
+  position: absolute; inset: 0;
+  background: url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center top/cover no-repeat;
+  z-index: 0;
+}
+.chars-ground {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 220px;
+  background: url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg.png') center bottom/cover no-repeat;
+  z-index: 1;
+}
+
+/* Header */
+.chars-header {
+  position: relative; z-index: 20;
+  width: 100%; display: flex;
+  align-items: center; justify-content: space-between;
+  padding: 14px 16px 0;
+}
+
+/* Title */
+.chars-title-wrap {
+  position: relative; z-index: 20;
+  width: 100%; text-align: center;
+  padding: 8px 16px 0;
+}
+.chars-title-sub {
+  font-size: 12px; font-weight: 700;
+  color: var(--text-dark);
+  background: rgba(255,255,255,.85);
+  border-radius: 20px; padding: 4px 14px;
+  display: inline-block;
+}
+.chars-title-main {
+  display: block;
+  font-size: 34px; font-weight: 900;
+  color: white;
+  text-shadow: 0 4px 0 var(--purple-dark), 0 2px 16px rgba(0,0,0,.3);
+  letter-spacing: 1px;
+  margin-top: 4px;
+  line-height: 1.15;
+}
+
+/* Grid — 3 col, centre card larger (hero) */
+.char-grid-new {
+  position: relative; z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px 0;
+  /* Hero card (Redy, index 0) spans the full middle column and stands taller */
+}
+
+/* ── Base card ── */
+.char-card-new {
+  background: #fdf6e3;
+  border-radius: 20px;
+  padding: 10px 6px 8px;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: border-color .2s, transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s;
+  position: relative;
+  box-shadow: 0 5px 16px rgba(0,0,0,.2);
+}
+.char-card-new:active { transform: scale(.97); }
+
+/* Selected card */
+.char-card-new.selected {
+  border-color: var(--yellow);
+  background: #fffbea;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 4px rgba(245,197,24,.4), 0 14px 32px rgba(0,0,0,.25);
+  z-index: 5;
+}
+
+/* Locked overlay */
+.char-card-new.locked {
+  opacity: 0.92;
+}
+.char-img-wrap {
+  position: relative;
+  width: 88%; aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.char-img-wrap img {
+  width: 100%; height: 100%; object-fit: contain;
+}
+.char-emoji-fallback {
+  font-size: 52px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+}
+
+/* Lock overlay */
+.char-lock-overlay {
+  position: absolute; inset: 0;
+  background: rgba(30,15,60,.55);
+  border-radius: 14px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-size: 28px;
+  gap: 4px;
+  backdrop-filter: blur(1px);
+}
+.char-lock-cost {
+  font-size: 12px; font-weight: 900;
+  color: var(--yellow);
+  background: rgba(0,0,0,.5);
+  border-radius: 20px; padding: 2px 8px;
+  display: block;
+}
+
+/* Name tag */
+.char-name-tag {
+  margin-top: 6px;
+  background: var(--purple-btn); color: white;
+  border-radius: 20px; font-size: 12px; font-weight: 900;
+  padding: 4px 10px; width: 100%; text-align: center;
+}
+.char-card-new.selected .char-name-tag { background: var(--purple-dark); }
+
+/* Selected / owned sub-tags */
+.char-selected-tag {
+  margin-top: 4px;
+  background: var(--yellow); color: #7a4e00;
+  border-radius: 20px; font-size: 10px; font-weight: 900;
+  padding: 2px 8px; width: 100%; text-align: center;
+}
+.char-owned-tag {
+  margin-top: 4px;
+  background: #c8e6c9; color: #1b5e20;
+  border-radius: 20px; font-size: 10px; font-weight: 900;
+  padding: 2px 8px; width: 100%; text-align: center;
+}
+
+/* Green check badge */
+.char-checkmark {
+  position: absolute; top: -9px; right: -9px;
+  width: 28px; height: 28px;
+  background: #4caf50; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; color: white;
+  border: 2.5px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  z-index: 10;
+}
+
+/* LET'S GO button on char screen */
+.chars-lets-go-btn {
+  display: block; width: 72%; margin: 12px auto 0;
+  padding: 17px 24px;
+  background: linear-gradient(to bottom, #8be43c 0%, #68d326 55%, #4ab915 100%);
+  color: white; border: none; border-radius: 50px;
+  font-family: 'Nunito', cursive; font-size: 22px; font-weight: 900; letter-spacing: 2px;
+  cursor: pointer; position: relative; z-index: 20; overflow: hidden;
+  text-shadow: 0 3px 0 rgba(0,0,0,.1), 0 5px 10px rgba(0,0,0,.15);
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.22),
+    inset 0 3px 0 rgba(255,255,255,.28),
+    inset 0 -5px 0 rgba(0,0,0,.1);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.chars-lets-go-btn::after {
+  content: ""; position: absolute; inset: 8px; border-radius: 40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,.32) 0%, rgba(255,255,255,.14) 18%, rgba(255,255,255,0) 44%);
+  pointer-events: none;
+}
+.chars-lets-go-btn:hover  { transform: translateY(-2px); }
+.chars-lets-go-btn:active { transform: translateY(4px); box-shadow: 0 5px 12px rgba(0,0,0,.2), inset 0 3px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.08); }
+
+/* ─────────────────────────────────────────────
+   INFO SCREENS  — Achievements / Rewards / How to Play
+───────────────────────────────────────────── */
+#screen-achievements,#screen-rewards,#screen-howto { overflow:hidden; display:flex; flex-direction:column; }
+
+.info-scroll-area {
+  position:relative; z-index:20;
+  width:100%; overflow-y:auto; overflow-x:hidden;
+  padding:10px 14px 24px;
+  scrollbar-width:none;
+  flex:1;
+}
+.info-scroll-area::-webkit-scrollbar { display:none; }
+
+.info-card {
+  background:white; border-radius:20px;
+  padding:14px 16px; margin-bottom:10px;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);
+  display:flex; align-items:center; gap:14px;
+  position:relative; overflow:hidden;
+  transition:transform .15s;
+}
+.info-card:active { transform:scale(.98); }
+.info-card::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:5px; border-radius:20px 0 0 20px;
+}
+.info-card.accent-yellow::before { background:var(--yellow); }
+.info-card.accent-purple::before { background:var(--purple-btn); }
+.info-card.accent-green::before  { background:#4caf50; }
+.info-card.accent-blue::before   { background:#3aabf0; }
+.info-card.accent-pink::before   { background:#f54b6e; }
+.info-card.accent-orange::before { background:#ff9800; }
+
+.info-icon {
+  width:52px; height:52px; flex-shrink:0; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px; box-shadow:0 3px 8px rgba(0,0,0,.15);
+}
+.info-icon.bg-yellow { background:linear-gradient(135deg,#ffe96e,#f5a500); }
+.info-icon.bg-purple { background:linear-gradient(135deg,#c084fc,#7c3aed); }
+.info-icon.bg-green  { background:linear-gradient(135deg,#86efac,#16a34a); }
+.info-icon.bg-blue   { background:linear-gradient(135deg,#7dd3fc,#0284c7); }
+.info-icon.bg-pink   { background:linear-gradient(135deg,#f9a8d4,#db2777); }
+.info-icon.bg-orange { background:linear-gradient(135deg,#fdba74,#ea580c); }
+.info-icon.bg-grey   { background:linear-gradient(135deg,#e2e8f0,#94a3b8); }
+
+.info-body { flex:1; min-width:0; }
+.info-title { font-size:14px; font-weight:900; color:var(--purple-dark); line-height:1.2; margin-bottom:3px; }
+.info-desc  { font-size:11.5px; font-weight:700; color:#888; line-height:1.4; }
+
+.info-badge { flex-shrink:0; font-size:11px; font-weight:900; border-radius:20px; padding:4px 10px; white-space:nowrap; }
+.info-badge.earned { background:#dcfce7; color:#15803d; }
+.info-badge.locked { background:#f1f5f9; color:#94a3b8; }
+.info-badge.stars  { background:#fef9c3; color:#854d0e; }
+
+.info-progress-wrap { margin-top:6px; height:8px; background:#f1f5f9; border-radius:4px; overflow:hidden; }
+.info-progress-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,#a78bfa,#7c3aed); transition:width .6s ease; }
+
+.info-section-label {
+  font-size:10px; font-weight:900; letter-spacing:1.5px;
+  color:rgba(255,255,255,.9); text-transform:uppercase;
+  padding:8px 4px 4px;
+}
+
+.rewards-tally {
+  background:linear-gradient(135deg,#3d2778,#6b4dbf);
+  border-radius:24px; padding:22px 20px; margin-bottom:14px;
+  display:flex; align-items:center; gap:16px;
+  box-shadow:0 8px 24px rgba(61,39,120,.4);
+}
+.rewards-tally-icon { font-size:52px; line-height:1; filter:drop-shadow(0 3px 6px rgba(0,0,0,.3)); }
+.rewards-tally-text { flex:1; }
+.rewards-tally-num {
+  font-size:48px; font-weight:900; color:var(--yellow); line-height:1;
+  text-shadow:0 3px 0 #b35a00, 0 6px 16px rgba(0,0,0,.3);
+}
+.rewards-tally-label { font-size:13px; font-weight:900; color:rgba(255,255,255,.8); margin-top:2px; }
+
+.howto-step-num {
+  width:36px; height:36px; flex-shrink:0; border-radius:50%;
+  background:var(--purple-btn); color:white; font-size:18px; font-weight:900;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 0 var(--purple-dark);
+}
+
 #screen-game { overflow:hidden; }
 
 /* Full background — ingame scene */
@@ -515,7 +857,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* ── Progress bar with 3 star markers ── */
 .g-progress-wrap {
-  position:absolute; top:72px; left:14px; right:14px;
+  position:absolute; top:82px; left:14px; right:14px;
   height:20px; z-index:30;
   display:flex; align-items:center;
 }
@@ -530,8 +872,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* ── Sun — top right, decorative ── */
 .g-sun {
-  position:absolute; top:88px; right:10px;
-  width:100px; z-index:20;
+  position:absolute; top:145px; right:14px;
+  width:130px; z-index:20;
   animation:sunWobble 4s ease-in-out infinite;
   filter:drop-shadow(0 4px 12px rgba(255,200,0,.4));
 }
@@ -539,8 +881,14 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* ── Bird + speech bubble — top left ── */
 .g-bird-wrap {
-  position:absolute; top:108px; left:10px;
-  z-index:22; display:flex; align-items:flex-start; gap:6px;
+  position: absolute;
+    left: 70%;
+    bottom: 30%;
+    transform: translate(-50%, -50%);
+    z-index: 22;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
 }
 .g-bird { width:72px; filter:drop-shadow(0 4px 8px rgba(0,0,0,.25)); animation:birdBob 2.5s ease-in-out infinite; }
 @keyframes birdBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
@@ -586,19 +934,20 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* ── Question card — big, centred ── */
 .g-question-card {
   position:absolute;
-  top:220px; left:14px; right:14px;
+  top:300px; left:14px; right:14px;
   background:var(--panel-bg);
   border-radius:24px;
-  padding:22px 24px 20px;
+  padding:40px 40px 40px;
   box-shadow:0 8px 32px rgba(0,0,0,.2);
   z-index:25; text-align:center;
+  border: 3px solid var(--yellow);
 }
 /* Yellow border glow when hint is open */
 .g-question-card.hint-active {
   border:3px solid var(--yellow);
 }
 .g-equation {
-  font-size:52px; font-weight:900; color:var(--purple-dark);
+  font-size:65px; font-weight:900; color:var(--purple-dark);
   line-height:1.1; display:flex; align-items:center; justify-content:center; gap:12px;
 }
 .g-blank {
@@ -614,7 +963,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* ── "HIDE HINT" pill overlapping top-right of card ── */
 .g-hide-hint-btn {
   position:absolute;
-  top:-18px; right:14px;
+  top: -35px; left:-5px;
   background:var(--purple-btn);
   color:white;
   border:none; border-radius:50px;
@@ -634,18 +983,27 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .g-srs.visible { opacity:1; }
 
 /* ── Streak banner ── */
-.streak-banner { position:absolute; top:96px; left:50%; transform:translateX(-50%) scale(0); background:linear-gradient(135deg,#ff6b35,#f7c59f); color:white; border-radius:30px; padding:10px 24px; font-size:20px; font-weight:900; box-shadow:0 6px 20px rgba(0,0,0,.3); z-index:50; white-space:nowrap; pointer-events:none; transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s; opacity:0; }
+.streak-banner { position:absolute; top:120px; left:50%; transform:translateX(-50%) scale(0); background:linear-gradient(135deg,#ff6b35,#f7c59f); color:white; border-radius:30px; padding:10px 24px; font-size:20px; font-weight:900; box-shadow:0 6px 20px rgba(0,0,0,.3); z-index:50; white-space:nowrap; pointer-events:none; transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s; opacity:0; }
 .streak-banner.show { transform:translateX(-50%) scale(1); opacity:1; }
 .streak-banner.hide { transform:translateX(-50%) scale(.8); opacity:0; }
 
 /* ── Redy on path — bottom centre ── */
 .g-redy {
-  position:absolute; bottom:168px; left:50%; transform:translateX(-50%);
-  width:90px; z-index:22;
-  filter:drop-shadow(0 6px 10px rgba(0,0,0,.3));
-  animation:redyIdle 2.2s ease-in-out infinite;
-  transition:left .45s cubic-bezier(.4,0,.2,1), bottom .45s cubic-bezier(.4,0,.2,1);
+  position: absolute;
+  bottom: 175px;
+  left: 40%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 130px;              /* Forces both images to match this maximum height */
+  object-fit: contain;        /* Prevents stretching/distortion */
+  object-position: bottom center; /* Keeps character resting flush on the ground line */
+  z-index: 22;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.3));
+  transition: left .45s cubic-bezier(.4,0,.2,1), bottom .45s cubic-bezier(.4,0,.2,1);
 }
+}
+/* Hidden during hint mode */
+.g-redy.hint-hidden { opacity:0 !important; pointer-events:none; }
 @keyframes redyIdle { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
 .g-redy.jumping  { animation:redyJumpAnim .5s cubic-bezier(.4,0,.2,1) forwards; }
 .g-redy.shaking  { animation:redyShake .4s ease forwards; }
@@ -674,7 +1032,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* ── Show Hint button — glossy purple pill + cost badge ── */
 .g-hint-btn {
-  position:absolute; top:196px; right:14px;
+  position:absolute; top:225px; left:14px;
   background:linear-gradient(180deg,#8b65e0 0%,var(--purple-btn) 45%,var(--purple-dark) 100%);
   color:white;
   border:none; border-radius:50px;
@@ -745,11 +1103,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* Rail line */
 .nl-rail {
-  position:absolute;
-  bottom:calc(168px + 22px); /* sits on top of ground */
-  left:0; right:0; height:5px;
-  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55) 15%,rgba(255,255,255,.55) 85%,rgba(255,255,255,0));
-  border-radius:3px; pointer-events:none;
+ display: none;
 }
 
 /* Each stone */
@@ -831,6 +1185,11 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* Clickable in interactive phase */
 .nl-stone.interactive .nl-stone-circle { cursor:pointer; }
 .nl-stone.interactive .nl-stone-circle:hover { background:rgba(255,255,255,1); transform:scale(1.08); }
+/* All stones fully visible and interactive during "Your turn!" */
+.nl-overlay.interactive .nl-stone .nl-stone-circle {
+  opacity: 1 !important;
+  pointer-events: auto;
+}
 /* Stone states */
 .nl-stone.zero    .nl-stone-circle { background:white; color:var(--text-dark); font-size:13px; }
 .nl-stone.passed  .nl-stone-circle { background:var(--yellow); border-color:var(--yellow-dark); color:#7a4e00; }
@@ -852,7 +1211,10 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   border-bottom:10px solid white;
 }
 .nl-stone.next    .nl-stone-circle { border-color:var(--purple-btn); animation:stPulse .9s ease-in-out infinite; }
-.nl-stone.dim     .nl-stone-circle { opacity:.3; }
+/* dim stones are still fully visible — consistent styling in all phases */
+.nl-stone.dim     .nl-stone-circle { opacity:1; }
+/* During interactive phase, all stones are fully visible */
+.nl-overlay.interactive .nl-stone.dim .nl-stone-circle { opacity:1; }
 @keyframes stPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
 .nl-stone-tick { width:2px; height:8px; background:rgba(255,255,255,.35); border-radius:1px; }
 
@@ -867,13 +1229,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   display:none;
 }
 .nl-active-tile.visible { display:block; }
-/* Stars row under the tile */
-.nl-tile-stars {
-  display:flex; gap:4px; justify-content:center;
-  margin-top:4px; font-size:14px;
-  min-height:20px;
-}
-
 /* ── "TAP THE NEXT NUMBER!" ribbon banner ── */
 .nl-tap-banner {
   background:var(--purple-btn);
@@ -930,42 +1285,111 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   border:3px solid white;
 }
 /* ─────────────────────────────────────────────
-   ANSWER BUTTONS  — 3D candy squarcles
+   GLOBAL 3D GLOSSY BUTTON COMPONENT
+   Shared by answer buttons, LET'S GO, PLAY, SELECT STAGE
+   Mirrors button.html exactly: deep shadow, gloss ::after,
+   hover lift, active press-down.
+───────────────────────────────────────────── */
+
+/* ── Base 3D glossy button ── */
+.btn-3d {
+  border: none;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Nunito', cursive;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  text-shadow:
+    0 3px 0 rgba(0,0,0,.08),
+    0 6px 12px rgba(0,0,0,.12);
+  box-shadow:
+    0 18px 30px rgba(0,0,0,.18),
+    inset 0 3px 0 rgba(255,255,255,.25),
+    inset 0 -5px 0 rgba(0,0,0,.08);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+/* Glossy top highlight */
+.btn-3d::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 14px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,.32) 0%,
+    rgba(255,255,255,.14) 15%,
+    rgba(255,255,255,0)   42%
+  );
+  box-shadow:
+    inset 0 4px 0 rgba(255,255,255,.25),
+    inset 0 -3px 0 rgba(255,255,255,.05);
+  pointer-events: none;
+}
+.btn-3d:hover  { transform: translateY(-2px); }
+.btn-3d:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 6px 12px rgba(0,0,0,.18), inset 0 3px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.08); }
+
+/* ── Candy colour variants (answer buttons) ── */
+.btn-3d-green  { background: linear-gradient(to bottom, #8be43c 0%, #68d326 55%, #4ab915 100%); }
+.btn-3d-blue   { background: linear-gradient(to bottom, #61b2ff 0%, #4096f4 55%, #1a78ea 100%); }
+.btn-3d-yellow { background: linear-gradient(to bottom, #ffdd58 0%, #ffc91f 55%, #efae00 100%); }
+.btn-3d-pink   { background: linear-gradient(to bottom, #ff73a3 0%, #fa4c85 55%, #e92f69 100%); }
+
+/* ── State feedback ── */
+.btn-3d.correct { background: linear-gradient(to bottom,#66bb6a,#4caf50,#388e3c) !important; }
+.btn-3d.wrong   { background: linear-gradient(to bottom,#ef5350,#f44336,#c62828) !important; }
+
+/* ─────────────────────────────────────────────
+   ANSWER BUTTONS  — use btn-3d base
    Generated ONCE per question, NEVER mutated by hint
 ───────────────────────────────────────────── */
 .g-answers {
-  position:absolute; bottom:56px; left:14px; right:14px;
+  position:absolute; bottom:70px; left:14px; right:14px;
   display:grid; grid-template-columns:repeat(4,1fr);
   gap:10px; z-index:30;
 }
 .ans-btn {
   color:white; border:none; border-radius:22px;
-  padding:18px 0; font-size:28px; font-weight:900;
+  padding:25px 0; font-size:28px; font-weight:900;
   font-family:'Nunito',cursive; cursor:pointer;
-  /* thick bottom border 3D effect */
-  box-shadow:0 8px 0 rgba(0,0,0,.28), inset 0 3px 6px rgba(255,255,255,.35);
-  transition:transform .1s, box-shadow .1s;
-  position:relative;
-  /* top gloss highlight */
-  background-image:linear-gradient(180deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,0) 55%);
+  position:relative; overflow:hidden;
+  line-height:1;
+  text-shadow: 0 3px 0 rgba(0,0,0,.08), 0 6px 12px rgba(0,0,0,.12);
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.22),
+    inset 0 3px 0 rgba(255,255,255,.28),
+    inset 0 -5px 0 rgba(0,0,0,.10);
+  transition: transform .12s ease, box-shadow .12s ease;
 }
+/* Glossy highlight layer */
+.ans-btn::after {
+  content:"";
+  position:absolute; inset:6px;
+  border-radius:16px;
+  background: linear-gradient(to bottom, rgba(255,255,255,.32) 0%, rgba(255,255,255,.14) 18%, rgba(255,255,255,0) 44%);
+  box-shadow: inset 0 4px 0 rgba(255,255,255,.25), inset 0 -3px 0 rgba(255,255,255,.05);
+  pointer-events:none;
+}
+.ans-btn:hover { transform:translateY(-2px); }
 .ans-btn:active:not(:disabled) {
-  transform:translateY(6px);
-  box-shadow:0 2px 0 rgba(0,0,0,.28), inset 0 3px 6px rgba(255,255,255,.35);
+  transform:translateY(4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.18), inset 0 3px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.08);
 }
 /* State feedback */
-.ans-btn.correct { background-color:#4caf50 !important; box-shadow:0 8px 0 #267326 !important; }
-.ans-btn.wrong   { background-color:#f44336 !important; box-shadow:0 8px 0 #9a1515 !important; }
+.ans-btn.correct { background: linear-gradient(to bottom,#66bb6a,#4caf50,#388e3c) !important; box-shadow:0 6px 0 #267326 !important; }
+.ans-btn.wrong   { background: linear-gradient(to bottom,#ef5350,#f44336,#c62828) !important; box-shadow:0 6px 0 #9a1515 !important; }
 
 /* Candy colour variants applied via JS index */
-.ans-btn[data-cidx="0"] { background-color:var(--ans-green);  box-shadow:0 8px 0 var(--ans-green-dk), inset 0 3px 6px rgba(255,255,255,.35); }
-.ans-btn[data-cidx="1"] { background-color:var(--ans-blue);   box-shadow:0 8px 0 var(--ans-blue-dk),  inset 0 3px 6px rgba(255,255,255,.35); }
-.ans-btn[data-cidx="2"] { background-color:var(--ans-yellow); box-shadow:0 8px 0 var(--ans-yellow-dk),inset 0 3px 6px rgba(255,255,255,.35); }
-.ans-btn[data-cidx="3"] { background-color:var(--ans-pink);   box-shadow:0 8px 0 var(--ans-pink-dk),  inset 0 3px 6px rgba(255,255,255,.35); }
-.ans-btn[data-cidx="0"]:active:not(:disabled) { box-shadow:0 2px 0 var(--ans-green-dk), inset 0 3px 6px rgba(255,255,255,.35); }
-.ans-btn[data-cidx="1"]:active:not(:disabled) { box-shadow:0 2px 0 var(--ans-blue-dk),  inset 0 3px 6px rgba(255,255,255,.35); }
-.ans-btn[data-cidx="2"]:active:not(:disabled) { box-shadow:0 2px 0 var(--ans-yellow-dk),inset 0 3px 6px rgba(255,255,255,.35); }
-.ans-btn[data-cidx="3"]:active:not(:disabled) { box-shadow:0 2px 0 var(--ans-pink-dk),  inset 0 3px 6px rgba(255,255,255,.35); }
+.ans-btn[data-cidx="0"] { background: linear-gradient(to bottom, #8be43c 0%, #5dce44 55%, #36a020 100%); }
+.ans-btn[data-cidx="1"] { background: linear-gradient(to bottom, #61b2ff 0%, #3aabf0 55%, #1a7fc4 100%); }
+.ans-btn[data-cidx="2"] { background: linear-gradient(to bottom, #ffdd58 0%, #ffc72c 55%, #d4900a 100%); }
+.ans-btn[data-cidx="3"] { background: linear-gradient(to bottom, #ff73a3 0%, #f54b6e 55%, #c01a45 100%); }
 
 /* Score badge */
 .g-score { position:absolute; bottom:18px; left:50%; transform:translateX(-50%); background:var(--purple-dark); color:white; border-radius:50px; padding:7px 22px; font-weight:900; font-size:15px; z-index:30; white-space:nowrap; box-shadow:0 3px 0 #1a0d40; display:flex; align-items:center; gap:6px; }
@@ -1014,12 +1438,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
       <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.69.07-1.08s-.03-.74-.07-1.08l2.32-1.82c.21-.16.27-.46.13-.7l-2.2-3.81c-.14-.24-.42-.32-.66-.24l-2.74 1.1c-.57-.43-1.18-.8-1.84-1.07l-.42-2.92A.54.54 0 0 0 14 3h-4c-.27 0-.5.2-.54.47l-.42 2.92c-.66.27-1.27.64-1.84 1.07l-2.74-1.1c-.24-.08-.52 0-.66.24l-2.2 3.81c-.14.24-.08.54.13.7l2.32 1.82c-.04.34-.07.69-.07 1.08s.03.74.07 1.08L2.4 14.84c-.21.16-.27.46-.13.7l2.2 3.81c.14.24.42.32.66.24l2.74-1.1c.57.43 1.18.8 1.84 1.07l.42 2.92c.04.27.27.47.54.47h4c.27 0 .5-.2.54-.47l.42-2.92c.66-.27 1.27-.64 1.84-1.07l2.74 1.1c.24.08.52 0 .66-.24l2.2-3.81c.14-.24.08-.54-.13-.7l-2.32-1.82z"/>
     </svg>
   </button>
-
-  <!-- Coin counter (top-right dark purple pill) -->
-  <div class="home-coin-counter">
-    <div class="home-coin-gold"></div>
-    <span class="home-coin-num" id="home-coin-num">0</span>
-  </div>
 
   <!-- Logo image (falls back to CSS logo) -->
   <img class="logo"
@@ -1135,19 +1553,19 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
   <!-- Bottom navigation tabs -->
   <div class="bottom-nav">
-    <button class="nav-btn" onclick="openShop()">
+    <button class="nav-btn" onclick="showScreen('screen-chars')">
       <span class="nav-btn-icon">🐉</span>
       <span class="nav-btn-label">Friends</span>
     </button>
-    <button class="nav-btn">
+    <button class="nav-btn" onclick="showScreen('screen-achievements')">
       <span class="nav-btn-icon">🏆</span>
       <span class="nav-btn-label">Achievements</span>
     </button>
-    <button class="nav-btn">
+    <button class="nav-btn" onclick="showScreen('screen-rewards')">
       <span class="nav-btn-icon">⭐</span>
       <span class="nav-btn-label">Rewards</span>
     </button>
-    <button class="nav-btn">
+    <button class="nav-btn" onclick="showScreen('screen-howto')">
       <span class="nav-btn-icon">📘</span>
       <span class="nav-btn-label">How to Play</span>
     </button>
@@ -1175,17 +1593,78 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
      CHAR SELECT
 ══════════════════════════════════════ -->
 <div class="screen hidden" id="screen-chars">
-  <div class="screen-bg-blur"></div>
-  <div class="sel-header">
+  <!-- Sky background matching the screenshot -->
+  <div class="chars-bg"></div>
+  <div class="chars-ground"></div>
+
+  <!-- Header row: back btn + coin badge -->
+  <div class="chars-header">
     <button class="back-btn" onclick="showScreen('screen-home')">←</button>
     <div class="coins-badge" id="chars-coins-badge">⭐ 0</div>
   </div>
-  <div class="sel-title-wrap">
-    <span class="sel-title-sub">Pick a buddy and start your maths adventure!</span>
-    <span class="sel-title-main">CHOOSE YOUR<br/>CHARACTER</span>
+
+  <!-- Title -->
+  <div class="chars-title-wrap">
+    <span class="chars-title-sub">Pick a buddy and start your maths adventure!</span>
+    <span class="chars-title-main">CHOOSE YOUR<br/>CHARACTER</span>
   </div>
-  <div class="char-grid" id="char-grid"></div>
-  <button class="lets-go-btn" onclick="showScreen('screen-game')">LET'S GO!</button>
+
+  <!-- Character grid -->
+  <div class="char-grid-new" id="char-grid"></div>
+
+  <!-- LET'S GO button -->
+  <button class="chars-lets-go-btn" onclick="onCharsLetsGo()">LET'S GO!</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     ACHIEVEMENTS SCREEN
+══════════════════════════════════════ -->
+<div class="screen hidden" id="screen-achievements">
+  <div class="chars-bg"></div>
+  <div class="chars-ground"></div>
+  <div class="chars-header">
+    <button class="back-btn" onclick="showScreen('screen-home')">←</button>
+    <div class="coins-badge" id="ach-coins-badge">⭐ 0</div>
+  </div>
+  <div class="chars-title-wrap">
+    <span class="chars-title-sub">Collect them all — keep jumping!</span>
+    <span class="chars-title-main">ACHIEVEMENTS</span>
+  </div>
+  <div class="info-scroll-area" id="ach-list"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     REWARDS SCREEN
+══════════════════════════════════════ -->
+<div class="screen hidden" id="screen-rewards">
+  <div class="chars-bg"></div>
+  <div class="chars-ground"></div>
+  <div class="chars-header">
+    <button class="back-btn" onclick="showScreen('screen-home')">←</button>
+    <div class="coins-badge" id="rew-coins-badge">⭐ 0</div>
+  </div>
+  <div class="chars-title-wrap">
+    <span class="chars-title-sub">Stars you've earned so far!</span>
+    <span class="chars-title-main">REWARDS</span>
+  </div>
+  <div class="info-scroll-area" id="rew-content"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     HOW TO PLAY SCREEN
+══════════════════════════════════════ -->
+<div class="screen hidden" id="screen-howto">
+  <div class="chars-bg"></div>
+  <div class="chars-ground"></div>
+  <div class="chars-header">
+    <button class="back-btn" onclick="showScreen('screen-home')">←</button>
+    <div class="coins-badge" style="background:var(--purple-dark);color:white;border-radius:50px;padding:8px 16px;font-size:15px;font-weight:900;">📘 Guide</div>
+  </div>
+  <div class="chars-title-wrap">
+    <span class="chars-title-sub">Everything you need to know!</span>
+    <span class="chars-title-main">HOW TO PLAY</span>
+  </div>
+  <div class="info-scroll-area" id="howto-content"></div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -1199,7 +1678,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Header -->
   <div class="g-header">
     <button class="g-back" onclick="endSession()">←</button>
-    <div class="g-coins"><span class="g-coins-star">⭐</span><span id="g-coins-val">0</span></div>
     <div class="g-world">
       <span class="g-world-label">WORLD</span>
       <span class="g-world-val" id="g-world-val">1 - 1</span>
@@ -1224,11 +1702,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     alt="Sun"/>
 
   <!-- Bird + speech bubble -->
-  <div class="g-bird-wrap">
-    <img class="g-bird"
-      src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bird.png"
-      onerror="this.style.fontSize='50px';this.outerHTML='<div style=\'font-size:50px\'>🐦</div>'"
-      alt="Bird"/>
+  <div class="g-bird-wrap" id="g-bird-wrap">
+   
     <div class="g-bubble" id="g-bubble"><span id="bubble-text">Let's multiply!</span><span class="bubble-coin-pop" id="bubble-coin-pop"></span></div>
   </div>
 
@@ -1263,10 +1738,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     <div class="nl-tap-banner" id="nl-tap-banner">TAP THE NEXT NUMBER! 👆</div>
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:6px;">
       <div class="nl-active-tile" id="nl-active-tile">5</div>
-      <div class="nl-tile-stars" id="nl-tile-stars"></div>
     </div>
     <div class="nl-hop-counter" id="nl-hop-counter"></div>
-    <div id="nl-visual-groups"></div>
     <div class="nl-track-wrap">
       <div class="nl-track" id="nl-track"></div>
     </div>
@@ -1280,11 +1753,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     onerror="this.src='https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png'"
     alt="Redy"/>
 
-  <!-- Wooden sign -->
-  <img class="g-sign"
-    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-sign.png"
-    onerror="this.outerHTML='<div class=\'g-sign\' style=\'background:#8B5E3C;color:white;border-radius:10px;padding:10px;font-size:13px;font-weight:900;text-align:center;bottom:158px;right:12px;position:absolute;z-index:22\'>You got<br/>this! ⭐</div>'"
-    alt="Sign"/>
+
 
   <!-- Answer buttons (generated once per question, NEVER touched by hint) -->
   <div class="g-answers" id="g-answers"></div>
@@ -1456,12 +1925,42 @@ const SKINS = [
 ];
 
 const CHARACTERS = [
-  { id:'dino', name:'Dino', emoji:'🦕', img:null },
-  { id:'redy', name:'Redy', emoji:null, img:BASE+'mj-start-character-red.png'  },
-  { id:'unia', name:'Unia', emoji:null, img:BASE+'mj-start-character-unia.png' },
-  { id:'robo', name:'Robo', emoji:'🤖', img:null },
-  { id:'pip',  name:'Pip',  emoji:null, img:BASE+'mj-start-character-pip.png'  },
-  { id:'leo',  name:'Leo',  emoji:'🦁', img:null },
+  { id:'redy', name:'Redy', emoji:null,
+    img:         BASE+'mj-start-character-red.png',
+    imgIngame:   BASE+'mj-ingame-redy.png',
+    cost: 0,    // free / starter character
+    desc: 'The original!',
+  },
+  { id:'dino', name:'Dino', emoji:'🦕',
+    img:         BASE+'mj-start-character-dino.png',
+    imgIngame:   null,
+    cost: 30,
+    desc: 'Roar power!',
+  },
+  { id:'unia', name:'Unia', emoji:null,
+    img:         BASE+'mj-start-character-unia.png',
+    imgIngame:   null,
+    cost: 50,
+    desc: 'Magical!',
+  },
+  { id:'robo', name:'Robo', emoji:'🤖',
+    img:         BASE+'mj-start-character-robo.png',
+    imgIngame:   null,
+    cost: 60,
+    desc: 'Beep boop!',
+  },
+  { id:'pip',  name:'Pip',  emoji:null,
+    img:         BASE+'mj-start-character-pip.png',
+    imgIngame:   null,
+    cost: 80,
+    desc: 'Cool dude!',
+  },
+  { id:'leo',  name:'Leo',  emoji:'🦁',
+    img:         BASE+'mj-start-character-leo.png',
+    imgIngame:   null,
+    cost: 100,
+    desc: 'Mighty!',
+  },
 ];
 
 const ANS_COLORS = ['#4caf50','#2196f3','#f5c518','#e91e63'];
@@ -1492,6 +1991,7 @@ const getUnlockedSkins= () => loadState().unlockedSkins ?? ['red'];
 const getEquippedSkin = () => loadState().equippedSkin  ?? 'red';
 const getCurrentStage = () => loadState().currentStage  ?? 1;
 const getSelectedChar = () => loadState().selectedChar  ?? 'redy';
+const getUnlockedChars= () => loadState().unlockedChars ?? ['redy'];
 const getPlayerName   = () => loadState().playerName    || '';  // '' means not set yet
 
 /* ═══════════════════════════════════════════════════
@@ -1506,10 +2006,13 @@ scalePhone(); window.addEventListener('resize', scalePhone);
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
-  if(id==='screen-home')   refreshHome();
-  if(id==='screen-stages') renderStages();
-  if(id==='screen-chars')  renderChars();
-  if(id==='screen-game')   startGame();
+  if(id==='screen-home')         refreshHome();
+  if(id==='screen-stages')       renderStages();
+  if(id==='screen-chars')        renderChars();
+  if(id==='screen-game')         startGame();
+  if(id==='screen-achievements') renderAchievements();
+  if(id==='screen-rewards')      renderRewards();
+  if(id==='screen-howto')        renderHowTo();
 }
 
 function showToast(msg, dur=1800){
@@ -1534,9 +2037,6 @@ function refreshHome(){
   if (coinsEl) coinsEl.textContent = coins;
   const stageEl = document.getElementById('home-stage');
   if (stageEl) stageEl.textContent = `Stage ${getHighestStage()}`;
-  // Update top coin counter
-  const topCoinEl = document.getElementById('home-coin-num');
-  if (topCoinEl) topCoinEl.textContent = coins;
   // Update play button label (keep icon, just change text span)
   const btn = document.getElementById('btn-play-home');
   const displayName = savedName || 'Hero';
@@ -1593,19 +2093,74 @@ function renderStages(){
 }
 
 /* ═══════════════════════════════════════════════════
-   CHAR SELECT
+   CHAR SELECT / SHOP
 ═══════════════════════════════════════════════════ */
 function renderChars(){
-  document.getElementById('chars-coins-badge').textContent=`⭐ ${getCoins()}`;
-  const grid=document.getElementById('char-grid'), sel=getSelectedChar();
-  grid.innerHTML='';
-  CHARACTERS.forEach(ch=>{
-    const card=document.createElement('div');
-    card.className='char-card'+(ch.id===sel?' selected':'');
-    card.innerHTML=`<div class="check">✓</div>${ch.img?`<img src="${ch.img}" alt="${ch.name}"/>`:`<div class="char-emoji">${ch.emoji}</div>`}<div class="char-name">${ch.name}</div>`;
-    card.onclick=()=>{ document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('selected')); card.classList.add('selected'); saveState({selectedChar:ch.id}); };
+  const coins       = getCoins();
+  const unlocked    = getUnlockedChars();
+  const sel         = getSelectedChar();
+
+  // Update badges
+  document.getElementById('chars-coins-badge').textContent=`⭐ ${coins}`;
+
+  const grid = document.getElementById('char-grid');
+  grid.innerHTML = '';
+
+  CHARACTERS.forEach(ch => {
+    const isUnlocked  = unlocked.includes(ch.id);
+    const isSelected  = ch.id === sel;
+    const canAfford   = coins >= ch.cost;
+
+    const card = document.createElement('div');
+    card.className = 'char-card-new' + (isSelected ? ' selected' : '') + (isUnlocked ? '' : ' locked');
+
+    // Character image / emoji
+    const imgHTML = ch.img
+      ? `<img src="${ch.img}" alt="${ch.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="char-emoji-fallback" style="display:none">${ch.emoji||'?'}</div>`
+      : `<div class="char-emoji-fallback">${ch.emoji||'?'}</div>`;
+
+    // Lock overlay
+    const lockOverlay = !isUnlocked
+      ? `<div class="char-lock-overlay">🔒<span class="char-lock-cost">⭐ ${ch.cost}</span></div>`
+      : '';
+
+    // Check mark for selected
+    const checkmark = isSelected ? `<div class="char-checkmark">✓</div>` : '';
+
+    card.innerHTML = `
+      ${checkmark}
+      <div class="char-img-wrap">${imgHTML}${lockOverlay}</div>
+      <div class="char-name-tag">${ch.name}</div>
+      ${isSelected ? '<div class="char-selected-tag">Selected</div>' : (isUnlocked ? '<div class="char-owned-tag">Owned</div>' : '')}
+    `;
+
+    card.onclick = () => {
+      if (isSelected) return;
+      if (isUnlocked) {
+        saveState({ selectedChar: ch.id });
+        renderChars();
+        showToast(`${ch.name} selected! 🎉`);
+      } else if (canAfford) {
+        // Unlock confirmation built into the card press
+        const newUnlocked = [...getUnlockedChars(), ch.id];
+        saveState({ coins: getCoins() - ch.cost, unlockedChars: newUnlocked, selectedChar: ch.id });
+        showToast(`${ch.name} unlocked! 🎉`);
+        renderChars();
+      } else {
+        showToast(`Need ⭐ ${ch.cost - getCoins()} more stars to unlock ${ch.name}!`);
+      }
+    };
+
     grid.appendChild(card);
   });
+}
+
+function onCharsLetsGo(){
+  // Ensure selected character is actually unlocked; if not, keep redy
+  const sel = getSelectedChar();
+  const unlocked = getUnlockedChars();
+  if (!unlocked.includes(sel)) saveState({ selectedChar: 'redy' });
+  showScreen('screen-game');
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1656,6 +2211,7 @@ let srsQueue      = [];
 
 // ── Hint state ──────────────────────────────────────
 let hintOpen    = false;
+let hintEverUsedThisGame = false;
 let hintTimer      = null;   // delay before hint button appears
 let strategyTimer  = null;   // contextual strategy cue timer
 let nlDemoActive= false;  // true during scripted demo
@@ -1712,6 +2268,8 @@ function renderQ(q){
   // Restore hint button visibility (may have been hidden in Speed Round)
   const _hbEl = document.getElementById('g-hint-btn');
   if(_hbEl) _hbEl.style.display='';
+  // Reset Redy to default state
+  resetRedyImg();
   // Update equation
   document.getElementById('eq-a').textContent = q.a;
   document.getElementById('eq-b').textContent = q.b;
@@ -1786,7 +2344,37 @@ function checkStreak(n){
 }
 
 function updateCoinDisplay(){
-  document.getElementById('g-coins-val').textContent = getCoins()+sessionCoins;
+  // Bottom session-star counter shows coins earned this session
+  const scoreEl = document.getElementById('g-score');
+  if(scoreEl) scoreEl.textContent = sessionCoins;
+  // Also update the home coin counter if visible
+  const homeCoinsEl = document.getElementById('home-coin-num');
+  if(homeCoinsEl) homeCoinsEl.textContent = getCoins() + sessionCoins;
+}
+
+/* ── Redy sprite state management ─────────────────────────
+   Changes the in-game Redy image based on answer outcome.
+   Resets automatically after a short delay.
+──────────────────────────────────────────────────────────*/
+const REDY_IMG = {
+  default:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy.png',
+  correct:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy-correct.png',
+  incorrect: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy-opps.png',
+};
+let redyResetTimer = null;
+
+function setRedyState(state) {
+  const img = document.getElementById('g-redy');
+  if (!img) return;
+  if (redyResetTimer) { clearTimeout(redyResetTimer); redyResetTimer = null; }
+  img.src = REDY_IMG[state] || REDY_IMG.default;
+  if (state !== 'default') {
+    redyResetTimer = setTimeout(() => setRedyState('default'), 2000);
+  }
+}
+
+function resetRedyImg() {
+  setRedyState('default');
 }
 
 /* ── Check answer (answer buttons) ─────────────────
@@ -1800,12 +2388,12 @@ function checkAns(chosen, q, btn){
     btn.classList.add('correct');
     btn.textContent = '✓ '+chosen;
     gameScore+=10; sessionCoins+=2; streak++; answered++;
-    document.getElementById('g-score').textContent = gameScore;
     updateCoinDisplay();
     updateProgress();
     checkStreak(streak);
     cancelHintTimer();
     cancelStrategyTimer();
+    setRedyState('correct');
     // Speed Round bonus (Q9-10)
     if(questionIndex >= 9){
       sessionCoins+=5; updateCoinDisplay();
@@ -1817,19 +2405,22 @@ function checkAns(chosen, q, btn){
   } else {
     btn.classList.add('wrong');
     streak=0;
+    setRedyState('incorrect');
     injectSRS(q);
     // Show SRS badge briefly
     const srs=document.getElementById('g-srs'); srs.classList.add('visible');
     setTimeout(()=>srs.classList.remove('visible'),1400);
-    // ── Active Correction Loop ──
-    // Cancel auto-advance; force the child through the number line instead
+    // Show hint button so player can choose to use it
     cancelHintTimer();
     cancelStrategyTimer();
-    cancelStrategyTimer();
-    // Brief red flash, then open hint automatically
+    setHintVisible();
+    // Re-enable all buttons except the wrong one — player must try again
     setTimeout(()=>{
-      if(!hintOpen) toggleHint();
-    }, 600);
+      document.querySelectorAll('.ans-btn').forEach(b=>{
+        if(b === btn) return; // keep wrong button red and disabled
+        b.disabled = false;
+      });
+    }, 400);
   }
 }
 
@@ -1863,11 +2454,22 @@ function advanceQuestion(){
 /* ── Start game ─────────────────────────────────── */
 function startGame(){
   const stage=getCurrentStage();
-  gameScore=0; sessionCoins=0; streak=0; answered=0; questionIndex=0;
+  gameScore=0; sessionCoins=0; streak=0; answered=0; questionIndex=0; hintEverUsedThisGame=false;
   clearInterval(timerInt); timerVal=240;
 
+  // Set the in-game character sprite to the selected character
+  const charObj = CHARACTERS.find(c=>c.id===getSelectedChar()) || CHARACTERS[0];
+  REDY_IMG.default   = charObj.imgIngame || charObj.img || BASE+'mj-ingame-redy.png';
+  REDY_IMG.correct   = (charObj.id==='redy')
+    ? BASE+'mj-ingame-redy-correct.png'
+    : charObj.imgIngame || charObj.img || BASE+'mj-ingame-redy-correct.png';
+  REDY_IMG.incorrect = (charObj.id==='redy')
+    ? BASE+'mj-ingame-redy-opps.png'
+    : charObj.imgIngame || charObj.img || BASE+'mj-ingame-redy-opps.png';
+  const redyEl = document.getElementById('g-redy');
+  if(redyEl) redyEl.src = REDY_IMG.default;
+
   document.getElementById('g-world-val').textContent = `${stage} - 1`;
-  document.getElementById('g-score').textContent     = 0;
   document.getElementById('g-progress-fill').style.width='0%';
   document.getElementById('g-timer').textContent     = 240;
   ['star1','star2','star3'].forEach(id=>document.getElementById(id).classList.remove('earned'));
@@ -1892,7 +2494,23 @@ function endGame(){
   clearInterval(timerInt);
   const totalCoins=getCoins()+sessionCoins;
   const stage=getCurrentStage();
-  saveState({coins:totalCoins, highestStage:Math.max(getHighestStage(),stage)});
+  const s = loadState();
+  saveState({
+    coins:          totalCoins,
+    highestStage:   Math.max(getHighestStage(), stage),
+    lifetimeCoins:  (s.lifetimeCoins  ?? 0) + sessionCoins,
+    lifetimeCorrect:(s.lifetimeCorrect?? 0) + answered,
+    lastGameCorrect: answered,
+    bestStreak:     Math.max(s.bestStreak ?? 0, streak),
+    gamesNoHints:   (s.gamesNoHints ?? 0) + (hintEverUsedThisGame ? 0 : 1),
+  });
+  checkAndUnlockAchievements();
+  // Make the session star counter show the total earned this game
+  const scoreEl = document.getElementById('g-score');
+  if(scoreEl) scoreEl.textContent = sessionCoins;
+  // Update top home coin display in case player goes home
+  const homeNum = document.getElementById('home-coin-num');
+  if(homeNum) homeNum.textContent = totalCoins;
 
   document.getElementById('eq-a').textContent='🎉';
   document.getElementById('eq-b').textContent='';
@@ -1909,7 +2527,8 @@ function endGame(){
     btn.style.cssText=`grid-column:span 2;background:${bg};box-shadow:0 6px 0 ${sh};font-size:17px;padding:16px;`;
     btn.textContent=lbl; btn.onclick=fn; grid.appendChild(btn);
   });
-  document.getElementById('g-coins-val').textContent=totalCoins;
+  const _coinsValEl = document.getElementById('g-coins-val');
+  if(_coinsValEl) _coinsValEl.textContent=totalCoins;
 }
 
 function endSession(){ clearInterval(timerInt); saveState({coins:getCoins()+sessionCoins}); closeHint(); showScreen('screen-home'); }
@@ -1960,6 +2579,12 @@ function cancelDemoTimer(){
 function toggleHint(){
   if(!hintOpen){
     hintOpen=true;
+    hintEverUsedThisGame = true;
+    // Track lifetime hints used
+    const s = loadState();
+    saveState({ hintsUsed: (s.hintsUsed ?? 0) + 1 });
+    // Subtract 1 star for hint cost
+    if(sessionCoins > 0){ sessionCoins--; updateCoinDisplay(); }
     // Hide the show-hint pill
     const showBtn = document.getElementById('g-hint-btn');
     showBtn.classList.remove('visible');
@@ -1969,11 +2594,21 @@ function toggleHint(){
     // Yellow border on card
     const qcard = document.getElementById('g-question-card');
     if(qcard) qcard.classList.add('hint-active');
+    // Hide bird wrap during hint
+    const birdWrap = document.getElementById('g-bird-wrap');
+    if(birdWrap) birdWrap.style.display = 'none';
+    // Hide unneeded hint overlay elements
+    const phaseLabel = document.getElementById('nl-phase-label');
+    if(phaseLabel) phaseLabel.style.display = 'none';
+    const hopCounter = document.getElementById('nl-hop-counter');
+    if(hopCounter) hopCounter.style.display = 'none';
+    const activeTile = document.getElementById('nl-active-tile');
+    if(activeTile) activeTile.style.display = 'none';
     buildNL(currentQ);
     document.getElementById('nl-overlay').classList.add('visible');
     document.getElementById('nl-rail').style.display='block';
     // Hide the idle path Redy while NL hint is open
-    document.getElementById('g-redy').style.opacity='0';
+    document.getElementById('g-redy').classList.add('hint-hidden');
     startDemo();
   } else {
     closeHint();
@@ -1983,18 +2618,33 @@ function toggleHint(){
 function closeHint(){
   hintOpen=false; nlDemoActive=false; nlInteractive=false;
   cancelDemoTimer(); cancelHintTimer(); cancelStrategyTimer();
-  document.getElementById('nl-overlay').classList.remove('visible');
+  document.getElementById('nl-overlay').classList.remove('visible','interactive');
   document.getElementById('nl-rail').style.display='none';
   hideCallout();
   clearVisualGroups();
   setHintHidden();
   // Restore idle Redy on path
-  document.getElementById('g-redy').style.opacity='1';
+  document.getElementById('g-redy').classList.remove('hint-hidden');
+  // Restore bird wrap
+  const birdWrap = document.getElementById('g-bird-wrap');
+  if(birdWrap) birdWrap.style.display = '';
+  // Restore hint overlay elements for next use
+  const phaseLabel = document.getElementById('nl-phase-label');
+  if(phaseLabel) phaseLabel.style.display = '';
+  const hopCounter = document.getElementById('nl-hop-counter');
+  if(hopCounter) hopCounter.style.display = '';
   // Hide the tap banner and active tile
   const tapBanner = document.getElementById('nl-tap-banner');
   if(tapBanner) tapBanner.classList.remove('visible');
   const activeTile = document.getElementById('nl-active-tile');
-  if(activeTile) activeTile.classList.remove('visible');
+  if(activeTile) { activeTile.classList.remove('visible'); activeTile.style.display = ''; }
+  // Ensure answer buttons are playable if the hint is dismissed mid-question
+  // (autoCorrect handles the end-of-hint case; this covers early dismissal)
+  document.querySelectorAll('.ans-btn').forEach(b=>{
+    if(!b.classList.contains('wrong') && !b.classList.contains('correct')){
+      b.disabled = false;
+    }
+  });
 }
 
 /* ── Build number line stones ──────────────────── */
@@ -2011,11 +2661,10 @@ function buildNL(q){
   const track=document.getElementById('nl-track');
   track.innerHTML='';
 
-  // Get character image for the hint
-  const charObj = CHARACTERS.find(c=>c.id===getSelectedChar()) || CHARACTERS[1];
-  const charSrc = charObj.img
-    ? charObj.img
-    : 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-red.png';
+  // Get character image for the hint — prefer ingame variant
+  const charObj = CHARACTERS.find(c=>c.id===getSelectedChar()) || CHARACTERS[0];
+  const charSrc = charObj.imgIngame || charObj.img
+    || 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy.png';
 
   nlStones.forEach((val,idx)=>{
     const stone=document.createElement('div');
@@ -2113,8 +2762,7 @@ function demoHopTo(targetIdx){
       // Play melody note — final stone gets fanfare
       const _isFinalDemo = targetIdx >= nlStones.length - 1;
       playHopNote(targetIdx, nlStep, _isFinalDemo);
-      // CRA visual groups: show targetIdx groups of nlStep stars
-      renderVisualGroups(nlStep, targetIdx);
+      // CRA visual groups: removed per design update
       scrollToStone(targetIdx);
 
       if(targetIdx < nlStones.length-1){
@@ -2128,6 +2776,7 @@ function demoHopTo(targetIdx){
           nlCurrent=0;
           updateStoneClasses();
           scrollToStone(0);
+          document.getElementById('nl-overlay').classList.add('interactive');
           document.getElementById('nl-hop-counter').textContent='Your turn!';
           document.getElementById('nl-phase-label').textContent='';
           // Show tap banner + active tile
@@ -2135,7 +2784,7 @@ function demoHopTo(targetIdx){
           if(tapBanner) tapBanner.classList.add('visible');
           const activeTile = document.getElementById('nl-active-tile');
           if(activeTile){ activeTile.textContent = nlStones[1] || nlStep; activeTile.classList.add('visible'); }
-          updateTileStars(0);
+          updateTileStars(0); // kept as no-op, stars removed
           makeInteractive();
         },800);
       }
@@ -2183,12 +2832,11 @@ function interactiveHop(targetIdx){
       const nextVal = nlStones[targetIdx+1];
       if(nextVal !== undefined) activeTile.textContent = nextVal;
     }
-    updateTileStars(targetIdx);
+    updateTileStars(targetIdx); // kept as no-op
     // Play melody note — final stone gets fanfare
     const _isFinalInter = targetIdx >= nlStones.length - 1;
     playHopNote(targetIdx, nlStep, _isFinalInter);
-    // CRA visual groups
-    renderVisualGroups(nlStep, targetIdx);
+    // CRA visual groups: removed per design update
     sessionCoins+=5; updateCoinDisplay();
     saveState({coins:getCoins()+5});
     scrollToStone(targetIdx);
@@ -2233,7 +2881,6 @@ function finalTapAfterHint(q, btn){
   btn.classList.add('correct');
   btn.textContent='✓ '+q.ans;
   gameScore+=10; sessionCoins+=2; streak++; answered++;
-  document.getElementById('g-score').textContent=gameScore;
   updateCoinDisplay(); updateProgress(); checkStreak(streak);
   speakFullEquation(q);
   setTimeout(()=>showCorrectSequence(q), 400);
@@ -2524,6 +3171,287 @@ function speakNum(n){
 
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(u);
+}
+
+/* ═══════════════════════════════════════════════════
+   ACHIEVEMENTS
+═══════════════════════════════════════════════════ */
+const ACHIEVEMENTS = [
+  { id:'first_win',    icon:'🎉', color:'yellow',  title:'First Jump!',        desc:'Answer your very first question correctly.',       target:1,   stat:'totalCorrect' },
+  { id:'correct_5',   icon:'🔥', color:'orange',  title:'On Fire!',            desc:'Get 5 correct answers in a row (streak).',         target:5,   stat:'bestStreak'   },
+  { id:'correct_10',  icon:'⚡', color:'blue',    title:'Lightning Mind',      desc:'Get 10 correct answers in a single game.',         target:10,  stat:'totalCorrect' },
+  { id:'correct_50',  icon:'💫', color:'purple',  title:'Maths Whiz',          desc:'Answer 50 questions correctly overall.',           target:50,  stat:'lifetimeCorrect' },
+  { id:'correct_100', icon:'🏆', color:'yellow',  title:'Maths Master',        desc:'Answer 100 questions correctly overall.',          target:100, stat:'lifetimeCorrect' },
+  { id:'streak_3',    icon:'🌟', color:'pink',    title:'Hat-Trick Hero',      desc:'Land a 3-answer streak.',                          target:3,   stat:'bestStreak'   },
+  { id:'streak_10',   icon:'🦸', color:'purple',  title:'Super Jumper',        desc:'Land a 10-answer streak — legendary!',             target:10,  stat:'bestStreak'   },
+  { id:'coins_50',    icon:'💰', color:'yellow',  title:'Star Saver',          desc:'Earn 50 stars in total.',                          target:50,  stat:'lifetimeCoins' },
+  { id:'coins_200',   icon:'💎', color:'blue',    title:'Diamond Collector',   desc:'Earn 200 stars in total.',                         target:200, stat:'lifetimeCoins' },
+  { id:'stage_2',     icon:'🗺️', color:'green',   title:'Explorer',            desc:'Reach Stage 2.',                                   target:2,   stat:'highestStage' },
+  { id:'stage_4',     icon:'🏔️', color:'orange',  title:'Summit Climber',      desc:'Reach Stage 4 — the hardest!',                     target:4,   stat:'highestStage' },
+  { id:'unlock_char', icon:'🐉', color:'purple',  title:'New Friend!',         desc:'Unlock your first extra character.',               target:1,   stat:'unlockedCharsCount' },
+  { id:'all_chars',   icon:'🦁', color:'pink',    title:'Full Crew',           desc:'Unlock all 6 characters.',                         target:6,   stat:'unlockedCharsCount' },
+  { id:'hint_master', icon:'💡', color:'blue',    title:'Hint Master',         desc:'Use the hint 10 times.',                           target:10,  stat:'hintsUsed'    },
+  { id:'no_hints',    icon:'🧠', color:'green',   title:'Brain Power',         desc:'Complete a full game without using any hints.',    target:1,   stat:'gamesNoHints' },
+];
+
+function getAchievementStat(stat) {
+  const s = loadState();
+  switch(stat) {
+    case 'totalCorrect':       return s.lastGameCorrect   ?? 0;
+    case 'lifetimeCorrect':    return s.lifetimeCorrect   ?? 0;
+    case 'bestStreak':         return s.bestStreak        ?? 0;
+    case 'lifetimeCoins':      return s.lifetimeCoins     ?? 0;
+    case 'highestStage':       return s.highestStage      ?? 1;
+    case 'unlockedCharsCount': return (s.unlockedChars    ?? ['redy']).length;
+    case 'hintsUsed':          return s.hintsUsed         ?? 0;
+    case 'gamesNoHints':       return s.gamesNoHints      ?? 0;
+    default: return 0;
+  }
+}
+
+function renderAchievements() {
+  const coins = getCoins();
+  document.getElementById('ach-coins-badge').textContent = `⭐ ${coins}`;
+  const s = loadState();
+  const earnedIds = s.earnedAchievements ?? [];
+  const list = document.getElementById('ach-list');
+  list.innerHTML = '';
+
+  // Section: earned
+  const earned = ACHIEVEMENTS.filter(a => earnedIds.includes(a.id));
+  const pending = ACHIEVEMENTS.filter(a => !earnedIds.includes(a.id));
+
+  if (earned.length) {
+    const lbl = document.createElement('div');
+    lbl.className = 'info-section-label';
+    lbl.textContent = `✅ Earned (${earned.length})`;
+    list.appendChild(lbl);
+    earned.forEach(a => list.appendChild(buildAchCard(a, true, 100)));
+  }
+
+  const lbl2 = document.createElement('div');
+  lbl2.className = 'info-section-label';
+  lbl2.textContent = `🔒 In Progress (${pending.length})`;
+  list.appendChild(lbl2);
+  pending.forEach(a => {
+    const val = getAchievementStat(a.stat);
+    const pct = Math.min(100, Math.round(val / a.target * 100));
+    list.appendChild(buildAchCard(a, false, pct));
+  });
+
+  // Auto-unlock achievements
+  checkAndUnlockAchievements();
+}
+
+function buildAchCard(a, isEarned, pct) {
+  const card = document.createElement('div');
+  card.className = `info-card accent-${a.color}`;
+  card.innerHTML = `
+    <div class="info-icon bg-${isEarned ? a.color : 'grey'}">${a.icon}</div>
+    <div class="info-body">
+      <div class="info-title">${a.title}</div>
+      <div class="info-desc">${a.desc}</div>
+      ${!isEarned ? `<div class="info-progress-wrap"><div class="info-progress-fill" style="width:${pct}%"></div></div>` : ''}
+    </div>
+    <div class="info-badge ${isEarned ? 'earned' : 'locked'}">${isEarned ? '✓ Done' : `${pct}%`}</div>
+  `;
+  return card;
+}
+
+function checkAndUnlockAchievements() {
+  const s = loadState();
+  const earnedIds = s.earnedAchievements ?? [];
+  let newEarns = [];
+  ACHIEVEMENTS.forEach(a => {
+    if (earnedIds.includes(a.id)) return;
+    const val = getAchievementStat(a.stat);
+    if (val >= a.target) {
+      newEarns.push(a.id);
+    }
+  });
+  if (newEarns.length) {
+    saveState({ earnedAchievements: [...earnedIds, ...newEarns] });
+    newEarns.forEach(id => {
+      const a = ACHIEVEMENTS.find(x => x.id === id);
+      if (a) setTimeout(() => showToast(`🏆 Achievement unlocked: ${a.title}!`, 2500), 300);
+    });
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   REWARDS
+═══════════════════════════════════════════════════ */
+const REWARDS_MILESTONES = [
+  { stars:10,  icon:'🌱', color:'green',  title:'First 10 Stars',      desc:'You earned your first 10 stars. Well done!' },
+  { stars:25,  icon:'🌟', color:'yellow', title:'Star Collector',       desc:'25 stars — you\'re on your way!' },
+  { stars:50,  icon:'🔥', color:'orange', title:'Blazing Star',         desc:'50 stars — unlock a new character!' },
+  { stars:100, icon:'💎', color:'blue',   title:'Diamond Star',         desc:'100 stars — you\'re a true Maths Jumper!' },
+  { stars:200, icon:'👑', color:'purple', title:'Star Royalty',         desc:'200 stars — legendary achievement!' },
+  { stars:500, icon:'🚀', color:'pink',   title:'To Infinity…',         desc:'500 stars — you\'ve gone supersonic!' },
+];
+
+const STAR_TIPS = [
+  { icon:'⭐', color:'yellow', title:'Correct Answer',      desc:'Earn +2 stars for every correct answer.' },
+  { icon:'🔥', color:'orange', title:'Streak Bonus (3)',     desc:'+4 stars for a 3-answer streak.' },
+  { icon:'⚡', color:'blue',   title:'Speed Bonus (Q9–10)', desc:'+5 stars for correct answers in the speed round.' },
+  { icon:'💡', color:'purple', title:'Hint Cost',            desc:'Using the hint costs 1 star — use it wisely!' },
+  { icon:'🤝', color:'green',  title:'Commutative Bonus',   desc:'+3 stars when Redy spots a commutativity fact.' },
+];
+
+function renderRewards() {
+  const coins = getCoins();
+  document.getElementById('rew-coins-badge').textContent = `⭐ ${coins}`;
+  const s = loadState();
+  const lifetime = s.lifetimeCoins ?? coins;
+  const content = document.getElementById('rew-content');
+  content.innerHTML = '';
+
+  // Big tally
+  content.innerHTML += `
+    <div class="rewards-tally">
+      <div class="rewards-tally-icon">⭐</div>
+      <div class="rewards-tally-text">
+        <div class="rewards-tally-num">${coins}</div>
+        <div class="rewards-tally-label">Stars available to spend</div>
+      </div>
+    </div>`;
+
+  // Milestones
+  const lbl1 = document.createElement('div');
+  lbl1.className = 'info-section-label'; lbl1.textContent = '🏅 Star Milestones';
+  content.appendChild(lbl1);
+
+  REWARDS_MILESTONES.forEach(m => {
+    const reached = lifetime >= m.stars;
+    const pct = Math.min(100, Math.round(lifetime / m.stars * 100));
+    const card = document.createElement('div');
+    card.className = `info-card accent-${m.color}`;
+    card.innerHTML = `
+      <div class="info-icon bg-${reached ? m.color : 'grey'}">${m.icon}</div>
+      <div class="info-body">
+        <div class="info-title">${m.title}</div>
+        <div class="info-desc">${m.desc}</div>
+        ${!reached ? `<div class="info-progress-wrap"><div class="info-progress-fill" style="width:${pct}%"></div></div>` : ''}
+      </div>
+      <div class="info-badge ${reached ? 'earned' : 'stars'}">${reached ? '✓ Reached' : `⭐ ${m.stars}`}</div>
+    `;
+    content.appendChild(card);
+  });
+
+  // How to earn stars
+  const lbl2 = document.createElement('div');
+  lbl2.className = 'info-section-label'; lbl2.textContent = '💡 How to Earn Stars';
+  content.appendChild(lbl2);
+
+  STAR_TIPS.forEach(t => {
+    const card = document.createElement('div');
+    card.className = `info-card accent-${t.color}`;
+    card.innerHTML = `
+      <div class="info-icon bg-${t.color}">${t.icon}</div>
+      <div class="info-body">
+        <div class="info-title">${t.title}</div>
+        <div class="info-desc">${t.desc}</div>
+      </div>
+    `;
+    content.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   HOW TO PLAY
+═══════════════════════════════════════════════════ */
+const HOWTO_STEPS = [
+  { icon:'🎮', color:'blue',   title:'Pick Your Stage',
+    desc:'Head to Select Stage and choose a times table set. Start with Stage 1 (2s, 5s & 10s) if you\'re new!' },
+  { icon:'🐉', color:'purple', title:'Choose Your Character',
+    desc:'Tap Friends to pick your buddy. Earn stars to unlock Dino, Unia, Robo, Pip and Leo!' },
+  { icon:'❓', color:'yellow', title:'Answer the Question',
+    desc:'A multiplication question appears on the card. Tap the correct answer from the four coloured buttons at the bottom.' },
+  { icon:'🔥', color:'orange', title:'Build a Streak',
+    desc:'Get several answers right in a row to earn streak bonuses — +4 stars for a 3-streak, +8 for a 5-streak!' },
+  { icon:'💡', color:'green',  title:'Use the Hint',
+    desc:'Stuck? Tap the HINT button. Redy hops along a number line to count it out. Each hint costs 1 star.' },
+  { icon:'⚡', color:'blue',   title:'Speed Round (Q9 & Q10)',
+    desc:'The last two questions are Speed Round! No hints allowed, but a correct answer earns a +5 star bonus.' },
+  { icon:'⭐', color:'yellow', title:'Earn Stars',
+    desc:'+2 stars per correct answer, +3 for commutative facts, +4/8/15 for streaks, +5 for speed round answers.' },
+  { icon:'🏆', color:'orange', title:'Unlock Achievements',
+    desc:'Complete challenges to earn achievement badges — check the Achievements tab to see your progress.' },
+];
+
+const HOWTO_CHARS = [
+  { emoji:'🦕', name:'Dino',  cost:30,  tip:'Great starter unlock — small star cost!' },
+  { emoji:'🦄', name:'Unia',  cost:50,  tip:'Magical unicorn — the most popular choice.' },
+  { emoji:'🤖', name:'Robo',  cost:60,  tip:'Robo the robot — beeps and boops for every hop.' },
+  { emoji:'🐧', name:'Pip',   cost:80,  tip:'Pip the penguin — cool under pressure.' },
+  { emoji:'🦁', name:'Leo',   cost:100, tip:'Leo the lion — for Maths Masters only!' },
+];
+
+function renderHowTo() {
+  const content = document.getElementById('howto-content');
+  content.innerHTML = '';
+
+  // Steps
+  const lbl1 = document.createElement('div');
+  lbl1.className = 'info-section-label'; lbl1.textContent = '📖 Game Steps';
+  content.appendChild(lbl1);
+
+  HOWTO_STEPS.forEach((step, i) => {
+    const card = document.createElement('div');
+    card.className = `info-card accent-${step.color}`;
+    card.innerHTML = `
+      <div class="howto-step-num">${i + 1}</div>
+      <div class="info-body">
+        <div class="info-title">${step.icon} ${step.title}</div>
+        <div class="info-desc">${step.desc}</div>
+      </div>
+    `;
+    content.appendChild(card);
+  });
+
+  // Character unlock costs
+  const lbl2 = document.createElement('div');
+  lbl2.className = 'info-section-label'; lbl2.textContent = '🐉 Character Unlock Costs';
+  content.appendChild(lbl2);
+
+  HOWTO_CHARS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'info-card accent-purple';
+    card.innerHTML = `
+      <div class="info-icon bg-purple" style="font-size:32px">${c.emoji}</div>
+      <div class="info-body">
+        <div class="info-title">${c.name}</div>
+        <div class="info-desc">${c.tip}</div>
+      </div>
+      <div class="info-badge stars">⭐ ${c.cost}</div>
+    `;
+    content.appendChild(card);
+  });
+
+  // Tips section
+  const lbl3 = document.createElement('div');
+  lbl3.className = 'info-section-label'; lbl3.textContent = '🧠 Top Tips';
+  content.appendChild(lbl3);
+
+  const tips = [
+    { icon:'🔢', color:'blue',   t:'Learn the 2s, 5s & 10s first', d:'These three tables are the foundation. Master them and the rest click faster.' },
+    { icon:'🤏', color:'green',  t:'Use the number line hint',       d:'The hint isn\'t cheating — it builds your understanding of skip-counting.' },
+    { icon:'🔄', color:'purple', t:'Notice commutative facts',       d:'3 × 7 = 21 means 7 × 3 = 21 too! Redy will remind you after each correct answer.' },
+    { icon:'🏃', color:'orange', t:'Answer quickly in the speed round', d:'Q9 and Q10 give bonus stars — stay calm and think fast!' },
+  ];
+
+  tips.forEach(tip => {
+    const card = document.createElement('div');
+    card.className = `info-card accent-${tip.color}`;
+    card.innerHTML = `
+      <div class="info-icon bg-${tip.color}">${tip.icon}</div>
+      <div class="info-body">
+        <div class="info-title">${tip.t}</div>
+        <div class="info-desc">${tip.d}</div>
+      </div>
+    `;
+    content.appendChild(card);
+  });
 }
 
 /* ═══════════════════════════════════════════════════
