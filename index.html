@@ -988,6 +988,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .streak-banner.hide { transform:translateX(-50%) scale(.8); opacity:0; }
 
 /* ── Redy on path — bottom centre ── */
+/* ── In-game Character Sprite Bounding Box ── */
 .g-redy {
   position: absolute;
   bottom: 175px;
@@ -1001,6 +1002,9 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   filter: drop-shadow(0 6px 10px rgba(0,0,0,.3));
   transition: left .45s cubic-bezier(.4,0,.2,1), bottom .45s cubic-bezier(.4,0,.2,1);
 }
+/* ── Auto-Scale Adjustment for the Oops Sprite ── */
+.g-redy[src*="opps"] {
+  height: 112px; /* Pulls the height down slightly to offset the tight asset cropping */
 }
 /* Hidden during hint mode */
 .g-redy.hint-hidden { opacity:0 !important; pointer-events:none; }
@@ -1066,7 +1070,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 ───────────────────────────────────────────── */
 .nl-overlay {
   position:absolute;
-  top:345px; left:0; right:0; bottom:168px;
+  top:475px; left:0; right:0; bottom:168px;
   z-index:28;
   display:flex; flex-direction:column;
   align-items:center; justify-content:center;
@@ -1093,7 +1097,13 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 
 /* Stone track */
-.nl-track-wrap { width:100%; overflow:hidden; }
+.nl-track-wrap { 
+
+  width: 100%; 
+  overflow: hidden; 
+  /* Makes the left and right 20px edges fade out beautifully */
+  mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);}
 .nl-track {
   display:flex; gap:0; align-items:flex-end;
   overflow-x:auto; width:100%;
@@ -1262,7 +1272,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* Number callout */
 .nl-callout {
-  position:absolute; top:370px; left:50%; transform:translateX(-50%) translateY(0) scale(0);
+  position:absolute; top:495px; left:50%; transform:translateX(-50%) translateY(0) scale(0);
   background:var(--purple-dark); color:white;
   border-radius:50px; padding:8px 20px;
   font-size:18px; font-weight:900;
