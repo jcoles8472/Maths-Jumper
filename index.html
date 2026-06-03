@@ -834,33 +834,43 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .g-coins-star { font-size:18px; line-height:1; }
 /* World pill — purple */
 .g-world {
-  background:var(--purple-btn);
-  color:white;
-  border-radius:50px;
-  padding:6px 18px;
-  font-size:13px; font-weight:900;
-  text-align:center;
-  flex:1;
-  box-shadow:0 4px 0 var(--purple-dark);
+     background: var(--purple-btn);
+    color: white;
+    border-radius: 50px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 900;
+    text-align: center;
+    flex: 1;
+    box-shadow: 0 4px 0 var(--purple-dark);
+    width: 120px;
+    position: absolute;
+    left: 70px;
 }
 .g-world-label { font-size:9px; letter-spacing:1.5px; opacity:.85; display:block; text-transform:uppercase; }
-.g-world-val   { font-size:17px; font-weight:900; display:block; line-height:1.1; }
-/* Timer — bright blue pill */
+.g-world-val   { font-size:13px; font-weight:900; display:block; line-height:1.1; }
+/* Timer — large centred pill (absolute, so it doesn't shift header layout) */
 .g-timer {
-  background:#3aabf0;
-  color:white;
-  border-radius:50px;
-  padding:8px 14px;
-  font-size:15px; font-weight:900;
-  display:flex; align-items:center; gap:6px;
-  flex-shrink:0;
-  box-shadow:0 4px 0 #1a7fc4, 0 2px 8px rgba(0,0,0,.15);
+background: #3aabf0;
+    color: white;
+    border-radius: 50px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 900;
+    text-align: center;
+    flex: 1;
+    width: 120px;
+    position: absolute;
+    right: 70px;
+    top: 16px;
+    gap: 8px;
+    box-shadow: 0 5px 0 #1a7fc4, 0 2px 12px rgba(0, 0, 0, .2);
 }
-.g-timer-icon { font-size:17px; line-height:1; }
+.g-timer-icon { font-size:24px; line-height:1; padding: 5px;}
 
 /* ── Progress bar with 3 star markers ── */
 .g-progress-wrap {
-  position:absolute; top:82px; left:14px; right:14px;
+  position:absolute; top:85px; left:24px; right:24px;
   height:20px; z-index:30;
   display:flex; align-items:center;
 }
@@ -873,20 +883,17 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 .g-star-marker.earned { filter:drop-shadow(0 0 6px gold); }
 
-/* ── Sun — top right, decorative ── */
+/* ── Sun — at the far right end of the progress bar ── */
 .g-sun {
-  position:absolute; top:145px; right:14px;
-  width:130px; z-index:20;
-  animation:sunWobble 4s ease-in-out infinite;
-  filter:drop-shadow(0 4px 12px rgba(255,200,0,.4));
+  display: none;
 }
 @keyframes sunWobble { 0%,100%{transform:rotate(-4deg) scale(1)} 50%{transform:rotate(4deg) scale(1.05)} }
 
 /* ── Bird + speech bubble — top left ── */
 .g-bird-wrap {
   position: absolute;
-    left: 70%;
-    bottom: 30%;
+    right: -14px;
+    bottom: 35%;
     transform: translate(-50%, -50%);
     z-index: 22;
     display: flex;
@@ -897,7 +904,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 @keyframes birdBob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 .g-bubble {
   background:white; border-radius:18px 18px 18px 4px;
-  padding:8px 12px; font-size:13px; font-weight:900;
+  padding:8px 12px; font-size: 15px; font-weight:900;
   color:var(--purple-dark); box-shadow:0 4px 12px rgba(0,0,0,.15);
   max-width:130px; line-height:1.35;
   transition:background .3s, color .3s, transform .3s;
@@ -937,7 +944,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* ── Question card — big, centred ── */
 .g-question-card {
   position:absolute;
-  top:300px; left:14px; right:14px;
+  top:220px; left:14px; right:14px;
   background:var(--panel-bg);
   border-radius:24px;
   padding:40px 40px 40px;
@@ -956,7 +963,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .g-blank {
   border:4px dashed var(--yellow);
   border-radius:14px;
-  padding:2px 16px;
+  padding:2px 0px;
   min-width:76px; text-align:center;
   background:linear-gradient(160deg,#fff8e0,#ffe98a 80%);
   color:var(--yellow);
@@ -966,7 +973,10 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* ── "HIDE HINT" pill overlapping top-right of card ── */
 .g-hide-hint-btn {
   position:absolute;
-  top: -35px; left:-5px;
+  top: -75px; 
+      left: 50%;
+    transform: translateX(-50%);
+
   background:var(--purple-btn);
   color:white;
   border:none; border-radius:50px;
@@ -986,7 +996,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .g-srs.visible { opacity:1; }
 
 /* ── Streak banner ── */
-.streak-banner { position:absolute; top:120px; left:50%; transform:translateX(-50%) scale(0); background:linear-gradient(135deg,#ff6b35,#f7c59f); color:white; border-radius:30px; padding:10px 24px; font-size:20px; font-weight:900; box-shadow:0 6px 20px rgba(0,0,0,.3); z-index:50; white-space:nowrap; pointer-events:none; transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s; opacity:0; }
+.streak-banner { position:absolute; top:140px; left:50%; transform:translateX(-50%) scale(0); background:linear-gradient(135deg,#ff6b35,#f7c59f); color:white; border-radius:30px; padding:10px 24px; font-size:20px; font-weight:900; box-shadow:0 6px 20px rgba(0,0,0,.3); z-index:50; white-space:nowrap; pointer-events:none; transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s; opacity:0; }
 .streak-banner.show { transform:translateX(-50%) scale(1); opacity:1; }
 .streak-banner.hide { transform:translateX(-50%) scale(.8); opacity:0; }
 
@@ -994,7 +1004,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* ── In-game Character Sprite Bounding Box ── */
 .g-redy {
   position: absolute;
-  bottom: 175px;
+  bottom: 205px;
   left: 40%;
   transform: translateX(-50%);
   width: 130px;
@@ -1052,9 +1062,10 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   transition:transform .1s, box-shadow .1s, opacity .3s;
   opacity:0; pointer-events:none;
 }
+/* ─────────────────────────────────────────────
 .g-hint-btn.visible { opacity:1; pointer-events:auto; }
 .g-hint-btn:active { transform:translateY(3px); box-shadow:0 2px 0 #2a1a5e; }
-/* The cost badge attached below/right */
+
 .g-hint-cost {
   position:absolute;
   bottom:-14px; right:4px;
@@ -1067,6 +1078,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   pointer-events:none;
 }
 .g-hint-cost .cost-star { color:var(--yellow); font-size:12px; }
+───────────────────────────────────────────── */
 
 /* ─────────────────────────────────────────────
    NUMBER LINE HINT  (overlays the path area)
@@ -1275,7 +1287,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* Number callout */
 .nl-callout {
-  position:absolute; top:495px; left:50%; transform:translateX(-50%) translateY(0) scale(0);
+  position:absolute; top:445px; left:50%; transform:translateX(-50%) translateY(0) scale(0);
   background:var(--purple-dark); color:white;
   border-radius:50px; padding:8px 20px;
   font-size:18px; font-weight:900;
@@ -1363,7 +1375,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
    Generated ONCE per question, NEVER mutated by hint
 ───────────────────────────────────────────── */
 .g-answers {
-  position:absolute; bottom:70px; left:14px; right:14px;
+  position:absolute; bottom:50px; left:14px; right:14px;
   display:grid; grid-template-columns:repeat(4,1fr);
   gap:10px; z-index:30;
 }
@@ -1404,9 +1416,26 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .ans-btn[data-cidx="2"] { background: linear-gradient(to bottom, #ffdd58 0%, #ffc72c 55%, #d4900a 100%); }
 .ans-btn[data-cidx="3"] { background: linear-gradient(to bottom, #ff73a3 0%, #f54b6e 55%, #c01a45 100%); }
 
-/* Score badge */
-.g-score { position:absolute; bottom:18px; left:50%; transform:translateX(-50%); background:var(--purple-dark); color:white; border-radius:50px; padding:7px 22px; font-weight:900; font-size:15px; z-index:30; white-space:nowrap; box-shadow:0 3px 0 #1a0d40; display:flex; align-items:center; gap:6px; }
-.g-score-star { color:var(--yellow); font-size:16px; }
+/* Score badge — top right, takes over old timer position */
+.g-score { width: 48px;
+    height: 48px;
+    background: var(--purple-btn);
+    border: none;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 900;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 0 var(--purple-dark);
+    flex-shrink: 0;
+    transition: transform .1s, box-shadow .1s;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+}}
 
 /* ─────────────────────────────────────────────
    SHOP MODAL
@@ -1677,31 +1706,30 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Background -->
   <div class="game-bg"></div>
 
-  <!-- Header -->
   <div class="g-header">
     <button class="g-back" onclick="endSession()">←</button>
     <div class="g-world">
       <span class="g-world-label">WORLD</span>
       <span class="g-world-val" id="g-world-val">1 - 1</span>
     </div>
-    <div class="g-timer"><span class="g-timer-icon">⏱</span><span id="g-timer">240</span></div>
   </div>
+  <!-- Timer — centred above header -->
+  <div class="g-timer"><span class="g-timer-icon">⏱</span><span id="g-timer">240</span></div>
 
-  <!-- Progress bar -->
+  <!-- Progress bar with sun at right end -->
   <div class="g-progress-wrap">
     <div class="g-progress-bg">
       <div class="g-progress-fill" id="g-progress-fill"></div>
+       <span class="g-star-marker" id="star1" style="left:1%">⭐</span>
       <span class="g-star-marker" id="star1" style="left:33%">⭐</span>
       <span class="g-star-marker" id="star2" style="left:66%">⭐</span>
       <span class="g-star-marker" id="star3" style="left:99%">⭐</span>
     </div>
+    <img class="g-sun"
+      src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-sun.png"
+      onerror="this.style.fontSize='32px';this.outerHTML='<div class=\'g-sun\' style=\'font-size:32px;text-align:center\'>☀️</div>'"
+      alt="Sun"/>
   </div>
-
-  <!-- Sun (top right) -->
-  <img class="g-sun"
-    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-sun.png"
-    onerror="this.style.fontSize='60px';this.outerHTML='<div class=\'g-sun\' style=\'font-size:64px;text-align:center\'>☀️</div>'"
-    alt="Sun"/>
 
   <!-- Bird + speech bubble -->
   <div class="g-bird-wrap" id="g-bird-wrap">
@@ -2267,6 +2295,10 @@ function generateChoices(q){
    These buttons are NEVER rebuilt during a question.
 ─────────────────────────────────────────────────────*/
 function renderQ(q){
+  // Reset blank to default state for new question
+  const _blankEl = document.querySelector('.g-blank');
+  if(_blankEl){ _blankEl.innerHTML='?'; _blankEl.style.cursor=''; _blankEl.onclick=null; }
+
   // Restore hint button visibility (may have been hidden in Speed Round)
   const _hbEl = document.getElementById('g-hint-btn');
   if(_hbEl) _hbEl.style.display='';
@@ -2474,6 +2506,7 @@ function startGame(){
   document.getElementById('g-world-val').textContent = `${stage} - 1`;
   document.getElementById('g-progress-fill').style.width='0%';
   document.getElementById('g-timer').textContent     = 240;
+  document.querySelector('.g-equation').style.fontSize = '65px';
   ['star1','star2','star3'].forEach(id=>document.getElementById(id).classList.remove('earned'));
   document.getElementById('streak-banner').classList.remove('show','hide');
   document.getElementById('g-srs').classList.remove('visible');
@@ -2524,7 +2557,7 @@ function endGame(){
 
   closeHint();
   const grid=document.getElementById('g-answers'); grid.innerHTML='';
-  [['▶ Play Again','#4caf50','#388e3c',startGame],['🏠 Home','#6b4dbf','#3d2778',()=>showScreen('screen-home')]].forEach(([lbl,bg,sh,fn],i)=>{
+  [['▶ Play Again','#4caf50','#388e3c',()=>{ document.querySelector('.g-equation').style.fontSize='65px'; startGame(); }],['🏠 Home','#6b4dbf','#3d2778',()=>showScreen('screen-home')]].forEach(([lbl,bg,sh,fn],i)=>{
     const btn=document.createElement('button'); btn.className='ans-btn';
     btn.style.cssText=`grid-column:span 2;background:${bg};box-shadow:0 6px 0 ${sh};font-size:17px;padding:16px;`;
     btn.textContent=lbl; btn.onclick=fn; grid.appendChild(btn);
@@ -2556,6 +2589,13 @@ function endSession(){ clearInterval(timerInt); saveState({coins:getCoins()+sess
 ═══════════════════════════════════════════════════ */
 function setHintVisible(){
   document.getElementById('g-hint-btn').classList.add('visible');
+  // Show hint icon inside the blank box and make it clickable
+  const blank = document.querySelector('.g-blank');
+  if(blank){
+    blank.innerHTML = '💡';
+    blank.style.cursor = 'pointer';
+    blank.onclick = ()=>{ if(!hintOpen) toggleHint(); };
+  }
 }
 function setHintHidden(){
   const hb = document.getElementById('g-hint-btn');
@@ -2567,6 +2607,13 @@ function setHintHidden(){
   if(hhb) hhb.classList.remove('visible');
   const qcard = document.getElementById('g-question-card');
   if(qcard) qcard.classList.remove('hint-active');
+  // Restore blank box to default
+  const blank = document.querySelector('.g-blank');
+  if(blank){
+    blank.innerHTML = '?';
+    blank.style.cursor = '';
+    blank.onclick = null;
+  }
 }
 function cancelHintTimer(){
   if(hintTimer){ clearTimeout(hintTimer); hintTimer=null; }
