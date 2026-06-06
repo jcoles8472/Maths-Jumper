@@ -1023,6 +1023,15 @@ background: #3aabf0;
     gap: 8px;
     box-shadow: 0 5px 0 #1a7fc4, 0 2px 12px rgba(0, 0, 0, .2);
 }
+/* Stage 0 table-label pill: warm orange, same shape */
+.g-table-label {
+  background: linear-gradient(135deg, #ff9800, #e65100) !important;
+  box-shadow: 0 5px 0 #bf360c, 0 2px 12px rgba(0,0,0,.2) !important;
+  min-width: 130px; width: auto !important;
+  white-space: nowrap;
+  font-size: 13px !important;
+}
+.g-timer.hidden, .g-table-label.hidden { display: none !important; }
 .g-timer-icon { font-size:24px; line-height:1; padding: 5px;}
 
 /* ── Progress bar with 3 star markers ── */
@@ -1039,6 +1048,48 @@ background: #3aabf0;
   transition:filter .3s;
 }
 .g-star-marker.earned { filter:drop-shadow(0 0 6px gold); }
+
+/* ── Star milestone pop animation ── */
+@keyframes starPop {
+  0%   { transform: translate(-50%,-50%) scale(1)    rotate(0deg);   }
+  20%  { transform: translate(-50%,-50%) scale(1.7)  rotate(-15deg); }
+  45%  { transform: translate(-50%,-50%) scale(1.4)  rotate(12deg);  }
+  65%  { transform: translate(-50%,-50%) scale(1.6)  rotate(-8deg);  }
+  80%  { transform: translate(-50%,-50%) scale(1.15) rotate(4deg);   }
+  100% { transform: translate(-50%,-50%) scale(1)    rotate(0deg);   }
+}
+.animate-star-pop {
+  animation: starPop 0.65s cubic-bezier(.34,1.3,.64,1) both;
+}
+
+/* ── Equation blank: correct state (Stages 1–5) ── */
+.g-blank.blank-correct {
+  border-color: #4caf50 !important;
+  border-style: solid !important;
+  background: linear-gradient(160deg, #e8f5e9, #a5d6a7 80%) !important;
+  color: #1b5e20 !important;
+  animation: blankCorrectPop 0.35s cubic-bezier(.34,1.5,.64,1) both;
+}
+@keyframes blankCorrectPop {
+  0%   { transform: scale(0.85); }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1);    }
+}
+
+/* ── Equation blank: wrong flash ── */
+.g-blank.blank-wrong {
+  border-color: #e53935 !important;
+  border-style: solid !important;
+  background: linear-gradient(160deg, #ffebee, #ef9a9a 80%) !important;
+  animation: blankWrongShake 0.4s ease both;
+}
+@keyframes blankWrongShake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-6px); }
+  40%     { transform: translateX(6px); }
+  60%     { transform: translateX(-4px); }
+  80%     { transform: translateX(4px); }
+}
 
 /* ── Sun — at the far right end of the progress bar ── */
 .g-sun {
@@ -1114,7 +1165,7 @@ background: #3aabf0;
   border:3px solid var(--yellow);
 }
 .g-equation {
-  font-size:55px; font-weight:900; color:var(--purple-dark);
+  font-size:65px; font-weight:900; color:var(--purple-dark);
   line-height:1.1; display:flex; align-items:center; justify-content:center; gap:12px;
 }
 .g-blank {
@@ -1125,6 +1176,79 @@ background: #3aabf0;
   background:linear-gradient(160deg,#fff8e0,#ffe98a 80%);
   color:var(--yellow);
   font-size:52px; font-weight:900;
+}
+
+/* ── Stage 0 pictorial view ── */
+/* Shrink the card padding so groups + blank all fit */
+.g-question-card.pictorial-mode {
+  padding: 14px 12px 16px;
+}
+/* Header row: "How many stars?" label */
+.pic-header {
+  font-size: 13px; font-weight: 900;
+  color: var(--purple-btn);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+/* Groups wrapper — wraps when many groups */
+.pic-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+/* Individual group box */
+.pic-group {
+  border: 3px solid var(--purple-btn);
+  border-radius: 14px;
+  background: linear-gradient(145deg, #f0eaff, #e8deff);
+  box-shadow: 0 4px 0 var(--purple-dark);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  justify-content: center;
+  align-items: center;
+  /* Size adapts to number of groups */
+  padding: 6px;
+  animation: groupPop .3s cubic-bezier(.34,1.56,.64,1) backwards;
+}
+@keyframes groupPop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+/* Star inside each group */
+.pic-star {
+  display: inline-block;
+  line-height: 1;
+  animation: starDrop .25s cubic-bezier(.34,1.56,.64,1) backwards;
+}
+@keyframes starDrop {
+  from { transform: scale(0) rotate(-30deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+/* Answer blank inside pictorial card */
+.pic-blank-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.pic-blank-label {
+  font-size: 15px; font-weight: 900; color: var(--purple-dark);
+}
+.pic-blank {
+  border: 4px dashed var(--yellow);
+  border-radius: 14px;
+  min-width: 70px; padding: 4px 8px;
+  text-align: center;
+  background: linear-gradient(160deg, #fff8e0, #ffe98a 80%);
+  color: var(--yellow-dark);
+  font-size: 40px; font-weight: 900;
+  line-height: 1.1;
 }
 
 /* ── "HIDE HINT" pill overlapping top-right of card ── */
@@ -1961,8 +2085,14 @@ background: #3aabf0;
       <span class="g-world-val" id="g-world-val">1 - 1</span>
     </div>
   </div>
-  <!-- Timer — centred above header -->
-  <div class="g-timer"><span class="g-timer-icon">⏱</span><span id="g-timer">240</span></div>
+  <!-- Timer / Stage-0 table label — centred above header -->
+  <div class="g-timer" id="g-timer-pill">
+    <span class="g-timer-icon" id="g-timer-icon">⏱</span><span id="g-timer">240</span>
+  </div>
+  <!-- Stage 0: table progress label (replaces timer) -->
+  <div class="g-timer g-table-label hidden" id="g-table-label">
+    📚 <span id="g-table-label-text">1× Table</span>
+  </div>
 
   <!-- Progress bar with sun at right end -->
   <div class="g-progress-wrap">
@@ -2495,19 +2625,19 @@ function renderStages(){
 
     /* ── Stage 0 Training ── */
     if(st.isTraining){
-      const tbl  = getTrainingTable();
-      const prog = getTrainingProgress();
-      const pct  = Math.round((tbl - 1 + prog / 5) / 12 * 100);
+      const offset = loadState().trainingOffset ?? 0;
+      const tbl    = Math.min(12, Math.floor(offset / 12) + 1);
+      const pct    = Math.round(offset / 144 * 100);
       card.className = 'stage-card stage-card-training' + (st.id === cur ? ' active-stage' : '');
       card.innerHTML = `
         <div class="stage-num">${st.emoji} Stage 0</div>
         <div class="stage-name">${st.name}</div>
         <div class="stage-desc">${st.desc}</div>
-        <div class="training-table-badge">📌 Currently on: ${tbl}× table</div>
+        <div class="training-table-badge">📌 Up to: ${tbl}× table</div>
         <div class="training-progress-wrap" style="width:100%">
           <div class="training-progress-fill" style="width:${pct}%"></div>
         </div>
-        <div class="stage-stars" style="font-size:10px;color:#888;margin-top:2px;">${pct}% complete</div>`;
+        <div class="stage-stars" style="font-size:10px;color:#888;margin-top:2px;">${pct}% of all tables done</div>`;
       card.onclick = () => { saveState({ currentStage: 0 }); showScreen('screen-game'); };
       grid.appendChild(card);
       return;
@@ -2681,14 +2811,35 @@ function makeQ(stage){
   return { a, b, ans: a*b };
 }
 
-// Training: 5-question batch for current table
+// Training Stage 0: FULL sequential queue — 1×1 through 12×12 (144 questions)
+// trainingOffset in localStorage tracks where the child left off.
+function getTrainingOffset(){ return loadState().trainingOffset ?? 0; }
+
 function buildTrainingQueue(){
-  const tbl = getTrainingTable();
   questionQueue = [];
-  for(let i = 0; i < 5; i++){
-    const b = Math.ceil(Math.random() * 12);
-    questionQueue.push({ a: tbl, b, ans: tbl * b });
+  const offset = getTrainingOffset();
+  // Build from offset onward so resumed sessions continue from where they left off
+  for(let tbl = 1; tbl <= 12; tbl++){
+    for(let mul = 1; mul <= 12; mul++){
+      const idx = (tbl - 1) * 12 + (mul - 1);
+      if(idx < offset) continue; // skip already-answered questions
+      questionQueue.push({ a: tbl, b: mul, ans: tbl * mul, _seqIdx: idx });
+    }
   }
+}
+
+// Return the table currently being shown based on answered count + offset
+function currentTrainingTable(){
+  const offset = getTrainingOffset();
+  const pos = offset + answered; // total questions answered across all sessions
+  return Math.min(12, Math.floor(pos / 12) + 1);
+}
+
+// Human-friendly ordinal for the table label
+function tableOrdinal(n){
+  const suffixes = ['','st','nd','rd'];
+  const suf = n <= 3 ? suffixes[n] : 'th';
+  return `${n}${suf}`;
 }
 
 function buildQueue(stage){
@@ -2731,16 +2882,39 @@ function generateChoices(q){
 function renderQ(q){
   // Reset blank to default state for new question
   const _blankEl = document.querySelector('.g-blank');
-  if(_blankEl){ _blankEl.innerHTML='?'; _blankEl.style.cursor=''; _blankEl.onclick=null; }
+  if(_blankEl){
+    _blankEl.innerHTML='?';
+    _blankEl.style.cursor='';
+    _blankEl.onclick=null;
+    _blankEl.classList.remove('blank-correct','blank-wrong');
+  }
 
   // Restore hint button visibility (may have been hidden in Speed Round)
   const _hbEl = document.getElementById('g-hint-btn');
   if(_hbEl) _hbEl.style.display='';
   // Reset Redy to default state
   resetRedyImg();
-  // Update equation
-  document.getElementById('eq-a').textContent = q.a;
-  document.getElementById('eq-b').textContent = q.b;
+
+  const _stage = getCurrentStage();
+
+  if(_stage === 0){
+    // ══ STAGE 0: PICTORIAL MODE ══
+    renderPictorialQ(q);
+  } else {
+    // ══ STANDARD TEXT EQUATION ══
+    const card = document.getElementById('g-question-card');
+    if(card) card.classList.remove('pictorial-mode');
+    const eqEl = document.getElementById('g-equation');
+    if(eqEl) eqEl.style.display = '';
+    document.getElementById('eq-a').textContent = q.a;
+    document.getElementById('eq-b').textContent = q.b;
+    // Restore the standard blank
+    const blankEl = document.querySelector('.g-blank');
+    if(blankEl){ blankEl.textContent = '?'; blankEl.style.display = ''; }
+    // Remove any pictorial elements
+    const picEl = document.getElementById('pic-view');
+    if(picEl) picEl.remove();
+  }
 
   // Bird bubble
   const _bt = document.getElementById('bubble-text');
@@ -2773,7 +2947,7 @@ function renderQ(q){
   const _strategyCue = {4:"Stuck? Try doubling the 2s answer! 🤔",
     8:"Think: double, double, double again! 🔄",
     12:"Try adding the 10s answer and the 2s answer! ➕"}[q.a];
-  if(_strategyCue){
+  if(_strategyCue && _stage !== 0){
     strategyTimer = setTimeout(()=>{
       // Only show if child hasn't answered yet (buttons still enabled)
       const _btns = document.querySelectorAll('.ans-btn');
@@ -2787,7 +2961,6 @@ function renderQ(q){
 
   // ── Dynamic hint fading (scaffolded complexity) ──────────
   cancelHintTimer();
-  const _stage = getCurrentStage();
   if(_stage === 5){
     // Stage 5: NO hint at all
     setHintHidden();
@@ -2808,6 +2981,104 @@ function renderQ(q){
     const hintBtnEl = document.getElementById('g-hint-btn');
     if(hintBtnEl){ hintBtnEl.style.display='none'; }
   }
+}
+
+/* ══════════════════════════════════════════════════════
+   PICTORIAL QUESTION RENDERER  (Stage 0 only)
+   q.a = number of groups  |  q.b = items per group
+══════════════════════════════════════════════════════ */
+function renderPictorialQ(q){
+  const groups = q.a;   // how many boxes
+  const perGroup = q.b; // stars in each box
+  const card = document.getElementById('g-question-card');
+  if(card) card.classList.add('pictorial-mode');
+
+  // Hide the standard equation text
+  const eqEl = document.getElementById('g-equation');
+  if(eqEl) eqEl.style.display = 'none';
+
+  // Remove any old pictorial view
+  const old = document.getElementById('pic-view');
+  if(old) old.remove();
+
+  // ── Work out layout sizes based on how many groups & stars ──
+  // Available width inside card ≈ 362px - 24px padding = ~338px usable
+  const USABLE = 338;
+
+  // Decide group box size so they all fit on screen nicely
+  // Max groups in a single row = floor(USABLE / (boxW + gap))
+  const gap = 7;
+  let boxW, starSize, starGap;
+
+  if(groups <= 3){
+    // Big boxes — plenty of room
+    boxW     = Math.min(90, Math.floor((USABLE - gap * (groups - 1)) / groups));
+    starSize = groups === 1 ? 32 : 26;
+    starGap  = 4;
+  } else if(groups <= 6){
+    boxW     = Math.min(70, Math.floor((USABLE - gap * (groups - 1)) / groups));
+    starSize = 22;
+    starGap  = 3;
+  } else if(groups <= 9){
+    boxW     = Math.min(55, Math.floor((USABLE - gap * (groups - 1)) / groups));
+    starSize = 18;
+    starGap  = 3;
+  } else {
+    // 10–12 groups: compact
+    boxW     = Math.min(44, Math.floor((USABLE - gap * (groups - 1)) / groups));
+    starSize = 15;
+    starGap  = 2;
+  }
+  // Height = roughly as tall as needed to hold all stars in the box
+  const starsPerRow = Math.max(1, Math.floor((boxW - 12) / (starSize + starGap)));
+  const starRows    = Math.ceil(perGroup / starsPerRow);
+  const boxH        = starRows * (starSize + starGap) + 18;
+
+  // ── Build the pictorial DOM ──
+  const wrap = document.createElement('div');
+  wrap.id = 'pic-view';
+
+  // "Count the stars!" label
+  const header = document.createElement('div');
+  header.className = 'pic-header';
+  header.textContent = `${groups} group${groups > 1 ? 's' : ''} of ${perGroup} — count the ⭐!`;
+  wrap.appendChild(header);
+
+  // Groups row
+  const groupsEl = document.createElement('div');
+  groupsEl.className = 'pic-groups';
+
+  for(let g = 0; g < groups; g++){
+    const box = document.createElement('div');
+    box.className = 'pic-group';
+    box.style.cssText = `width:${boxW}px; min-height:${boxH}px; gap:${starGap}px; animation-delay:${g * 55}ms`;
+
+    for(let s = 0; s < perGroup; s++){
+      const star = document.createElement('span');
+      star.className = 'pic-star';
+      star.textContent = '⭐';
+      star.style.cssText = `font-size:${starSize}px; animation-delay:${g * 55 + s * 30}ms`;
+      box.appendChild(star);
+    }
+    groupsEl.appendChild(box);
+  }
+  wrap.appendChild(groupsEl);
+
+  // Answer blank row
+  const blankRow = document.createElement('div');
+  blankRow.className = 'pic-blank-row';
+  blankRow.innerHTML = `
+    <span class="pic-blank-label">Total stars =</span>
+    <span class="pic-blank">?</span>`;
+  wrap.appendChild(blankRow);
+
+  card.appendChild(wrap);
+
+  // Point the existing checkAns blank reference to the new pic-blank
+  // (checkAns uses '.g-blank'; we wire the new element to show correct/wrong feedback)
+  // We'll update .g-blank visibility instead — keep it in DOM but invisible
+  const stdBlank = document.querySelector('.g-blank');
+  if(stdBlank) stdBlank.style.display = 'none';
 }
 
 /* ── Streak banners ─────────────────────────────── */
@@ -2876,6 +3147,22 @@ function checkAns(chosen, q, btn){
     cancelHintTimer();
     cancelStrategyTimer();
     setRedyState('correct');
+
+    // Fill the equation blank with the correct answer (Stages 1–5)
+    if(!isTraining){
+      const blankEl = document.querySelector('.g-blank');
+      if(blankEl){
+        blankEl.textContent = q.ans;
+        blankEl.classList.remove('blank-wrong');
+        void blankEl.offsetWidth; // reflow so animation retriggers
+        blankEl.classList.add('blank-correct');
+      }
+    }
+    // Update pictorial blank if in Stage 0
+    if(isTraining){
+      const picBlank = document.querySelector('.pic-blank');
+      if(picBlank){ picBlank.textContent = chosen; picBlank.style.color = '#388e3c'; picBlank.style.borderColor = '#4caf50'; }
+    }
     // Speed Round bonus (Q9-10) — only for regular stages
     if(!isUltimate && !isTraining && questionIndex >= 9){
       sessionCoins+=5; updateCoinDisplay();
@@ -2893,6 +3180,25 @@ function checkAns(chosen, q, btn){
     btn.classList.add('wrong');
     streak=0;
     setRedyState('incorrect');
+
+    // Shake the equation blank red for wrong answer (Stages 1–5)
+    if(!isTraining){
+      const blankEl = document.querySelector('.g-blank');
+      if(blankEl){
+        blankEl.classList.remove('blank-correct','blank-wrong');
+        void blankEl.offsetWidth;
+        blankEl.classList.add('blank-wrong');
+        blankEl.addEventListener('animationend', ()=> blankEl.classList.remove('blank-wrong'), { once: true });
+      }
+    }
+    // Flash the pic-blank red on wrong answer (Stage 0)
+    if(isTraining){
+      const picBlank = document.querySelector('.pic-blank');
+      if(picBlank){
+        picBlank.style.borderColor = '#e53935';
+        setTimeout(()=>{ picBlank.style.borderColor = ''; }, 600);
+      }
+    }
     // Only inject SRS on non-ultimate stages
     if(!isUltimate){
       injectSRS(q);
@@ -2915,20 +3221,46 @@ function checkAns(chosen, q, btn){
 
 function updateProgress(){
   const stage = getCurrentStage();
-  const total = stage === 5 ? 30 : TOTAL;
-  const pct = (answered / total * 100);
-  document.getElementById('g-progress-fill').style.width = pct+'%';
-  // Light up star markers
-  if(answered>=Math.round(total/3))  document.getElementById('star1').classList.add('earned');
-  if(answered>=Math.round(total*2/3))document.getElementById('star2').classList.add('earned');
-  if(answered>=total)                document.getElementById('star3').classList.add('earned');
+  const total = stage === 5 ? 30 : stage === 0 ? 144 : TOTAL;
 
-  // Training progress pill
+  // For Stage 0 progress bar, base % on the global position (offset + answered)
+  const globalPos = stage === 0 ? (getTrainingOffset() + answered) : answered;
+  const pct = (globalPos / total * 100);
+  document.getElementById('g-progress-fill').style.width = pct+'%';
+
+  // Milestone thresholds
+  const m1 = Math.round(total / 3);
+  const m2 = Math.round(total * 2 / 3);
+  const m3 = total;
+
+  // Helper: add .earned + trigger .animate-star-pop exactly once per crossing
+  function checkMilestone(id, threshold){
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(globalPos >= threshold && !el.classList.contains('earned')){
+      el.classList.add('earned');
+      // Remove old animation class, force reflow, re-add for retrigger
+      el.classList.remove('animate-star-pop');
+      void el.offsetWidth; // reflow
+      el.classList.add('animate-star-pop');
+      // Clean up animation class after it finishes so replays work
+      el.addEventListener('animationend', ()=> el.classList.remove('animate-star-pop'), { once: true });
+    }
+  }
+
+  checkMilestone('star1', m1);
+  checkMilestone('star2', m2);
+  checkMilestone('star3', m3);
+
+  // Training: update the table label + progress pill
   if(stage === 0){
-    const tbl  = getTrainingTable();
-    const batchQ = answered % 5; // within-batch index
-    const progressEl = document.getElementById('g-training-progress');
-    if(progressEl) progressEl.textContent = `📚 ×${tbl} table — Q${batchQ + 1}/5`;
+    const tbl = currentTrainingTable();
+    updateTableLabelPill(tbl);
+    // Toast when crossing into a new table
+    const qWithinTable = (getTrainingOffset() + answered) % 12;
+    if(answered > 0 && qWithinTable === 0){
+      showToast(`🎉 ${tbl - 1}× table complete! Starting ${tbl}× table!`, 2500);
+    }
   }
 }
 
@@ -2938,31 +3270,29 @@ function advanceQuestion(){
 
   const stage = getCurrentStage();
 
-  // Stage 0: check if we just completed a batch of 5
-  if(stage === 0 && answered > 0 && answered % 5 === 0){
-    const tbl = getTrainingTable();
-    if(tbl < 12){
-      // Unlock next table
-      const nextTbl = tbl + 1;
-      saveState({ trainingTable: nextTbl, trainingProgress: 0 });
-      showToast(`🎉 ${tbl}× table mastered! Unlocking ${nextTbl}× table!`, 2500);
-      // Build a fresh 5-question batch for the next table
-      buildTrainingQueue();
-      // Update world label
-      document.getElementById('g-world-val').textContent = `0 - ${nextTbl}`;
-      // Update training pill
-      const progressEl = document.getElementById('g-training-progress');
-      if(progressEl) progressEl.textContent = `📚 ×${nextTbl} table — Q1/5`;
-      if(!questionQueue.length){ endGame(); return; }
-      currentQ = questionQueue.shift();
-      questionIndex++;
-      renderQ(currentQ);
-      return;
-    } else {
-      // All 12 tables done — end training
+  // Stage 0: sequential — check if we've just crossed into a new ×table
+  if(stage === 0){
+    const offset  = getTrainingOffset();
+    const totalDone = offset + answered;
+    const tbl = Math.min(12, Math.floor(totalDone / 12) + 1);
+
+    // Update the table label pill
+    updateTableLabelPill(tbl);
+
+    // Save offset progress so child can resume
+    saveState({ trainingOffset: totalDone });
+
+    // All 144 questions done?
+    if(totalDone >= 144){
       endGame();
       return;
     }
+
+    if(!questionQueue.length){ endGame(); return; }
+    currentQ = questionQueue.shift();
+    questionIndex++;
+    renderQ(currentQ);
+    return;
   }
 
   const due = srsQueue.filter(r=>r.retryAt<=answered);
@@ -2978,6 +3308,17 @@ function advanceQuestion(){
   }
   questionIndex++;
   renderQ(currentQ);
+}
+
+function updateTableLabelPill(tbl){
+  const lbl = document.getElementById('g-table-label-text');
+  if(lbl) lbl.textContent = `${tbl}× Table`;
+  // Also update the training progress pill below question card
+  const progressEl = document.getElementById('g-training-progress');
+  const offset = getTrainingOffset();
+  const totalDone = offset + answered;
+  const qWithinTable = (totalDone % 12) + 1;
+  if(progressEl) progressEl.textContent = `📚 ${tbl}× table — ${qWithinTable}/12`;
 }
 
 /* ── Apply character theme to game background & number-line sprite ── */
@@ -3021,12 +3362,22 @@ function startGame(){
   const redyEl = document.getElementById('g-redy');
   if(redyEl) redyEl.src = REDY_IMG.default;
 
+  // Clean up any leftover pictorial view from Stage 0
+  const _oldPic = document.getElementById('pic-view');
+  if(_oldPic) _oldPic.remove();
+  const _card = document.getElementById('g-question-card');
+  if(_card) _card.classList.remove('pictorial-mode');
+  const _eqEl = document.getElementById('g-equation');
+  if(_eqEl) _eqEl.style.display = '';
+  const _stdBlank = document.querySelector('.g-blank');
+  if(_stdBlank){ _stdBlank.style.display = ''; _stdBlank.textContent = '?'; }
+
   // Apply character-specific background and number-line sprite
   applyCharacterTheme();
 
   // World label
   if(isTraining){
-    const tbl = getTrainingTable();
+    const tbl = currentTrainingTable();
     document.getElementById('g-world-val').textContent = `0 - ${tbl}`;
   } else {
     document.getElementById('g-world-val').textContent = `${stage} - 1`;
@@ -3035,10 +3386,25 @@ function startGame(){
   document.getElementById('g-progress-fill').style.width='0%';
   const timerEl = document.getElementById('g-timer');
   if(timerEl) timerEl.textContent = isUltimate ? formatCountdown(timerVal) : timerVal;
-  const timerDiv = document.querySelector('.g-timer');
+  const timerDiv = document.getElementById('g-timer-pill');
+  const tableLabelDiv = document.getElementById('g-table-label');
   if(timerDiv) timerDiv.classList.remove('urgent');
-  document.querySelector('.g-equation').style.fontSize = '55px';
-  ['star1','star2','star3'].forEach(id=>document.getElementById(id).classList.remove('earned'));
+
+  // Stage 0: hide timer, show table-label pill
+  if(isTraining){
+    if(timerDiv)      timerDiv.classList.add('hidden');
+    if(tableLabelDiv) tableLabelDiv.classList.remove('hidden');
+    const startTbl = currentTrainingTable();
+    updateTableLabelPill(startTbl);
+  } else {
+    if(timerDiv)      timerDiv.classList.remove('hidden');
+    if(tableLabelDiv) tableLabelDiv.classList.add('hidden');
+  }
+  document.querySelector('.g-equation').style.fontSize = '65px';
+  ['star1','star2','star3'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.classList.remove('earned','animate-star-pop'); }
+  });
   document.getElementById('streak-banner').classList.remove('show','hide');
   document.getElementById('g-srs').classList.remove('visible');
   updateCoinDisplay();
@@ -3047,8 +3413,10 @@ function startGame(){
   const trainingPill = document.getElementById('g-training-progress');
   if(trainingPill){
     if(isTraining){
-      const tbl = getTrainingTable();
-      trainingPill.textContent = `📚 ×${tbl} table — Q1/5`;
+      const tbl = currentTrainingTable();
+      const offset = getTrainingOffset();
+      const qWithinTable = (offset % 12) + 1;
+      trainingPill.textContent = `📚 ${tbl}× table — ${qWithinTable}/12`;
       trainingPill.classList.add('visible');
     } else {
       trainingPill.classList.remove('visible');
@@ -3059,18 +3427,20 @@ function startGame(){
   const hintBtn = document.getElementById('g-hint-btn');
   if(hintBtn) hintBtn.style.display = isUltimate ? 'none' : '';
 
-  // Timer countdown
-  timerInt = setInterval(()=>{
-    timerVal--;
-    const timerEl = document.getElementById('g-timer');
-    const timerDiv = document.querySelector('.g-timer');
-    if(timerEl){
-      timerEl.textContent = isUltimate ? formatCountdown(timerVal) : timerVal;
-    }
-    // Urgent red styling when <= 30s on stage 5
-    if(isUltimate && timerDiv && timerVal <= 30) timerDiv.classList.add('urgent');
-    if(timerVal <= 0){ clearInterval(timerInt); endGame(); }
-  }, 1000);
+  // Timer countdown (not used for Stage 0 — no time limit)
+  if(!isTraining){
+    timerInt = setInterval(()=>{
+      timerVal--;
+      const timerEl = document.getElementById('g-timer');
+      const timerPill = document.getElementById('g-timer-pill');
+      if(timerEl){
+        timerEl.textContent = isUltimate ? formatCountdown(timerVal) : timerVal;
+      }
+      // Urgent red styling when <= 30s on stage 5
+      if(isUltimate && timerPill && timerVal <= 30) timerPill.classList.add('urgent');
+      if(timerVal <= 0){ clearInterval(timerInt); endGame(); }
+    }, 1000);
+  }
 
   closeHint();
   buildQueue(stage);
@@ -3092,14 +3462,16 @@ function endGame(){
   const stage = getCurrentStage();
   const s = loadState();
 
-  // Training (Stage 0): save batch progress
+  // Training (Stage 0): save progress and show completion screen
   if(stage === 0){
+    const totalDone = getTrainingOffset() + answered;
     saveState({
-      coins:          totalCoins,
-      lifetimeCoins:  (s.lifetimeCoins  ?? 0) + sessionCoins,
-      lifetimeCorrect:(s.lifetimeCorrect ?? 0) + answered,
+      coins:           totalCoins,
+      trainingOffset:  Math.min(144, totalDone), // save how far they got
+      lifetimeCoins:   (s.lifetimeCoins  ?? 0) + sessionCoins,
+      lifetimeCorrect: (s.lifetimeCorrect ?? 0) + answered,
       lastGameCorrect: answered,
-      bestStreak:     Math.max(s.bestStreak ?? 0, streak),
+      bestStreak:      Math.max(s.bestStreak ?? 0, streak),
     });
     checkAndUnlockAchievements();
     showTrainingComplete();
@@ -3154,21 +3526,34 @@ function endGame(){
   if(_coinsValEl) _coinsValEl.textContent=totalCoins;
 }
 
-/* ── Training batch complete screen ── */
+/* ── Training all-done screen (all 144 questions complete) ── */
 function showTrainingComplete(){
-  const tbl = getTrainingTable();
-  document.getElementById('eq-a').textContent='🎉';
+  // Clear any pictorial view
+  const oldPic = document.getElementById('pic-view');
+  if(oldPic) oldPic.remove();
+  const card = document.getElementById('g-question-card');
+  if(card) card.classList.remove('pictorial-mode');
+  const eqEl = document.getElementById('g-equation');
+  if(eqEl) eqEl.style.display = '';
+  const stdBlank = document.querySelector('.g-blank');
+  if(stdBlank){ stdBlank.style.display = ''; }
+
+  document.getElementById('eq-a').textContent='🏆';
   document.getElementById('eq-b').textContent='';
-  document.querySelector('.g-blank').textContent=`${tbl}×✓`;
+  document.querySelector('.g-blank').textContent='12×✓';
   document.querySelector('.g-equation').style.fontSize='42px';
   const _bt2 = document.getElementById('bubble-text');
-  if(_bt2) _bt2.textContent = tbl < 12 ? `${tbl}× table done! Next: ${tbl+1}× table!` : '🏆 All tables mastered!';
+  if(_bt2) _bt2.textContent = 'All 12 tables mastered! 🎉';
   closeHint();
+
+  // Reset offset so they can go again
+  saveState({ trainingOffset: 0 });
+
   const grid = document.getElementById('g-answers');
   grid.innerHTML = '';
   [
-    ['▶ Next Table','#ff9800','#e65100', ()=>{ saveState({trainingTable: Math.min(12, getTrainingTable()+1), trainingProgress:0}); document.querySelector('.g-equation').style.fontSize='65px'; startGame(); }],
-    ['🏠 Home','#6b4dbf','#3d2778',()=>showScreen('screen-home')]
+    ['🔁 Start Again','#ff9800','#e65100', ()=>{ saveState({ trainingOffset: 0 }); document.querySelector('.g-equation').style.fontSize='65px'; startGame(); }],
+    ['🏠 Home','#6b4dbf','#3d2778', ()=>showScreen('screen-home')]
   ].forEach(([lbl,bg,sh,fn])=>{
     const btn = document.createElement('button'); btn.className = 'ans-btn';
     btn.style.cssText = `grid-column:span 2;background:${bg};box-shadow:0 6px 0 ${sh};font-size:17px;padding:16px;`;
