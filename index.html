@@ -1199,18 +1199,19 @@ background: #3aabf0;
   justify-content: center;
   align-items: flex-start;
   margin-bottom: 12px;
+  max-height: 160px;
+  overflow: hidden;
 }
 /* Individual group box */
 .pic-group {
-  border: 3px solid var(--purple-btn);
-  border-radius: 14px;
-  background: linear-gradient(145deg, #f0eaff, #e8deff);
-  box-shadow: 0 4px 0 var(--purple-dark);
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 3px;
   justify-content: center;
   align-items: center;
+  align-content: flex-start;
+  overflow: hidden;
   /* Size adapts to number of groups */
   padding: 6px;
   animation: groupPop .3s cubic-bezier(.34,1.56,.64,1) backwards;
@@ -1832,6 +1833,22 @@ background: #3aabf0;
 /* Toast */
 .toast { position:absolute; bottom:56px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:8px 20px; font-size:14px; font-weight:900; opacity:0; pointer-events:none; z-index:90; transition:all .3s; white-space:nowrap; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Review Mode banner */
+.review-mode-banner {
+  display: none;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: linear-gradient(90deg, #ff9800, #e65100);
+  color: white;
+  text-align: center;
+  font-size: 13px; font-weight: 900;
+  padding: 6px 12px;
+  letter-spacing: .5px;
+  z-index: 50;
+  box-shadow: 0 3px 10px rgba(0,0,0,.25);
+}
+.review-mode-banner.active { display: block; }
 </style>
 </head>
 <body>
@@ -1889,29 +1906,24 @@ background: #3aabf0;
 
     <!-- Name input section -->
     <div class="home-name-section">
-      <!-- Avatar circle with star icon -->
-      <div class="home-avatar">⭐</div>
-      <!-- Name label + input -->
-      <div class="home-name-right">
-        <div class="name-input-wrap">
-          <span class="name-icon"></span>
-          <input
-            id="player-name-input"
-            type="text"
-            maxlength="16"
-            placeholder="Type your name here..."
-            autocomplete="off"
-            spellcheck="false"
-            oninput="onNameInput(this.value)"
-          />
-          <div class="name-edit-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-            </svg>
-          </div>
+      <div class="name-input-wrap" style="flex:1">
+        <span class="name-icon"></span>
+        <input
+          id="player-name-input"
+          type="text"
+          maxlength="16"
+          placeholder="Type your name here..."
+          autocomplete="off"
+          spellcheck="false"
+          oninput="onNameInput(this.value)"
+        />
+        <div class="name-edit-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+          </svg>
         </div>
-        <div id="name-greeting"></div>
       </div>
+      <div id="name-greeting"></div>
     </div>
 
     <!-- Stats dashboard row -->
@@ -1936,14 +1948,23 @@ background: #3aabf0;
 
     <!-- Action buttons -->
     <div class="home-buttons">
-      <!-- PLAY button -->
-      <button class="btn-play" id="btn-play-home">
-        <div class="btn-play-icon">
-          <div class="btn-play-icon-inner">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+      <!-- BEGINNER button — green glossy 3D -->
+      <button class="btn-play" id="btn-beginner-home" style="background:linear-gradient(to bottom,#8be43c 0%,#68d326 55%,#4ab915 100%);box-shadow:0 14px 28px rgba(0,140,0,.25),inset 0 3px 0 rgba(255,255,255,.28),inset 0 -5px 0 rgba(0,0,0,.1);" onclick="startBeginner()">
+        <div class="btn-play-icon" style="border-right:2px solid rgba(255,255,255,.15)">
+          <div class="btn-play-icon-inner" style="background:white">
+            <span style="font-size:18px;margin-left:0">📚</span>
           </div>
         </div>
-        <span class="btn-play-label">PLAY, HERO!</span>
+        <span class="btn-play-label">BEGINNER</span>
+      </button>
+      <!-- CHALLENGER button — blue glossy 3D -->
+      <button class="btn-play" id="btn-challenger-home" onclick="startChallenger()">
+        <div class="btn-play-icon">
+          <div class="btn-play-icon-inner">
+            <span style="font-size:18px;margin-left:0">⚡</span>
+          </div>
+        </div>
+        <span class="btn-play-label">CHALLENGER</span>
       </button>
       <!-- SELECT STAGE button -->
       <button class="btn-select" onclick="showScreen('screen-stages')">
@@ -2078,6 +2099,11 @@ background: #3aabf0;
   <!-- Background -->
   <div class="game-bg"></div>
 
+  <!-- Review Mode Banner -->
+  <div class="review-mode-banner" id="review-mode-banner">
+    📝 REVIEW ROUND — Fix your mistakes to finish!
+  </div>
+
   <div class="g-header">
     <button class="g-back" onclick="endSession()">←</button>
     <div class="g-world">
@@ -2162,9 +2188,6 @@ background: #3aabf0;
     alt="Redy"/>
 
 
-
-  <!-- Training progress pill (Stage 0 only) -->
-  <div class="g-training-progress" id="g-training-progress">📚 Table 1 — Q1/5</div>
 
   <!-- Answer buttons (generated once per question, NEVER touched by hint) -->
   <div class="g-answers" id="g-answers"></div>
@@ -2572,12 +2595,16 @@ function refreshHome(){
   if (coinsEl) coinsEl.textContent = coins;
   const stageEl = document.getElementById('home-stage');
   if (stageEl) stageEl.textContent = `Stage ${getHighestStage()}`;
-  // Update play button label (keep icon, just change text span)
-  const btn = document.getElementById('btn-play-home');
-  const displayName = savedName || 'Hero';
-  const labelEl = btn ? btn.querySelector('.btn-play-label') : null;
-  if (labelEl) labelEl.textContent = `PLAY, ${displayName.toUpperCase()}!`;
-  if (btn) btn.onclick = ()=>showScreen('screen-game');
+}
+
+function startBeginner(){
+  saveState({ currentStage: 0 });
+  showScreen('screen-game');
+}
+
+function startChallenger(){
+  saveState({ currentStage: 1 });
+  showScreen('screen-game');
 }
 
 /* Called on every keystroke in the name input */
@@ -2585,12 +2612,6 @@ function onNameInput(val) {
   const trimmed = val.trim();
   saveState({ playerName: trimmed });
   updateNameGreeting(trimmed);
-  // Update play button live
-  const btn = document.getElementById('btn-play-home');
-  if(btn) {
-    const labelEl = btn.querySelector('.btn-play-label');
-    if(labelEl) labelEl.textContent = `PLAY, ${(trimmed || 'Hero').toUpperCase()}!`;
-  }
 }
 
 function updateNameGreeting(name) {
@@ -2779,6 +2800,11 @@ let questionIndex  = 0;  // 1-based index of current question in session
 let timerVal    = 240;
 let timerInt    = null;
 
+// ── Mistake Review state ─────────────────────────────
+let wrongQuestions  = [];   // questions answered incorrectly this round
+let reviewMode      = false; // true when we're re-testing missed questions
+let reviewQueue     = [];    // shuffled copy of wrongQuestions for the review pass
+
 // ── Per-question state ──────────────────────────────
 let currentQ    = null;   // { a, b, ans }
 // LOCKED answer choices for current question — NEVER mutated by hint
@@ -2888,6 +2914,10 @@ function renderQ(q){
     _blankEl.onclick=null;
     _blankEl.classList.remove('blank-correct','blank-wrong');
   }
+
+  // Show/hide review mode banner
+  const _reviewBanner = document.getElementById('review-mode-banner');
+  if(_reviewBanner) _reviewBanner.classList.toggle('active', reviewMode);
 
   // Restore hint button visibility (may have been hidden in Speed Round)
   const _hbEl = document.getElementById('g-hint-btn');
@@ -3010,29 +3040,27 @@ function renderPictorialQ(q){
   const gap = 7;
   let boxW, starSize, starGap;
 
+  // Pick star size based on number of groups
   if(groups <= 3){
-    // Big boxes — plenty of room
-    boxW     = Math.min(90, Math.floor((USABLE - gap * (groups - 1)) / groups));
-    starSize = groups === 1 ? 32 : 26;
-    starGap  = 4;
+    starSize = groups === 1 ? 30 : 24; starGap = 3;
   } else if(groups <= 6){
-    boxW     = Math.min(70, Math.floor((USABLE - gap * (groups - 1)) / groups));
-    starSize = 22;
-    starGap  = 3;
+    starSize = 20; starGap = 2;
   } else if(groups <= 9){
-    boxW     = Math.min(55, Math.floor((USABLE - gap * (groups - 1)) / groups));
-    starSize = 18;
-    starGap  = 3;
+    starSize = 16; starGap = 2;
   } else {
-    // 10–12 groups: compact
-    boxW     = Math.min(44, Math.floor((USABLE - gap * (groups - 1)) / groups));
-    starSize = 15;
-    starGap  = 2;
+    starSize = 13; starGap = 1;
   }
-  // Height = roughly as tall as needed to hold all stars in the box
-  const starsPerRow = Math.max(1, Math.floor((boxW - 12) / (starSize + starGap)));
+
+  // How many stars fit side-by-side given each group's share of USABLE width.
+  // Emoji renders ~1.2× its font-size wide, so account for that.
+  const groupShare  = Math.floor((USABLE - gap * (groups - 1)) / groups);
+  const starCell    = Math.ceil(starSize * 1.2) + starGap;
+  const starsPerRow = Math.max(1, Math.floor((groupShare - 12) / starCell));
   const starRows    = Math.ceil(perGroup / starsPerRow);
-  const boxH        = starRows * (starSize + starGap) + 18;
+
+  // Box is exactly wide enough for one row of stars
+  boxW = starsPerRow * starCell + 12;
+  const boxH = Math.min(120, starRows * (starSize + starGap + 2) + 14);
 
   // ── Build the pictorial DOM ──
   const wrap = document.createElement('div');
@@ -3051,13 +3079,14 @@ function renderPictorialQ(q){
   for(let g = 0; g < groups; g++){
     const box = document.createElement('div');
     box.className = 'pic-group';
-    box.style.cssText = `width:${boxW}px; min-height:${boxH}px; gap:${starGap}px; animation-delay:${g * 55}ms`;
+    box.style.cssText = `width:${boxW}px; max-width:${boxW}px; min-height:${boxH}px; gap:${starGap}px; animation-delay:${g * 55}ms`;
 
     for(let s = 0; s < perGroup; s++){
       const star = document.createElement('span');
       star.className = 'pic-star';
       star.textContent = '⭐';
-      star.style.cssText = `font-size:${starSize}px; animation-delay:${g * 55 + s * 30}ms`;
+      // Set width+height explicitly so flex doesn't stretch/compress the emoji
+      star.style.cssText = `font-size:${starSize}px; width:${Math.ceil(starSize*1.2)}px; height:${Math.ceil(starSize*1.2)}px; display:flex; align-items:center; justify-content:center; flex-shrink:0; animation-delay:${g * 55 + s * 30}ms`;
       box.appendChild(star);
     }
     groupsEl.appendChild(box);
@@ -3163,8 +3192,8 @@ function checkAns(chosen, q, btn){
       const picBlank = document.querySelector('.pic-blank');
       if(picBlank){ picBlank.textContent = chosen; picBlank.style.color = '#388e3c'; picBlank.style.borderColor = '#4caf50'; }
     }
-    // Speed Round bonus (Q9-10) — only for regular stages
-    if(!isUltimate && !isTraining && questionIndex >= 9){
+    // Speed Round bonus (Q9-10) — only for regular stages, not review mode
+    if(!isUltimate && !isTraining && !reviewMode && questionIndex >= 9){
       sessionCoins+=5; updateCoinDisplay();
       showToast('Speed Bonus! ⚡', 2000);
     }
@@ -3180,6 +3209,21 @@ function checkAns(chosen, q, btn){
     btn.classList.add('wrong');
     streak=0;
     setRedyState('incorrect');
+
+    // Track this missed question for the end-of-round review (if not already tracked)
+    const _stage2 = getCurrentStage();
+    const _isUlt2 = (_stage2 === 5);
+    const _isTrn2 = (_stage2 === 0);
+    if(!_isUlt2 && !_isTrn2){
+      if(reviewMode){
+        // During review: push back to end of reviewQueue so they get another try
+        const alreadyQueued = reviewQueue.some(wq => wq.a === q.a && wq.b === q.b);
+        if(!alreadyQueued) reviewQueue.push({...q});
+      } else {
+        const alreadyTracked = wrongQuestions.some(wq => wq.a === q.a && wq.b === q.b);
+        if(!alreadyTracked) wrongQuestions.push({...q});
+      }
+    }
 
     // Shake the equation blank red for wrong answer (Stages 1–5)
     if(!isTraining){
@@ -3225,7 +3269,9 @@ function updateProgress(){
 
   // For Stage 0 progress bar, base % on the global position (offset + answered)
   const globalPos = stage === 0 ? (getTrainingOffset() + answered) : answered;
-  const pct = (globalPos / total * 100);
+
+  // During review mode: hold bar at 100% so it doesn't jump backwards
+  const pct = reviewMode ? 100 : Math.min(100, globalPos / total * 100);
   document.getElementById('g-progress-fill').style.width = pct+'%';
 
   // Milestone thresholds
@@ -3295,6 +3341,22 @@ function advanceQuestion(){
     return;
   }
 
+  // ── REVIEW MODE: serve missed questions until all are correct ──
+  if(reviewMode){
+    if(!reviewQueue.length){
+      // Review complete — all mistakes cleared
+      reviewMode = false;
+      showToast('🌟 All mistakes cleared! Great work!', 2200);
+      endGame();
+      return;
+    }
+    currentQ = reviewQueue.shift();
+    questionIndex++;
+    renderQ(currentQ);
+    return;
+  }
+
+  // ── NORMAL MODE ──
   const due = srsQueue.filter(r=>r.retryAt<=answered);
   if(due.length){
     currentQ=due[0].q;
@@ -3302,7 +3364,22 @@ function advanceQuestion(){
     document.getElementById('g-srs').classList.add('visible');
     setTimeout(()=>document.getElementById('g-srs').classList.remove('visible'),1200);
   } else {
-    if(!questionQueue.length){ endGame(); return; }
+    if(!questionQueue.length){
+      // Normal round finished — check for missed questions
+      if(wrongQuestions.length > 0){
+        // Enter review mode
+        reviewMode = true;
+        reviewQueue = [...wrongQuestions].sort(() => Math.random() - 0.5);
+        wrongQuestions = []; // clear so review errors repopulate cleanly
+        showToast(`📝 Review Round! ${reviewQueue.length} question${reviewQueue.length>1?'s':''} to fix!`, 2800);
+        currentQ = reviewQueue.shift();
+        questionIndex++;
+        renderQ(currentQ);
+        return;
+      }
+      endGame();
+      return;
+    }
     currentQ=questionQueue.shift();
     document.getElementById('g-srs').classList.remove('visible');
   }
@@ -3313,12 +3390,6 @@ function advanceQuestion(){
 function updateTableLabelPill(tbl){
   const lbl = document.getElementById('g-table-label-text');
   if(lbl) lbl.textContent = `${tbl}× Table`;
-  // Also update the training progress pill below question card
-  const progressEl = document.getElementById('g-training-progress');
-  const offset = getTrainingOffset();
-  const totalDone = offset + answered;
-  const qWithinTable = (totalDone % 12) + 1;
-  if(progressEl) progressEl.textContent = `📚 ${tbl}× table — ${qWithinTable}/12`;
 }
 
 /* ── Apply character theme to game background & number-line sprite ── */
@@ -3343,6 +3414,7 @@ function applyCharacterTheme(){
 function startGame(){
   const stage = getCurrentStage();
   gameScore=0; sessionCoins=0; streak=0; answered=0; questionIndex=0; hintEverUsedThisGame=false;
+  wrongQuestions=[]; reviewMode=false; reviewQueue=[];
   clearInterval(timerInt);
 
   // Stage-specific timer setup
@@ -3409,20 +3481,6 @@ function startGame(){
   document.getElementById('g-srs').classList.remove('visible');
   updateCoinDisplay();
 
-  // Training progress pill — show only for Stage 0
-  const trainingPill = document.getElementById('g-training-progress');
-  if(trainingPill){
-    if(isTraining){
-      const tbl = currentTrainingTable();
-      const offset = getTrainingOffset();
-      const qWithinTable = (offset % 12) + 1;
-      trainingPill.textContent = `📚 ${tbl}× table — ${qWithinTable}/12`;
-      trainingPill.classList.add('visible');
-    } else {
-      trainingPill.classList.remove('visible');
-    }
-  }
-
   // Hint button: hide entirely for Stage 5
   const hintBtn = document.getElementById('g-hint-btn');
   if(hintBtn) hintBtn.style.display = isUltimate ? 'none' : '';
@@ -3458,6 +3516,10 @@ function formatCountdown(secs){
 /* ── End game ───────────────────────────────────── */
 function endGame(){
   clearInterval(timerInt);
+  // Hide review banner
+  const _rb = document.getElementById('review-mode-banner');
+  if(_rb) _rb.classList.remove('active');
+  reviewMode = false;
   const totalCoins = getCoins() + sessionCoins;
   const stage = getCurrentStage();
   const s = loadState();
@@ -3695,7 +3757,7 @@ function applyStageUnlock(){
   // Force highestStage to exactly the slider value (dev override)
   const s = loadState();
   s.highestStage = val;
-  localStorage.setItem('mathsJumperState', JSON.stringify(s));
+  localStorage.setItem('mj_state', JSON.stringify(s));
   showToast(`✅ Stages 0–${val} unlocked!`, 2200);
   showScreen('screen-home');
   refreshHome();
@@ -3704,12 +3766,12 @@ function applyStageUnlock(){
 function saveSettingsBool(key, val){
   const s = loadState();
   s[key] = val;
-  localStorage.setItem('mathsJumperState', JSON.stringify(s));
+  localStorage.setItem('mj_state', JSON.stringify(s));
 }
 
 function confirmResetData(){
   if(confirm('Reset ALL progress, coins, and unlocks? This cannot be undone!')){
-    localStorage.removeItem('mathsJumperState');
+    localStorage.removeItem('mj_state');
     location.reload();
   }
 }
