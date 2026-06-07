@@ -196,7 +196,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 ───────────────────────────────────────────── */
 .home-panel {
   position: absolute;
-  bottom: 100px; left: 16px; right: 16px;
+  bottom: 104px; left: 16px; right: 16px;
   border-radius: 32px;
   padding: 0;
   z-index: 25;
@@ -362,6 +362,13 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   transition: transform .1s, box-shadow .1s;
 }
 .nav-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.18); }
+/* Active / selected nav tab */
+.nav-btn.nav-active {
+  background: var(--purple-dark);
+  box-shadow: 0 5px 0 #1a0d3a, 0 8px 20px rgba(0,0,0,.25);
+}
+.nav-btn.nav-active .nav-btn-label { color: white; }
+.nav-btn.nav-active .nav-btn-icon { filter: brightness(10); }
 .nav-btn-icon { font-size: 28px; line-height: 1; display: block; }
 .nav-btn-label {
   font-size: 9.5px; font-weight: 900;
@@ -836,7 +843,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .info-scroll-area::-webkit-scrollbar { display:none; }
 
 .info-card {
-  background:white; border-radius:20px;
+  background: rgba(255, 255, 255, .7); border-radius:20px;
   padding:14px 16px; margin-bottom:10px;
   box-shadow:0 4px 16px rgba(0,0,0,.15);
   display:flex; align-items:center; gap:14px;
@@ -1773,7 +1780,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .settings-unlock-confirm:active { transform: translateY(3px); box-shadow: 0 2px 0 #2e7d32; }
 
 /* White card rows */
-.settings-card { background: white; border-radius: 20px; box-shadow: 0 4px 16px rgba(0,0,0,.12); overflow: hidden; margin-bottom: 10px; }
+.settings-card { background: rgba(255, 255, 255, .7); border-radius: 20px; box-shadow: 0 4px 16px rgba(0,0,0,.12); overflow: hidden; margin-bottom: 10px; }
 .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #f0e8ff; }
 .settings-row:last-child { border-bottom: none; }
 .settings-row-left { display: flex; align-items: center; gap: 12px; }
@@ -1782,7 +1789,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .settings-row-sub  { font-size: 11px; color: #888; font-weight: 700; }
 .settings-section-label { font-size: 11px; font-weight: 900; letter-spacing: 1.5px; color: var(--purple-btn); text-transform: uppercase; padding: 14px 4px 6px; }
 .settings-reset-btn {
-  background: #fff0f0; color: #c62828; border: 2px solid #ffcdd2; border-radius: 14px; padding: 13px 16px;
+  background: rgba(255, 255, 255, .7); color: #c62828; border: 2px solid #ffcdd2; border-radius: 14px; padding: 13px 16px;
   font-family: 'Nunito', cursive; font-size: 14px; font-weight: 900; width: 100%; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 3px 0 #ffcdd2;
 }
@@ -1794,6 +1801,81 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* Toast */
 .toast { position:absolute; bottom:56px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:8px 20px; font-size:14px; font-weight:900; opacity:0; pointer-events:none; z-index:90; transition:all .3s; white-space:nowrap; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ── Quit confirmation modal ── */
+.quit-modal-overlay {
+  position: absolute; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.65);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
+}
+.quit-modal-overlay.open { opacity: 1; pointer-events: auto; }
+.quit-modal {
+  background: var(--panel-bg);
+  border-radius: 28px;
+  padding: 28px 24px 20px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  transform: scale(.9);
+  transition: transform .25s cubic-bezier(.34,1.4,.64,1);
+}
+.quit-modal-overlay.open .quit-modal { transform: scale(1); }
+.quit-modal-icon { font-size: 52px; line-height: 1; margin-bottom: 10px; }
+.quit-modal-title { font-size: 22px; font-weight: 900; color: var(--purple-dark); margin-bottom: 6px; }
+.quit-modal-sub { font-size: 13px; font-weight: 700; color: #888; margin-bottom: 20px; line-height: 1.5; }
+.quit-modal-btns { display: flex; gap: 10px; }
+.quit-modal-btn {
+  flex: 1; padding: 14px 8px;
+  border: none; border-radius: 50px;
+  font-family: 'Nunito', cursive; font-size: 15px; font-weight: 900;
+  cursor: pointer; transition: transform .1s, box-shadow .1s;
+}
+.quit-modal-btn-stay {
+  background: linear-gradient(to bottom, #8be43c, #4ab915);
+  color: white; box-shadow: 0 6px 0 #2e7d32;
+}
+.quit-modal-btn-stay:active { transform: translateY(3px); box-shadow: 0 3px 0 #2e7d32; }
+.quit-modal-btn-quit {
+  background: #f5f0ff; color: #6b4dbf;
+  box-shadow: 0 4px 0 #d0c4f0;
+}
+.quit-modal-btn-quit:active { transform: translateY(2px); box-shadow: 0 2px 0 #d0c4f0; }
+
+/* ── Question counter pill ── */
+.g-qcount {
+  background: rgba(255,255,255,.22);
+  color: white; border-radius: 50px;
+  padding: 5px 12px;
+  font-size: 11px; font-weight: 900;
+  letter-spacing: .5px;
+  position: absolute; top: 110px; right: 14px; z-index: 31;
+  pointer-events: none;
+  text-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+
+/* ── Star bar label ── */
+.g-star-bar-hint {
+  position: absolute; top: 105px; left: 24px;
+  font-size: 9px; font-weight: 900;
+  color: rgba(255,255,255,.55);
+  letter-spacing: .5px; z-index: 30;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+/* ── Answer button stagger-in animation ── */
+@keyframes ansSlideUp {
+  from { opacity: 0; transform: translateY(16px) scale(.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.ans-btn.stagger-in {
+  animation: ansSlideUp .22s cubic-bezier(.34,1.3,.64,1) both;
+}
+
+/* ── Bubble mode transition flash ── */
+.g-bubble { transition: background .25s ease, color .25s ease, transform .25s ease, box-shadow .2s ease; }
 
 /* Review Mode banner */
 .review-mode-banner {
@@ -1812,30 +1894,31 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .review-mode-banner.active { display: block; }
 
 /* ── Mastery Grid ── */
-.mg-table { border-collapse: collapse; width: 100%; }
+.mg-table { border-collapse: separate; border-spacing: 3px; width: 100%; }
 .mg-table th {
-  font-size: 10px; font-weight: 900; color: white;
-  background: rgba(255,255,255,.18); padding: 4px 3px;
-  text-align: center; border-radius: 4px;
-  min-width: 26px;
+  font-size: 11px; font-weight: 900; color: white;
+  background: rgba(255,255,255,.18); padding: 5px 3px;
+  text-align: center; border-radius: 6px;
+  min-width: 36px;
 }
 .mg-cell {
-  width: 26px; height: 26px;
-  border-radius: 6px;
-  font-size: 9px; font-weight: 900;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  font-size: 10px; font-weight: 900;
   text-align: center; vertical-align: middle;
   cursor: pointer;
   transition: transform .15s;
   border: none; outline: none;
-  line-height: 26px;
+  line-height: 36px;
+  min-width: 36px;
 }
-.mg-cell:active { transform: scale(.9); }
-.mg-cell.unseen   { background: rgba(255,255,255,.12); color: rgba(255,255,255,.35); }
+.mg-cell:active { transform: scale(.88); }
+.mg-cell.unseen   { background: rgba(255,255,255,.14); color: rgba(255,255,255,.4); }
 .mg-cell.learning { background: linear-gradient(135deg,#ff9800,#e65100); color: white; }
 .mg-cell.mastered { background: linear-gradient(135deg,#8be43c,#4ab915); color: white; }
-.mg-cell.mastered::after { content:'✓'; }
+.mg-cell.mastered::after { content:'✓'; font-size:14px; }
 .mg-row-lbl {
-  font-size: 10px; font-weight: 900; color: rgba(255,255,255,.7);
+  font-size: 11px; font-weight: 900; color: rgba(255,255,255,.7);
   padding-right: 4px; text-align: right; white-space: nowrap;
   vertical-align: middle;
 }
@@ -2201,20 +2284,20 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
   <!-- Bottom navigation tabs -->
   <div class="bottom-nav">
-    <button class="nav-btn" onclick="showScreen('screen-chars')">
+    <button id="nav-btn-friends" class="nav-btn" onclick="showScreen('screen-chars')">
       <span class="nav-btn-icon"><img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-character-icon.png" alt="Friends" style="width:32px;height:32px;object-fit:contain;display:block;"/></span>
       <span class="nav-btn-label">Friends</span>
     </button>
-    <button class="nav-btn" onclick="showScreen('screen-achievements')">
+    <button id="nav-btn-ach" class="nav-btn" onclick="showScreen('screen-achievements')">
       <span class="nav-btn-icon"><img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-achievements-icon.png" alt="Achievements" style="width:32px;height:32px;object-fit:contain;display:block;"/></span>
       <span class="nav-btn-label">Achievements</span>
     </button>
-    <button class="nav-btn" onclick="showScreen('screen-rewards')">
+    <button id="nav-btn-rew" class="nav-btn" onclick="showScreen('screen-rewards')">
       <span class="nav-btn-icon"><img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-leaderboard-icon.png" alt="Rewards" style="width:32px;height:32px;object-fit:contain;display:block;"/></span>
       <span class="nav-btn-label">Rewards</span>
     </button>
-    <button class="nav-btn" onclick="showScreen('screen-mastery')">
-      <span class="nav-btn-icon">📊</span>
+    <button id="nav-btn-prog" class="nav-btn" onclick="showScreen('screen-mastery')">
+      <span class="nav-btn-icon"><img src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-leaderboard-icon.png" alt="My Progress" style="width:32px;height:32px;object-fit:contain;display:block;"/></span>
       <span class="nav-btn-label">My Progress</span>
     </button>
   </div>
@@ -2342,7 +2425,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   </div>
 
   <div class="g-header">
-    <button class="g-back" onclick="endSession()">←</button>
+    <button class="g-back" onclick="showQuitModal()">←</button>
     <div class="g-world">
       <span class="g-world-label">WORLD</span>
       <span class="g-world-val" id="g-world-val">1 - 1</span>
@@ -2353,7 +2436,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     <div class="g-timer g-table-label hidden" id="g-table-label">
       📚 <span id="g-table-label-text">1× Table</span>
     </div>
-    <button class="g-back" onclick="endSession();showScreen('screen-mastery');" style="font-size:16px;background:rgba(255,255,255,.18);flex-shrink:0;" title="My Progress">📊</button>
+    <button class="g-back" onclick="openProgressMidGame()" style="font-size:16px;background:rgba(255,255,255,.18);flex-shrink:0;" title="My Progress">📊</button>
     <div class="g-score"><span class="g-score-star">⭐</span><span id="g-score">0</span></div>
   </div>
 
@@ -2370,6 +2453,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
       onerror="this.style.fontSize='32px';this.outerHTML='<div class=\'g-sun\' style=\'font-size:32px;text-align:center\'>☀️</div>'"
       alt="Sun"/>
   </div>
+  <div class="g-star-bar-hint" id="g-star-bar-hint">⭐ = 3–4 correct in a row</div>
 
   <!-- Bird + speech bubble -->
   <div class="g-bird-wrap" id="g-bird-wrap">
@@ -2428,6 +2512,21 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Answer buttons (generated once per question, NEVER touched by hint) -->
   <div class="g-answers" id="g-answers"></div>
 
+  <!-- Question counter -->
+  <div class="g-qcount" id="g-qcount"></div>
+
+  <!-- Quit confirmation modal -->
+  <div class="quit-modal-overlay" id="quit-modal-overlay">
+    <div class="quit-modal">
+      <div class="quit-modal-icon">🚪</div>
+      <div class="quit-modal-title">Quit this round?</div>
+      <div class="quit-modal-sub">Your progress in this round will be lost, but your coins and mastery are saved!</div>
+      <div class="quit-modal-btns">
+        <button class="quit-modal-btn quit-modal-btn-stay" onclick="closeQuitModal()">Keep Playing!</button>
+        <button class="quit-modal-btn quit-modal-btn-quit" onclick="confirmQuit()">Quit</button>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -2606,8 +2705,22 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <div class="chars-bg"></div>
   <div class="chars-ground"></div>
   <div class="chars-header">
-    <button class="back-btn" onclick="showScreen('screen-home')">←</button>
+    <button class="back-btn" id="mastery-back-btn" onclick="masteryGoBack()">←</button>
     <div class="coins-badge" id="mastery-coins-badge">⭐ 0</div>
+  </div>
+  <!-- Resume game pill — only visible when accessed mid-game -->
+  <div id="mastery-resume-bar" style="display:none;position:relative;z-index:25;text-align:center;padding:6px 16px 0;">
+    <button onclick="resumeFromMastery()" style="
+      background:linear-gradient(to bottom,#8be43c,#4ab915);
+      color:white;border:none;border-radius:50px;
+      padding:10px 28px;font-family:'Nunito',cursive;
+      font-size:15px;font-weight:900;letter-spacing:1px;
+      cursor:pointer;box-shadow:0 5px 0 #2e7d32;
+      transition:transform .1s,box-shadow .1s;
+    " onmousedown="this.style.transform='translateY(3px)';this.style.boxShadow='0 2px 0 #2e7d32'"
+       onmouseup="this.style.transform='';this.style.boxShadow='0 5px 0 #2e7d32'">
+      ▶ Resume Game
+    </button>
   </div>
   <div class="chars-title-wrap">
     <span class="chars-title-sub">Green = mastered · Orange = practising · Grey = not seen</span>
@@ -2623,7 +2736,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- 12×12 grid -->
   <div style="position:relative;z-index:20;overflow-y:auto;max-height:580px;padding:0 10px 16px;">
     <!-- Column headers -->
-    <div id="mastery-grid-wrap" style="overflow-x:auto;"></div>
+    <div id="mastery-grid-wrap" style="overflow-x:auto;padding-bottom:6px;"></div>
   </div>
 </div>
 
@@ -2711,10 +2824,10 @@ function resetBubble() {
 }
 
 /* Sequence shown after correct answer:
-   900ms  → pattern tip (green)
-   2400ms → commutativity tip if a≠b (purple) + coin bonus
+   800ms  → pattern tip (green)
+   1800ms → commutativity tip if a≠b (purple) + coin bonus
              then: queue the commutative pair as the VERY NEXT question
-   3900ms → reset to normal bubble, advance question
+   2600ms → reset to normal bubble, advance question
    TAP the question card or bubble to skip the wait immediately.
 */
 function showCorrectSequence(q) {
@@ -2745,7 +2858,14 @@ function showCorrectSequence(q) {
     const bubble = document.getElementById('g-bubble');
     if(card)   card.addEventListener('click', skipSequence, { once: true });
     if(bubble) bubble.addEventListener('click', skipSequence, { once: true });
-  }, 300);
+    // Add a subtle tap-to-skip hint on the bubble
+    const btext = document.getElementById('bubble-text');
+    if(btext && !_skipped){
+      const origText = btext.textContent;
+      // Append micro-hint without overwriting the tip
+      bubble && (bubble.title = 'Tap to skip');
+    }
+  }, 200);
 
   // Step 1 — pattern tip
   const pattern = getPattern(table);
@@ -2776,16 +2896,16 @@ function showCorrectSequence(q) {
         _clearSkipListeners();
         resetBubble();
         advanceQuestion();
-      }, 1600);
+      }, 900);
     } else {
       bubbleTimeout = setTimeout(() => {
         if(_skipped) return;
         _clearSkipListeners();
         resetBubble();
         advanceQuestion();
-      }, 1200);
+      }, 700);
     }
-  }, 1500);
+  }, 1000);
 }
 
 /* BUBBLES is now a function so it can inject the player name */
@@ -2965,6 +3085,15 @@ scalePhone(); window.addEventListener('resize', scalePhone);
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
+  // Update bottom nav active state
+  const navMap = {
+    'screen-chars':'nav-btn-friends',
+    'screen-achievements':'nav-btn-ach',
+    'screen-rewards':'nav-btn-rew',
+    'screen-mastery':'nav-btn-prog'
+  };
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('nav-active'));
+  if(navMap[id]){ const nb=document.getElementById(navMap[id]); if(nb) nb.classList.add('nav-active'); }
   if(id==='screen-home')         refreshHome();
   if(id==='screen-stages')       renderStages();
   if(id==='screen-chars')        renderChars();
@@ -3394,13 +3523,17 @@ function renderQ(q){
   ];
   currentChoices.forEach((v,i)=>{
     const btn = document.createElement('button');
-    btn.className = 'ans-btn';
+    btn.className = 'ans-btn stagger-in';
+    btn.style.animationDelay = `${i * 65}ms`;
     btn.dataset.val = v;
     btn.dataset.cidx = i;
     btn.textContent = v;
     btn.onclick = ()=>checkAns(v, q, btn);
     grid.appendChild(btn);
   });
+
+  // Update question counter pill
+  updateQCount();
 
   // ── Contextual strategy cue (4s, 8s, 12s tables) ────────
   cancelStrategyTimer();
@@ -3600,6 +3733,7 @@ function checkAns(chosen, q, btn){
     btn.classList.add('correct');
     btn.textContent = '✓ '+chosen;
     gameScore+=10; sessionCoins+=2; streak++; answered++;
+    haptic(50); // short buzz for correct
     updateCoinDisplay();
     updateProgress();
     checkStreak(streak);
@@ -3646,6 +3780,7 @@ function checkAns(chosen, q, btn){
   } else {
     btn.classList.add('wrong');
     streak=0;
+    haptic([80, 40, 80]); // double-buzz for wrong
     setRedyState('incorrect');
 
     // Redy speaks — explicit "try again" guidance
@@ -3872,7 +4007,11 @@ function startGame(){
   const stage = getCurrentStage();
   gameScore=0; sessionCoins=0; streak=0; answered=0; questionIndex=0; hintEverUsedThisGame=false;
   wrongQuestions=[]; reviewMode=false; reviewQueue=[];
-  _commuteInjectedThisSession = new Set(); // track facts that have had their commute pair queued
+  _commuteInjectedThisSession = new Set();
+  _midGamePaused = false;
+  // Also hide resume bar in case it was showing
+  const resumeBar = document.getElementById('mastery-resume-bar');
+  if(resumeBar) resumeBar.style.display = 'none';
   clearInterval(timerInt);
 
   // Stage-specific timer setup
@@ -4010,6 +4149,8 @@ function endGame(){
   const _newHighest = Math.max(_prevHighest, stage);
   // Auto-unlock next stage if this is the furthest they've gone
   const _unlockedNew = _nextStage && _newHighest < _nextStage;
+  // Check personal best for this stage
+  const _isNewBest = checkPersonalBest(stage, sessionCoins);
 
   saveState({
     coins:          totalCoins,
@@ -4062,7 +4203,7 @@ function endGame(){
     padding:12px 14px; margin-bottom:0; text-align:center; color:white;
   `;
   summary.innerHTML = `
-    <div style="font-size:15px;font-weight:900;margin-bottom:6px;">🏆 Session Complete!</div>
+    <div style="font-size:15px;font-weight:900;margin-bottom:6px;">🏆 Session Complete!${_isNewBest ? ' <span style="color:#ffe84d;font-size:13px;background:rgba(255,255,255,.15);border-radius:20px;padding:2px 10px;">🎉 New Best!</span>' : ''}</div>
     <div style="display:flex;justify-content:space-around;margin-bottom:${_weak.length?'8px':'0'}">
       <div style="text-align:center">
         <div style="font-size:22px;font-weight:900;color:#ffe84d">${sessionCoins}</div>
@@ -5435,7 +5576,7 @@ function renderMasteryGrid(){
 
   const table = document.createElement('table');
   table.className = 'mg-table';
-  table.style.cssText = 'border-spacing:3px;border-collapse:separate;';
+  table.style.cssText = 'min-width:max-content;';
 
   // Header row: ×  1  2  3  4 … 12
   const hRow = document.createElement('tr');
@@ -5549,9 +5690,113 @@ function showTrainingIntro(onDone){
 /* ═══════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════ */
-// Hide rail initially
+// ── Hide rail initially
 document.getElementById('nl-rail').style.display='none';
 refreshHome();
+
+/* ═══════════════════════════════════════════════════
+   QUIT MODAL
+═══════════════════════════════════════════════════ */
+let _quitDestination = null; // 'home' | 'mastery' | null
+
+function showQuitModal(dest) {
+  _quitDestination = dest || 'home';
+  document.getElementById('quit-modal-overlay').classList.add('open');
+}
+function closeQuitModal() {
+  document.getElementById('quit-modal-overlay').classList.remove('open');
+  _quitDestination = null;
+}
+function confirmQuit() {
+  closeQuitModal();
+  endSession();
+}
+
+/* ═══════════════════════════════════════════════════
+   MID-GAME PROGRESS VIEW
+   Pauses the timer, shows the mastery grid with a
+   "Resume Game" button. Back / Resume both restore play.
+═══════════════════════════════════════════════════ */
+let _midGamePaused = false;
+
+function openProgressMidGame() {
+  // Pause the timer
+  clearInterval(timerInt);
+  _midGamePaused = true;
+
+  // Show mastery screen in "mid-game" mode (resume bar visible, back goes to game)
+  renderMasteryGrid();
+  const resumeBar = document.getElementById('mastery-resume-bar');
+  if(resumeBar) resumeBar.style.display = 'block';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('screen-mastery').classList.remove('hidden');
+}
+
+function resumeFromMastery() {
+  // Hide resume bar and go back to game screen
+  const resumeBar = document.getElementById('mastery-resume-bar');
+  if(resumeBar) resumeBar.style.display = 'none';
+  _midGamePaused = false;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('screen-game').classList.remove('hidden');
+
+  // Resume the timer countdown (if not training and timer still has time)
+  const stage = getCurrentStage();
+  const isTraining = (stage === 0);
+  if(!isTraining && timerVal > 0){
+    timerInt = setInterval(()=>{
+      timerVal--;
+      const timerEl = document.getElementById('g-timer');
+      const timerPill = document.getElementById('g-timer-pill');
+      if(timerEl) timerEl.textContent = formatCountdown(timerVal);
+      if(timerPill && timerVal <= 30) timerPill.classList.add('urgent');
+      if(timerVal <= 0){ clearInterval(timerInt); endGame(); }
+    }, 1000);
+  }
+}
+
+function masteryGoBack() {
+  if(_midGamePaused) {
+    resumeFromMastery();
+  } else {
+    showScreen('screen-home');
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   HAPTIC FEEDBACK
+   Wraps navigator.vibrate so it silently no-ops on
+   browsers that don't support it.
+═══════════════════════════════════════════════════ */
+function haptic(pattern) {
+  try { navigator.vibrate && navigator.vibrate(pattern); } catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════
+   QUESTION COUNTER
+═══════════════════════════════════════════════════ */
+function updateQCount() {
+  const el = document.getElementById('g-qcount');
+  if(!el) return;
+  const stage = getCurrentStage();
+  if(stage === 0){ el.textContent = ''; return; } // no counter in training
+  const total = stage === 5 ? 30 : TOTAL;
+  el.textContent = `Q${questionIndex}/${total}`;
+}
+
+/* ═══════════════════════════════════════════════════
+   PERSONAL BEST TRACKING
+═══════════════════════════════════════════════════ */
+function checkPersonalBest(stage, coinsEarned) {
+  const key = `bestCoins_stage${stage}`;
+  const s = loadState();
+  const prev = s[key] ?? 0;
+  if(coinsEarned > prev) {
+    saveState({ [key]: coinsEarned });
+    return true; // new best!
+  }
+  return false;
+}
 
 /* ═══════════════════════════════════════════════════
    CUTSCENE — Stage Complete video overlay
