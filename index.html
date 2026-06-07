@@ -33,6 +33,20 @@
 html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursive,sans-serif; background:#1a1a2e; }
 .phone-wrap { display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
 .phone { position:relative; width:390px; height:844px; overflow:hidden; border-radius:40px; box-shadow:0 40px 80px rgba(0,0,0,.7); transform-origin:center center; }
+
+/* Fullscreen toggle button */
+#fs-btn {
+  position: fixed; bottom: 16px; right: 16px; z-index: 9999;
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,.2);
+  border: 1.5px solid rgba(255,255,255,.35);
+  border-radius: 10px;
+  color: white; font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(6px);
+  transition: background .15s;
+}
+#fs-btn:hover { background: rgba(255,255,255,.35); }
 .screen { position:absolute; inset:0; z-index:10; transition:opacity .3s ease, transform .3s ease; }
 .screen.hidden { opacity:0; pointer-events:none; transform:scale(.96); }
 
@@ -695,29 +709,31 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   color: white;
   text-shadow: 0 4px 0 var(--purple-dark), 0 2px 16px rgba(0,0,0,.3);
   letter-spacing: 1px;
-  margin-top: 4px;
+  margin-top: 35px;
   line-height: 1.15;
 }
 
 /* Grid — 3 col, centre card larger (hero) */
 .char-grid-new {
-  position: relative; z-index: 20;
+  position: absolute; z-index: 20;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   width: 100%;
   padding: 10px 14px 0;
+      top: 240px;
   /* Hero card (Redy, index 0) spans the full middle column and stands taller */
 }
 
 /* ── Base card ── */
 .char-card-new {
-  background: #fdf6e3;
-  border-radius: 20px;
-  padding: 10px 6px 8px;
+  background: #F6E2B0;
+  border-radius: 14px;
+  padding: 0;
+  overflow: visible;
   display: flex; flex-direction: column; align-items: center;
   cursor: pointer;
-  border: 3px solid transparent;
+  border: 5px solid transparent;
   transition: border-color .2s, transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s;
   position: relative;
   box-shadow: 0 5px 16px rgba(0,0,0,.2);
@@ -727,7 +743,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* Selected card */
 .char-card-new.selected {
   border-color: var(--yellow);
-  background: #fffbea;
   transform: scale(1.08);
   box-shadow: 0 0 0 4px rgba(245,197,24,.4), 0 14px 32px rgba(0,0,0,.25);
   z-index: 5;
@@ -739,11 +754,15 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 .char-img-wrap {
   position: relative;
-  width: 88%; aspect-ratio: 1;
+  width: 100%; aspect-ratio: 2/4;
   display: flex; align-items: center; justify-content: center;
+    height: 185px;
+  border-radius: 11px;
+  background: #fdf6e8 !important;
 }
 .char-img-wrap img {
   width: 100%; height: 100%; object-fit: contain;
+  display: block; transition: opacity .2s ease;
 }
 .char-emoji-fallback {
   font-size: 52px; line-height: 1;
@@ -754,43 +773,57 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* Lock overlay */
 .char-lock-overlay {
   position: absolute; inset: 0;
-  background: rgba(30,15,60,.55);
-  border-radius: 14px;
+  background: rgba(15,5,40,.62);
+  border-radius: 11px;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  font-size: 28px;
-  gap: 4px;
-  backdrop-filter: blur(1px);
+  font-size: 26px;
+  gap: 5px;
+  z-index: 2;
 }
 .char-lock-cost {
   font-size: 12px; font-weight: 900;
   color: var(--yellow);
-  background: rgba(0,0,0,.5);
-  border-radius: 20px; padding: 2px 8px;
+  background: rgba(0,0,0,.55);
+  border-radius: 20px; padding: 3px 10px;
   display: block;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
 }
 
-/* Name tag */
+/* Name tag — overlay on bottom of image */
 .char-name-tag {
-  margin-top: 6px;
-  background: var(--purple-btn); color: white;
-  border-radius: 20px; font-size: 12px; font-weight: 900;
-  padding: 4px 10px; width: 100%; text-align: center;
+  position: absolute;
+  bottom: 5px; left: 5px; right: 5px;
+  background: rgba(60,20,130);
+  color: white;
+  font-size: 16px; font-weight: 900;
+      padding: 3px 3px 3px;
+  text-align: center;
+  letter-spacing: .5px;
+      border-radius: 10px 10px 10px 10px;
+  pointer-events: none;
+  z-index: 3;
 }
-.char-card-new.selected .char-name-tag { background: var(--purple-dark); }
+.char-card-new.selected .char-name-tag { background: rgba(61,39,120,1); }
 
 /* Selected / owned sub-tags */
 .char-selected-tag {
-  margin-top: 4px;
+  position: absolute;
+  top: 6px; left: 50%; transform: translateX(-50%);
   background: var(--yellow); color: #7a4e00;
-  border-radius: 20px; font-size: 10px; font-weight: 900;
-  padding: 2px 8px; width: 100%; text-align: center;
+  border-radius: 20px; font-size: 9px; font-weight: 900;
+  padding: 2px 8px; white-space: nowrap;
+  z-index: 4;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
 }
 .char-owned-tag {
-  margin-top: 4px;
-  background: #c8e6c9; color: #1b5e20;
-  border-radius: 20px; font-size: 10px; font-weight: 900;
-  padding: 2px 8px; width: 100%; text-align: center;
+  position: absolute;
+  top: 6px; left: 50%; transform: translateX(-50%);
+  background: rgba(200,230,200,.9); color: #1b5e20;
+  border-radius: 20px; font-size: 9px; font-weight: 900;
+  padding: 2px 8px; white-space: nowrap;
+  z-index: 4;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
 }
 
 /* Green check badge */
@@ -802,7 +835,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   font-size: 15px; color: white;
   border: 2.5px solid white;
   box-shadow: 0 2px 6px rgba(0,0,0,.25);
-  z-index: 10;
+  z-index: 30;
 }
 
 /* LET'S GO button on char screen */
@@ -812,13 +845,14 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   background: linear-gradient(to bottom, #8be43c 0%, #68d326 55%, #4ab915 100%);
   color: white; border: none; border-radius: 50px;
   font-family: 'Nunito', cursive; font-size: 22px; font-weight: 900; letter-spacing: 2px;
-  cursor: pointer; position: relative; z-index: 20; overflow: hidden;
+  cursor: pointer; position: absolute; z-index: 20; overflow: hidden;
   text-shadow: 0 3px 0 rgba(0,0,0,.1), 0 5px 10px rgba(0,0,0,.15);
   box-shadow:
     0 12px 28px rgba(0,0,0,.22),
     inset 0 3px 0 rgba(255,255,255,.28),
     inset 0 -5px 0 rgba(0,0,0,.1);
   transition: transform .12s ease, box-shadow .12s ease;
+  bottom: 50px;
 }
 .chars-lets-go-btn::after {
   content: ""; position: absolute; inset: 8px; border-radius: 40px;
@@ -2698,6 +2732,9 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 <div class="toast" id="toast"></div>
 
+<!-- Fullscreen toggle -->
+<button id="fs-btn" title="Toggle fullscreen" onclick="toggleFullscreen()">⛶</button>
+
 <!-- ══════════════════════════════════════
      MASTERY GRID SCREEN
 ══════════════════════════════════════ -->
@@ -2936,44 +2973,57 @@ const SKINS = [
 
 const CHARACTERS = [
   { id:'redy', name:'Redy', emoji:null,
-    img:       BASE+'mj-start-character-red.png',
-    imgIngame: BASE+'mj-ingame-redy.png',
-    bgUrl:     BASE+'mj-ingame-bg.png',
+    imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy.png',
+    imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-redy.png',
+    imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy.png',
+    bgUrl:       BASE+'mj-ingame-bg.png',
+    themeColor:  '#c0392b',
     cost: 0,
     desc: 'The original!',
   },
   { id:'dino', name:'Dino', emoji:'🦕',
-    img:       BASE+'mj-start-character-dino.png',
-    imgIngame: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-dino.png',
-    bgUrl:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-dino.png',
+    imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-dino.png',
+    imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-dino.png',
+    imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-dino.png',
+    bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-dino.png',
+    themeColor:  '#2e7d32',
     cost: 30,
     desc: 'Roar power!',
+    imgDefaultStyle: 'object-fit:contain;object-position:40% center;padding:0;transform:scale(0.9);',
   },
   { id:'unia', name:'Unia', emoji:null,
-    img:       BASE+'mj-start-character-unia.png',
-    imgIngame: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-unia.png',
-    bgUrl:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-unia.png',
+    imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-unia.png',
+    imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-unia.png',
+    imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-unia.png',
+    bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-unia.png',
+    themeColor:  '#6a1fa8',
     cost: 50,
     desc: 'Magical!',
   },
   { id:'robo', name:'Robo', emoji:'🤖',
-    img:       BASE+'mj-start-character-robo.png',
-    imgIngame: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-robo.png',
-    bgUrl:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-robo.png',
+    imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-robo.png',
+    imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-robo.png',
+    imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-robo.png',
+    bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-robo.png',
+    themeColor:  '#1565c0',
     cost: 60,
     desc: 'Beep boop!',
   },
   { id:'pip', name:'Pip', emoji:null,
-    img:       BASE+'mj-start-character-pip.png',
-    imgIngame: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-pip.png',
-    bgUrl:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-pip.png',
+    imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-pip.png',
+    imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-pip.png',
+    imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-pip.png',
+    bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-pip.png',
+    themeColor:  '#e65100',
     cost: 80,
     desc: 'Cool dude!',
   },
   { id:'leo', name:'Leo', emoji:'🦁',
-    img:       BASE+'mj-start-character-leo.png',
-    imgIngame: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-leo.png',
-    bgUrl:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-leo.png',
+    imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-leo.png',
+    imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-leo.png',
+    imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-leo.png',
+    bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-leo.png',
+    themeColor:  '#f9a825',
     cost: 100,
     desc: 'Mighty!',
   },
@@ -3077,10 +3127,45 @@ let _qStartTime = 0;
    UTILITIES
 ═══════════════════════════════════════════════════ */
 function scalePhone(){
-  const s = Math.min(window.innerWidth/390, window.innerHeight/844);
-  document.getElementById('phone').style.transform = `scale(${s})`;
+  const phone = document.getElementById('phone');
+  const sw = window.innerWidth, sh = window.innerHeight;
+  if(sw <= 440 && sh <= 950){
+    phone.style.transform = 'none';
+    phone.style.width  = sw + 'px';
+    phone.style.height = sh + 'px';
+    phone.style.borderRadius = '0';
+    phone.style.boxShadow = 'none';
+  } else {
+    const s = Math.min(sw/390, sh/844);
+    phone.style.transform = `scale(${s})`;
+    phone.style.width  = '390px';
+    phone.style.height = '844px';
+    phone.style.borderRadius = '40px';
+    phone.style.boxShadow = '0 40px 80px rgba(0,0,0,.7)';
+  }
 }
 scalePhone(); window.addEventListener('resize', scalePhone);
+
+/* ── Fullscreen ── */
+function toggleFullscreen(){
+  const btn = document.getElementById('fs-btn');
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().then(()=>{
+      if(btn) btn.textContent = '✕';
+      scalePhone();
+    }).catch(()=>{});
+  } else {
+    document.exitFullscreen().then(()=>{
+      if(btn) btn.textContent = '⛶';
+      scalePhone();
+    }).catch(()=>{});
+  }
+}
+document.addEventListener('fullscreenchange', ()=>{
+  const btn = document.getElementById('fs-btn');
+  if(btn) btn.textContent = document.fullscreenElement ? '✕' : '⛶';
+  scalePhone();
+});
 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
@@ -3224,24 +3309,39 @@ function renderChars(){
     const card = document.createElement('div');
     card.className = 'char-card-new' + (isSelected ? ' selected' : '') + (isUnlocked ? '' : ' locked');
 
-    // Character image / emoji
-    const imgHTML = ch.img
-      ? `<img src="${ch.img}" alt="${ch.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="char-emoji-fallback" style="display:none">${ch.emoji||'?'}</div>`
+    // Solid theme-colour background for the image area when not selected;
+    // selected cards show the full scene via the overlay image so no solid bg needed.
+    const wrapBg = (!isSelected) ? `background:${ch.themeColor};` : 'background:#111;';
+
+    // Default state: cutout character PNG on solid colour bg
+    // Selected state: full-scene overlay PNG (covers entire area)
+    const imgSrc = isSelected ? ch.imgSelected : ch.imgDefault;
+
+    // object-fit changes: selected=cover (scene fills card), default=contain (cutout floats)
+    const imgFit = isSelected ? 'object-fit:cover;object-position:center center;' : (ch.imgDefaultStyle || 'object-fit:contain;object-position:center;padding:0% 1% 0;transform:scale(0.9);');
+
+    const imgHTML = imgSrc
+      ? `<img src="${imgSrc}" alt="${ch.name}" style="${imgFit}" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex')"/><div class="char-emoji-fallback" style="display:none">${ch.emoji||'?'}</div>`
       : `<div class="char-emoji-fallback">${ch.emoji||'?'}</div>`;
 
-    // Lock overlay
+    // Lock overlay — shown for locked chars regardless of state
     const lockOverlay = !isUnlocked
       ? `<div class="char-lock-overlay">🔒<span class="char-lock-cost">⭐ ${ch.cost}</span></div>`
       : '';
 
-    // Check mark for selected
+    // Check mark badge for the selected card
     const checkmark = isSelected ? `<div class="char-checkmark">✓</div>` : '';
+
+    // Sub-tag badge (top-centre of card)
+    const subTag = isSelected
+      ? '<div class="char-selected-tag">Selected</div>'
+      : (isUnlocked ? '<div class="char-owned-tag">Owned</div>' : '');
 
     card.innerHTML = `
       ${checkmark}
-      <div class="char-img-wrap">${imgHTML}${lockOverlay}</div>
+      ${subTag}
+      <div class="char-img-wrap" style="${wrapBg}">${imgHTML}${lockOverlay}</div>
       <div class="char-name-tag">${ch.name}</div>
-      ${isSelected ? '<div class="char-selected-tag">Selected</div>' : (isUnlocked ? '<div class="char-owned-tag">Owned</div>' : '')}
     `;
 
     card.onclick = () => {
