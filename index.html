@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<!-- ── FORCE LIGHT MODE: prevents Android WebView / Samsung Internet
+     from applying a forced dark-mode filter over the game colours ── -->
+<meta name="color-scheme" content="light only"/>
+<meta name="supported-color-schemes" content="light"/>
 <title>Maths Jumper</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
 <style>
@@ -10,6 +14,60 @@
    RESET & ROOT
 ───────────────────────────────────────────── */
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+/* ══════════════════════════════════════════════════════════════
+   FORCE LIGHT MODE
+   Samsung Internet / Android WebView on certain devices (e.g.
+   Galaxy A15) apply an automatic dark-mode filter that desaturates
+   every colour.  The three declarations below opt the entire page
+   out of that behaviour:
+     1. `color-scheme: light` tells the browser this document is
+        light-only — no automatic inversion or filter.
+     2. The `prefers-color-scheme: dark` block re-asserts every
+        CSS custom-property to its original light value so that
+        even if a WebView ignores the hint above it still gets the
+        correct colours.
+     3. `forced-colors: none` (inside the forced-colors media query)
+        prevents Windows/Android High-Contrast mode from re-mapping
+        colours to system palette values.
+══════════════════════════════════════════════════════════════ */
+:root,
+html,
+body {
+  color-scheme: light only;
+  -webkit-color-scheme: light;   /* Samsung Internet / older WebKit */
+}
+
+/* Re-assert all custom properties if the OS insists on dark */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --purple:        #5c3fa3 !important;
+    --purple-btn:    #6b4dbf !important;
+    --purple-dark:   #3d2778 !important;
+    --yellow:        #f5c518 !important;
+    --yellow-dark:   #d4940a !important;
+    --panel-bg:      #fef9ec !important;
+    --text-dark:     #3d2778 !important;
+    --green-btn:     #4caf50 !important;
+    --green-dark:    #388e3c !important;
+    --ans-green:     #5dce44 !important;
+    --ans-green-dk:  #36a020 !important;
+    --ans-blue:      #3aabf0 !important;
+    --ans-blue-dk:   #1a7fc4 !important;
+    --ans-yellow:    #ffc72c !important;
+    --ans-yellow-dk: #d4900a !important;
+    --ans-pink:      #f54b6e !important;
+    --ans-pink-dk:   #c01a45 !important;
+  }
+  /* Prevent the WebView brightness/hue filter on the root element */
+  html { filter: none !important; }
+}
+
+/* Prevent High-Contrast / forced-colours remapping on Accessibility modes */
+@media (forced-colors: active) {
+  * { forced-color-adjust: none; }
+}
+
 :root {
   --purple:      #5c3fa3;
   --purple-btn:  #6b4dbf;
@@ -32,7 +90,7 @@
 }
 html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursive,sans-serif; background:#1a1a2e; }
 .phone-wrap { display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
-.phone { position:relative; width:390px; height:844px; overflow:hidden; border-radius:40px; box-shadow:0 40px 80px rgba(0,0,0,.7); transform-origin:center center; }
+.phone { position:relative; width:390px; height:844px; overflow:hidden; border-radius:40px; box-shadow:0 40px 80px rgba(0,0,0,.7); transform-origin:center center; container-type:inline-size; }
 
 /* Fullscreen toggle button */
 #fs-btn {
@@ -407,7 +465,15 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* ─────────────────────────────────────────────
    STAGE SELECT / CHAR SELECT  (shared chrome)
 ───────────────────────────────────────────── */
-#screen-stages, #screen-chars { display:flex; flex-direction:column; align-items:center; padding:0 16px; }
+/* #screen-stages: flex column, allow inner grid to scroll.
+   overflow:hidden on the wrapper clips the decorative blur bg
+   but the .stage-grid child has its own overflow-y:auto scroll. */
+#screen-stages {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 16px;
+  overflow: hidden;
+}
+#screen-chars { display:flex; flex-direction:column; align-items:center; padding:0 16px; justify-content:center; }
 .screen-bg-blur { position:absolute; inset:0; background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center/cover; filter:blur(3px) brightness(.7); z-index:0; }
 .sel-header { width:100%; display:flex; align-items:center; justify-content:space-between; padding:14px 0 0; position:relative; z-index:20; }
 .back-btn { width:46px; height:46px; background:var(--yellow); border:none; border-radius:12px; font-size:22px; font-weight:900; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 0 var(--yellow-dark); transition:transform .1s,box-shadow .1s; overflow:hidden; position:relative; }
@@ -419,7 +485,24 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .sel-title-sub  { font-size:13px; font-weight:700; color:var(--text-dark); background:rgba(255,255,255,.8); border-radius:20px; padding:4px 14px; display:inline-block; }
 .sel-title-main { display:block; font-size:38px; font-weight:900; color:white; text-shadow:0 4px 0 var(--purple-dark); letter-spacing:1px; margin-top:4px; }
 /* Stage grid */
-.stage-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; width:100%; margin-top:6px; position:relative; z-index:20; overflow-y:auto; max-height:620px; padding-bottom:10px; scrollbar-width:none; }
+.stage-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 14px;
+  width: 100%;
+  margin-top: 6px;
+  position: relative;
+  z-index: 20;
+  /* scroll: use flex-grow so it fills whatever height remains after
+     the header + title rows; fall back to a generous max-height */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Android WebView momentum scroll */
+  overscroll-behavior-y: contain;    /* prevent pull-to-refresh while scrolling */
+  flex: 1 1 auto;                    /* grow to fill remaining flex space */
+  max-height: calc(100% - 140px);    /* safety cap: phone height minus header */
+  padding-bottom: 16px;
+  scrollbar-width: none;
+}
 .stage-grid::-webkit-scrollbar { display:none; }
 .stage-card { background:var(--panel-bg); border-radius:20px; padding:14px 10px; display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer; border:3px solid transparent; box-shadow:0 4px 12px rgba(0,0,0,.2); transition:border-color .2s,transform .15s; }
 .stage-card:active { transform:scale(.97); }
@@ -707,7 +790,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   position: relative; z-index: 20;
   width: 100%; text-align: center;
   padding: 8px 16px 0;
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
   
 }
 .chars-title-sub {
@@ -731,13 +814,13 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* Grid — 3 col, centre card larger (hero) */
 .char-grid-new {
-  position: absolute; z-index: 20;
+  position: relative; z-index: 20;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   width: 100%;
   padding: 10px 14px 0;
-      top: 240px;
+  margin: auto 0;
   /* Hero card (Redy, index 0) spans the full middle column and stands taller */
 }
 
@@ -856,19 +939,19 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* LET'S GO button on char screen */
 .chars-lets-go-btn {
-  display: block; width: 72%; margin: 12px auto 0;
+  display: block; width: 72%; margin: 16px auto 0;
   padding: 17px 24px;
   background: linear-gradient(to bottom, #8be43c 0%, #68d326 55%, #4ab915 100%);
   color: white; border: none; border-radius: 50px;
   font-family: 'Nunito', cursive; font-size: 22px; font-weight: 900; letter-spacing: 2px;
-  cursor: pointer; position: absolute; z-index: 20; overflow: hidden;
+  cursor: pointer; position: relative; z-index: 20; overflow: hidden;
   text-shadow: 0 3px 0 rgba(0,0,0,.1), 0 5px 10px rgba(0,0,0,.15);
   box-shadow:
     0 12px 28px rgba(0,0,0,.22),
     inset 0 3px 0 rgba(255,255,255,.28),
     inset 0 -5px 0 rgba(0,0,0,.1);
   transition: transform .12s ease, box-shadow .12s ease;
-  bottom: 50px;
+  flex-shrink: 0;
 }
 .chars-lets-go-btn::after {
   content: ""; position: absolute; inset: 8px; border-radius: 40px;
@@ -1021,29 +1104,29 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   color: white;
   border-radius: 12px;
   height: 44px;
-  padding: 0 clamp(10px, 2vw, 18px);
-  font-size: clamp(10px, 2.5vw, 13px);
+  padding: 0 clamp(8px, 2.5cqi, 18px);
+  font-size: clamp(10px, 3cqi, 13px);
   font-weight: 900;
   text-align: center;
-  flex-shrink: 1;
+  flex: 1 1 0;
   min-width: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   box-shadow: 0 5px 0 var(--purple-dark), 0 2px 8px rgba(0,0,0,.18);
   /* no position:absolute — lives in the flex row */
 }
-.g-world-label { font-size: clamp(7px, 1.8vw, 9px); letter-spacing: 1.5px; opacity: .85; display: block; text-transform: uppercase; }
-.g-world-val   { font-size: clamp(10px, 2.5vw, 13px); font-weight: 900; display: block; line-height: 1.1; }
+.g-world-label { font-size: clamp(7px, 2cqi, 9px); letter-spacing: 1.5px; opacity: .85; display: block; text-transform: uppercase; }
+.g-world-val   { font-size: clamp(10px, 3cqi, 13px); font-weight: 900; display: block; line-height: 1.1; }
 /* Timer / table-label pill — sits in the flex row */
 .g-timer {
   background: #3aabf0;
   color: white;
   border-radius: 12px;
   height: 44px;
-  padding: 0 clamp(10px, 2vw, 18px);
-  font-size: clamp(10px, 2.5vw, 13px);
+  padding: 0 clamp(8px, 2.5cqi, 18px);
+  font-size: clamp(10px, 3cqi, 13px);
   font-weight: 900;
   text-align: center;
-  flex-shrink: 1;
+  flex: 1 1 0;
   min-width: 0;
   white-space: nowrap;
   display: flex; align-items: center; justify-content: center; gap: 4px;
@@ -1055,7 +1138,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   background: linear-gradient(135deg, #ff9800, #e65100) !important;
   box-shadow: 0 5px 0 #bf360c, 0 2px 12px rgba(0,0,0,.2) !important;
   white-space: nowrap;
-  font-size: clamp(10px, 2.5vw, 13px) !important;
+  font-size: clamp(10px, 3cqi, 13px) !important;
 }
 .g-timer.hidden, .g-table-label.hidden { display: none !important; }
 .g-timer-icon { font-size: 18px; line-height: 1; }
@@ -1977,33 +2060,62 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .review-mode-banner.active { display: block; }
 
 /* ── Mastery Grid ── */
-.mg-table { border-collapse: separate; border-spacing: 3px; width: 100%; }
+.mg-table { border-collapse: separate; border-spacing: 3px; width: 100%; table-layout: fixed; }
 .mg-table th {
-  font-size: 11px; font-weight: 900; color: white;
-  background: rgba(255,255,255,.18); padding: 5px 3px;
-  text-align: center; border-radius: 6px;
-  min-width: 36px;
+  font-size: clamp(9px, 2.8cqi, 12px); font-weight: 900; color: white;
+  background: rgba(255,255,255,.22);
+  padding: 6px 2px;
+  text-align: center; border-radius: 7px;
+  width: calc((100% - 28px) / 13);
+}
+.mg-table th:first-child {
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.5);
+  font-size: clamp(9px, 3cqi, 14px);
 }
 .mg-cell {
-  width: 36px; height: 36px;
+  width: 100%; height: 0;
+  padding-bottom: 100%; /* square via aspect-ratio trick — overridden below */
   border-radius: 8px;
-  font-size: 10px; font-weight: 900;
+  font-size: clamp(8px, 2.5cqi, 11px); font-weight: 900;
   text-align: center; vertical-align: middle;
   cursor: pointer;
-  transition: transform .15s;
+  transition: transform .15s, filter .15s;
   border: none; outline: none;
-  line-height: 36px;
-  min-width: 36px;
+  display: flex; align-items: center; justify-content: center;
+  height: clamp(26px, 6.8cqi, 34px);
+  width: 100%;
+  line-height: 1;
+  padding: 0;
+  box-shadow: 0 2px 0 rgba(0,0,0,.2);
 }
 .mg-cell:active { transform: scale(.88); }
-.mg-cell.unseen   { background: rgba(255,255,255,.14); color: rgba(255,255,255,.4); }
-.mg-cell.learning { background: linear-gradient(135deg,#ff9800,#e65100); color: white; }
-.mg-cell.mastered { background: linear-gradient(135deg,#8be43c,#4ab915); color: white; }
-.mg-cell.mastered::after { content:'✓'; font-size:14px; }
+.mg-cell.unseen {
+  background: rgba(255,255,255,.10);
+  color: rgba(255,255,255,.55);
+  font-size: clamp(8px, 2.5cqi, 10px);
+  font-weight: 700;
+  border: 1.5px solid rgba(255,255,255,.12);
+  box-shadow: none;
+}
+.mg-cell.learning {
+  background: linear-gradient(160deg, #ffb04a 0%, #e65100 100%);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
+  font-size: clamp(7px, 2.2cqi, 10px);
+}
+.mg-cell.mastered {
+  background: linear-gradient(160deg, #a0e86b 0%, #3ea10e 100%);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+.mg-cell.mastered::after { content:'✓'; font-size: clamp(10px, 3.2cqi, 15px); font-weight: 900; }
 .mg-row-lbl {
-  font-size: 11px; font-weight: 900; color: rgba(255,255,255,.7);
-  padding-right: 4px; text-align: right; white-space: nowrap;
+  font-size: clamp(9px, 2.8cqi, 12px); font-weight: 900;
+  color: rgba(255,255,255,.8);
+  padding-right: 3px; text-align: right; white-space: nowrap;
   vertical-align: middle;
+  width: clamp(16px, 5cqi, 22px);
 }
 
 /* ── Training intro overlay ── */
@@ -2657,35 +2769,49 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Scrollable content -->
   <div class="info-scroll-area">
 
-    <!-- DEVELOPER MODE -->
-    <div class="settings-section-label">🛠 Developer Mode</div>
-    <div class="settings-dev-card">
-      <div class="settings-dev-row">
-        <div class="settings-dev-text">
-          <div class="settings-dev-title">👑 Unlock All Stages</div>
-          <div class="settings-dev-sub">Slide to choose how many stages to unlock. Great for testing or letting little ones explore!</div>
-        </div>
-        <label class="settings-toggle">
-          <input type="checkbox" id="settings-dev-toggle" onchange="onDevToggle(this.checked)"/>
-          <div class="settings-toggle-track"></div>
-          <div class="settings-toggle-thumb"></div>
-        </label>
-      </div>
-      <!-- Stage slider (revealed when toggle ON) -->
-      <div class="settings-stages-unlock" id="settings-stages-unlock">
-        <div style="font-size:13px;font-weight:900;color:#e040fb;margin-bottom:4px;">Unlock up to Stage:</div>
-        <div class="settings-stages-bar-wrap">
-          <div class="settings-stages-bar-label" id="settings-slider-val">Stage 0</div>
-          <div class="settings-slider-wrap">
-            <input type="range" class="settings-slider" id="settings-stage-slider"
-              min="0" max="5" step="1" value="0"
-              oninput="onStageSliderChange(this.value)"/>
+    <!-- Sun easter egg — triple-tap reveals dev mode -->
+    <div id="settings-sun-wrap" style="text-align:center;padding:6px 0 2px;position:relative;z-index:5;">
+      <img id="settings-sun"
+        src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-sun.png"
+        alt="☀️"
+        style="width:52px;height:52px;object-fit:contain;cursor:pointer;filter:drop-shadow(0 3px 8px rgba(255,180,0,.5));transition:transform .15s;"
+        onerror="this.outerHTML='<span id=\'settings-sun\' style=\'font-size:36px;cursor:pointer;display:inline-block;\'>☀️</span>'"
+        ontouchstart="this.style.transform='scale(0.88)'"
+        ontouchend="this.style.transform='scale(1)'"
+      />
+    </div>
+
+    <!-- DEVELOPER MODE (hidden — reveal by tapping sun 3×) -->
+    <div id="settings-dev-section" style="display:none;">
+      <div class="settings-section-label">🛠 Developer Mode</div>
+      <div class="settings-dev-card">
+        <div class="settings-dev-row">
+          <div class="settings-dev-text">
+            <div class="settings-dev-title">👑 Unlock All Stages</div>
+            <div class="settings-dev-sub">Slide to choose how many stages to unlock. Great for testing or letting little ones explore!</div>
           </div>
+          <label class="settings-toggle">
+            <input type="checkbox" id="settings-dev-toggle" onchange="onDevToggle(this.checked)"/>
+            <div class="settings-toggle-track"></div>
+            <div class="settings-toggle-thumb"></div>
+          </label>
         </div>
-        <div class="settings-stage-labels">
-          <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+        <!-- Stage slider (revealed when toggle ON) -->
+        <div class="settings-stages-unlock" id="settings-stages-unlock">
+          <div style="font-size:13px;font-weight:900;color:#e040fb;margin-bottom:4px;">Unlock up to Stage:</div>
+          <div class="settings-stages-bar-wrap">
+            <div class="settings-stages-bar-label" id="settings-slider-val">Stage 0</div>
+            <div class="settings-slider-wrap">
+              <input type="range" class="settings-slider" id="settings-stage-slider"
+                min="0" max="5" step="1" value="0"
+                oninput="onStageSliderChange(this.value)"/>
+            </div>
+          </div>
+          <div class="settings-stage-labels">
+            <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+          </div>
+          <button class="settings-unlock-confirm" onclick="applyStageUnlock()">✅ Apply Unlock</button>
         </div>
-        <button class="settings-unlock-confirm" onclick="applyStageUnlock()">✅ Apply Unlock</button>
       </div>
     </div>
 
@@ -2738,6 +2864,21 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
           <div class="settings-toggle-track"></div>
           <div class="settings-toggle-thumb"></div>
         </label>
+      </div>
+    </div>
+
+    <!-- LEGAL -->
+    <div class="settings-section-label">📋 Legal</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="window.open('https://jcoles8472.github.io/Maths-Jumper/privacy-policy.html','_blank')" style="cursor:pointer;">
+        <div class="settings-row-left">
+          <div class="settings-row-icon" style="background:linear-gradient(135deg,#90caf9,#1565c0)">🔒</div>
+          <div>
+            <div class="settings-row-text">Privacy Policy</div>
+            <div class="settings-row-sub">How we handle your data</div>
+          </div>
+        </div>
+        <div style="font-size:18px;color:#bbb;">›</div>
       </div>
     </div>
 
@@ -2814,13 +2955,12 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <div id="mastery-stats-strip" style="
     position:relative;z-index:20;
     display:flex;justify-content:space-around;align-items:center;
-    background:rgba(255,255,255,.15);
-    margin:6px 14px 4px;border-radius:16px;padding:8px 4px;
+    background:rgba(255,255,255,.2);
+    margin:10px 14px 6px;border-radius:16px;padding:10px 4px;
   "></div>
   <!-- 12×12 grid -->
-  <div style="position:relative;z-index:20;overflow-y:auto;max-height:580px;padding:0 10px 16px;">
-    <!-- Column headers -->
-    <div id="mastery-grid-wrap" style="overflow-x:auto;padding-bottom:6px;"></div>
+  <div style="position:relative;z-index:20;overflow-y:auto;max-height:570px;padding:0 8px 16px;">
+    <div id="mastery-grid-wrap" style="padding-bottom:6px;"></div>
   </div>
 </div>
 
@@ -3391,7 +3531,7 @@ function renderChars(){
     // Sub-tag badge (top-centre of card)
     const subTag = isSelected
       ? '<div class="char-selected-tag">Selected</div>'
-      : (isUnlocked ? '<div class="char-owned-tag">Owned</div>' : '');
+      : (isUnlocked ? '<div class="char-owned-tag">Unlocked</div>' : '');
 
     card.innerHTML = `
       ${checkmark}
@@ -4563,6 +4703,30 @@ function onDevToggle(checked){
   if(box) box.classList.toggle('visible', checked);
 }
 
+/* ── Sun easter egg: triple-tap reveals dev mode ── */
+(function(){
+  let _sunTaps = 0, _sunTimer = null;
+  document.addEventListener('click', function(e){
+    const sun = document.getElementById('settings-sun');
+    if(!sun || !sun.contains(e.target)) return;
+    haptic(40);
+    _sunTaps++;
+    clearTimeout(_sunTimer);
+    if(_sunTaps >= 3){
+      _sunTaps = 0;
+      const sec = document.getElementById('settings-dev-section');
+      if(sec){
+        const wasHidden = sec.style.display === 'none';
+        sec.style.display = wasHidden ? 'block' : 'none';
+        if(wasHidden) showToast('🛠 Developer Mode unlocked!', 2000);
+      }
+      haptic([50,30,80]);
+    } else {
+      _sunTimer = setTimeout(()=>{ _sunTaps = 0; }, 800);
+    }
+  });
+})();
+
 function stageLabel(n){
   if(n === 0) return 'Stage 0';
   if(n >= 5)  return 'Stage 5 (ALL)';
@@ -5714,28 +5878,31 @@ function renderMasteryGrid(){
     const subEl = masteryTitleWrap.querySelector('.chars-title-sub');
     if(subEl) subEl.textContent = `Green = mastered · Orange = practising · Grey = not seen`;
     const mainEl = masteryTitleWrap.querySelector('.chars-title-main');
-    if(mainEl) mainEl.innerHTML = `MY FACT GRID <span style="font-size:20px;color:var(--yellow);text-shadow:0 2px 0 var(--yellow-dark);">${pct}%</span>`;
+    if(mainEl) mainEl.innerHTML = `MY FACT GRID`;
   }
 
   // Stats strip
   const strip = document.getElementById('mastery-stats-strip');
   if(strip){
     strip.innerHTML = `
-      <div style="text-align:center;color:white">
-        <div style="font-size:20px;font-weight:900;color:#8be43c">${mc}</div>
-        <div style="font-size:9px;font-weight:700;opacity:.7;text-transform:uppercase">Mastered</div>
+      <div style="text-align:center;flex:1;">
+        <div style="font-size:22px;font-weight:900;color:#8be43c;line-height:1;">${mc}</div>
+        <div style="font-size:10px;font-weight:800;color:#8be43c;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Mastered</div>
       </div>
-      <div style="text-align:center;color:white">
-        <div style="font-size:20px;font-weight:900;color:#ff9800">${seenCount - mc}</div>
-        <div style="font-size:9px;font-weight:700;opacity:.7;text-transform:uppercase">Practising</div>
+      <div style="width:1px;height:32px;background:rgba(255,255,255,.15);"></div>
+      <div style="text-align:center;flex:1;">
+        <div style="font-size:22px;font-weight:900;color:#ffb04a;line-height:1;">${seenCount - mc}</div>
+        <div style="font-size:10px;font-weight:800;color:#ffb04a;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Practising</div>
       </div>
-      <div style="text-align:center;color:white">
-        <div style="font-size:20px;font-weight:900;color:rgba(255,255,255,.5)">${total144 - seenCount}</div>
-        <div style="font-size:9px;font-weight:700;opacity:.7;text-transform:uppercase">Not seen</div>
+      <div style="width:1px;height:32px;background:rgba(255,255,255,.15);"></div>
+      <div style="text-align:center;flex:1;">
+        <div style="font-size:22px;font-weight:900;color:rgba(255,255,255,.45);line-height:1;">${total144 - seenCount}</div>
+        <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Not seen</div>
       </div>
-      <div style="text-align:center;color:white">
-        <div style="font-size:20px;font-weight:900;color:#ffe84d">${pct}%</div>
-        <div style="font-size:9px;font-weight:700;opacity:.7;text-transform:uppercase">Complete</div>
+      <div style="width:1px;height:32px;background:rgba(255,255,255,.15);"></div>
+      <div style="text-align:center;flex:1;">
+        <div style="font-size:22px;font-weight:900;color:#ffe84d;line-height:1;">${pct}%</div>
+        <div style="font-size:10px;font-weight:800;color:#ffe84d;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Complete</div>
       </div>
     `;
   }
@@ -5809,9 +5976,9 @@ function renderMasteryGrid(){
   const legend = document.createElement('div');
   legend.style.cssText = 'display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;';
   legend.innerHTML = `
-    <span style="font-size:11px;font-weight:900;color:#8be43c">✓ Mastered</span>
-    <span style="font-size:11px;font-weight:900;color:#ff9800">% Practising</span>
-    <span style="font-size:11px;font-weight:900;color:rgba(255,255,255,.3)">num Not seen</span>
+    <span style="font-size:11px;font-weight:900;color:#8be43c;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;">✓ Mastered</span>
+    <span style="font-size:11px;font-weight:900;color:#ff9800;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;">% Practising</span>
+    <span style="font-size:11px;font-weight:900;color:rgba(255,255,255,.7);background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;">Not seen</span>
   `;
   wrap.appendChild(legend);
 }
