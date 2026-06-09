@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy — Maths Jumper</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:      #5c3fa3;
+      --purple-dark: #3d2778;
+      --purple-deep: #1a0a40;
+      --yellow:      #f5c518;
+      --yellow-dark: #d4940a;
+      --green:       #5dce44;
+      --bg:          #0f0728;
+      --card:        rgba(255,255,255,0.06);
+      --card-border: rgba(255,255,255,0.10);
+      --text:        rgba(255,255,255,0.90);
+      --text-muted:  rgba(255,255,255,0.55);
+      --accent:      #b388ff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Background stars ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(92,63,163,0.45) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 80%, rgba(58,171,240,0.25) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, rgba(26,10,64,1) 0%, #0f0728 100%);
+      pointer-events: none;
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative; z-index: 10;
+      text-align: center;
+      padding: 56px 24px 40px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .logo-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .logo-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #ffe84d, #f5a500);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 6px 0 #b35a00, 0 10px 24px rgba(245,165,0,0.4);
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      text-align: left;
+    }
+
+    .logo-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: 1px;
+      line-height: 1;
+      display: block;
+      text-shadow: 0 3px 0 var(--purple-dark);
+    }
+
+    .logo-sub {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--yellow);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: block;
+      margin-top: 3px;
+    }
+
+    header h1 {
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 900;
+      color: white;
+      text-shadow: 0 4px 0 var(--purple-dark), 0 8px 32px rgba(0,0,0,0.5);
+      letter-spacing: 2px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .header-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      backdrop-filter: blur(6px);
+    }
+
+    .header-badge strong {
+      color: var(--yellow);
+      font-weight: 900;
+    }
+
+    /* ── Main layout ── */
+    main {
+      position: relative; z-index: 10;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ── Summary banner ── */
+    .summary-banner {
+      background: linear-gradient(135deg, rgba(93,206,68,0.18), rgba(93,206,68,0.08));
+      border: 1.5px solid rgba(93,206,68,0.35);
+      border-radius: 20px;
+      padding: 22px 24px;
+      margin-bottom: 36px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .summary-icon {
+      font-size: 32px;
+      flex-shrink: 0;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .summary-text h2 {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--green);
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-text p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+    }
+
+    /* ── Section cards ── */
+    .section {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px 28px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(6px);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .section-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+    }
+
+    .icon-purple { background: linear-gradient(135deg, #9c4dff, #5c3fa3); }
+    .icon-blue   { background: linear-gradient(135deg, #3aabf0, #1565c0); }
+    .icon-green  { background: linear-gradient(135deg, #5dce44, #2e7d32); }
+    .icon-yellow { background: linear-gradient(135deg, #ffe84d, #f5a500); }
+    .icon-orange { background: linear-gradient(135deg, #ff9800, #e65100); }
+    .icon-pink   { background: linear-gradient(135deg, #f54b6e, #c01a45); }
+    .icon-teal   { background: linear-gradient(135deg, #26c6da, #00838f); }
+    .icon-grey   { background: linear-gradient(135deg, #90a4ae, #455a64); }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: 0.3px;
+    }
+
+    .section p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+
+    .section p:last-child { margin-bottom: 0; }
+
+    .section ul {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 12px;
+    }
+
+    .section ul li {
+      font-size: 14px;
+      color: rgba(255,255,255,0.78);
+      padding: 5px 0 5px 24px;
+      position: relative;
+      line-height: 1.55;
+    }
+
+    .section ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 4px;
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    .highlight-box {
+      background: rgba(179,136,255,0.12);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 14px;
+      color: rgba(255,255,255,0.82);
+    }
+
+    .chip {
+      display: inline-block;
+      background: rgba(93,206,68,0.18);
+      border: 1px solid rgba(93,206,68,0.35);
+      color: var(--green);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 12px;
+      font-weight: 900;
+      margin: 3px 3px 3px 0;
+      letter-spacing: 0.3px;
+    }
+
+    .chip.red {
+      background: rgba(245,75,110,0.15);
+      border-color: rgba(245,75,110,0.35);
+      color: #f54b6e;
+    }
+
+    /* ── Contact card ── */
+    .contact-card {
+      background: linear-gradient(135deg, rgba(92,63,163,0.35), rgba(58,171,240,0.15));
+      border: 1.5px solid rgba(179,136,255,0.3);
+      border-radius: 20px;
+      padding: 28px 28px;
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    .contact-card h2 {
+      font-size: 20px;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .contact-card p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 16px;
+    }
+
+    .contact-email {
+      display: inline-block;
+      background: rgba(255,255,255,0.10);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--yellow);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .contact-email:hover {
+      background: rgba(255,255,255,0.18);
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative; z-index: 10;
+      text-align: center;
+      padding: 28px 20px 40px;
+      border-top: 1px solid var(--card-border);
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 520px) {
+      header { padding: 36px 16px 28px; }
+      .section { padding: 20px 18px; }
+      .section-title { font-size: 16px; }
+      .summary-banner { flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-icon">⭐</div>
+    <div class="logo-text">
+      <span class="logo-title">Maths Jumper</span>
+      <span class="logo-sub">Times Tables Adventure</span>
+    </div>
+  </div>
+  <h1>PRIVACY POLICY</h1>
+  <div class="header-badge">
+    Last updated: <strong>June 2026</strong> &nbsp;·&nbsp; Effective immediately
+  </div>
+</header>
+
+<main>
+
+  <!-- Plain-language summary -->
+  <div class="summary-banner">
+    <div class="summary-icon">✅</div>
+    <div class="summary-text">
+      <h2>The short version</h2>
+      <p>Maths Jumper does <strong style="color:white;">not</strong> collect your name, email address, location, or any personal information. All game progress is saved locally on your device only. We do not serve ads, track you across apps, or sell any data. Ever.</p>
+    </div>
+  </div>
+
+  <!-- 1. Introduction -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-purple">📖</div>
+      <h2 class="section-title">1. Introduction</h2>
+    </div>
+    <p>This Privacy Policy describes how <strong>Maths Jumper</strong> ("the App", "we", "us") handles information when you use our mobile application. Maths Jumper is a children's educational game designed to help players practise their times tables.</p>
+    <p>We are committed to protecting the privacy of all players, especially children. This policy complies with the <strong>Google Play Developer Policy</strong>, the <strong>Children's Online Privacy Protection Act (COPPA)</strong>, the <strong>UK Children's Code (Age Appropriate Design Code)</strong>, and the <strong>General Data Protection Regulation (GDPR)</strong>.</p>
+    <p>By downloading or playing Maths Jumper, you agree to the practices described in this policy.</p>
+  </div>
+
+  <!-- 2. Information we collect -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🗂️</div>
+      <h2 class="section-title">2. Information We Collect</h2>
+    </div>
+    <p><strong style="color:var(--green);">We do not collect any personal data.</strong> Maths Jumper is designed to work entirely offline and stores all information locally on your device.</p>
+    <p>The following data is saved <strong>only on your device</strong> using your browser's or device's local storage, and is never transmitted to us or any third party:</p>
+    <ul>
+      <li>Game progress (stages completed, questions answered)</li>
+      <li>Stars and coins earned</li>
+      <li>Per-fact accuracy and mastery records</li>
+      <li>Selected character and cosmetic settings</li>
+      <li>Audio and display preferences</li>
+    </ul>
+    <div class="highlight-box">
+      This data exists solely on your device. Uninstalling the app or clearing app data will permanently remove it. We have no access to it.
+    </div>
+    <p>We do <strong>not</strong> collect:</p>
+    <ul>
+      <li>Names, email addresses, or any account information</li>
+      <li>Location data (precise or approximate)</li>
+      <li>Device identifiers (IDFA, GAID, IMEI, or similar)</li>
+      <li>IP addresses or network information</li>
+      <li>Photos, camera, or microphone data</li>
+      <li>Contacts or calendar data</li>
+      <li>Crash logs or analytics events</li>
+    </ul>
+  </div>
+
+  <!-- 3. Children's privacy -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-yellow">👶</div>
+      <h2 class="section-title">3. Children's Privacy</h2>
+    </div>
+    <p>Maths Jumper is directed at children under the age of 13 and is designed to be safe for use by children of all ages. We take children's privacy extremely seriously.</p>
+    <ul>
+      <li><strong>No personal data is collected</strong> from any user, including children under 13.</li>
+      <li><strong>No parental consent is required</strong> because no personal data is ever collected.</li>
+      <li>The App contains <strong>no advertising</strong> of any kind.</li>
+      <li>The App contains <strong>no in-app purchases</strong>.</li>
+      <li>The App contains <strong>no social features</strong>, chat, or user-generated content.</li>
+      <li>The App contains <strong>no links to external websites</strong> accessible during normal play.</li>
+      <li>The App does <strong>not</strong> require or request an internet connection to function.</li>
+    </ul>
+    <p>This App fully complies with COPPA and is suitable for use by children without parental supervision from a data-privacy standpoint.</p>
+  </div>
+
+  <!-- 4. Internet & third parties -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🌐</div>
+      <h2 class="section-title">4. Internet Access &amp; Third Parties</h2>
+    </div>
+    <p>Maths Jumper loads game assets (images, sounds, and video files) from a <strong>GitHub repository</strong> (<code style="background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px;font-size:13px;">github.com/jcoles8472/Maths-Jumper</code>). This is a read-only content delivery mechanism.</p>
+    <div class="highlight-box">
+      When assets are fetched from GitHub, GitHub's own servers handle that request. GitHub may log standard server request data (such as your IP address) in accordance with their own Privacy Policy at <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" style="color:var(--accent);">docs.github.com</a>. We have no control over and no access to any such data.
+    </div>
+    <p>We do <strong>not</strong> use, integrate, or share data with any of the following:</p>
+    <ul>
+      <li>Advertising networks or ad SDKs</li>
+      <li>Analytics platforms (Google Analytics, Firebase, Mixpanel, etc.)</li>
+      <li>Social media platforms</li>
+      <li>Crash reporting services</li>
+      <li>Payment processors</li>
+      <li>Any other third-party SDK</li>
+    </ul>
+    <p>We use Google Fonts (the Nunito typeface) to render text within the App. When fonts are loaded, Google's servers may process a standard font request. Please refer to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:var(--accent);">Google's Privacy Policy</a> for details.</p>
+  </div>
+
+  <!-- 5. Data storage & security -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-teal">🔒</div>
+      <h2 class="section-title">5. Data Storage &amp; Security</h2>
+    </div>
+    <p>All game data is stored locally on the user's device using the device's built-in storage mechanisms. This data:</p>
+    <ul>
+      <li>Never leaves the device through our App</li>
+      <li>Is not encrypted by us (it contains no sensitive personal information)</li>
+      <li>Can be deleted at any time by clearing the App's data or uninstalling the App</li>
+      <li>Is not backed up to any cloud service by our App (though a user's device operating system may back up app data as part of standard device backups)</li>
+    </ul>
+    <p>Because we collect no personal data, there is no personal data for us to protect, breach, or lose.</p>
+  </div>
+
+  <!-- 6. Permissions -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-orange">📱</div>
+      <h2 class="section-title">6. App Permissions</h2>
+    </div>
+    <p>Maths Jumper requests only the permissions necessary for gameplay. Below is a full account of permissions used:</p>
+    <ul>
+      <li><strong>Internet access</strong> — required to load game assets (images, sounds, videos) from our GitHub repository. No personal data is transmitted.</li>
+      <li><strong>Vibration</strong> — used to provide optional haptic feedback on button presses. No data is collected.</li>
+    </ul>
+    <p>We do <strong>not</strong> request permissions for:</p>
+    <ul>
+      <li>Camera or microphone</li>
+      <li>Location (GPS or network-based)</li>
+      <li>Contacts or calendar</li>
+      <li>Phone state or call logs</li>
+      <li>Storage read/write beyond app-specific local storage</li>
+    </ul>
+  </div>
+
+  <!-- 7. Advertising -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-pink">🚫</div>
+      <h2 class="section-title">7. Advertising</h2>
+    </div>
+    <p>Maths Jumper contains <strong>no advertising</strong> of any kind. We do not:</p>
+    <ul>
+      <li>Display banner, interstitial, or reward ads</li>
+      <li>Use advertising SDKs</li>
+      <li>Collect advertising identifiers (IDFA, GAID)</li>
+      <li>Engage in behavioural or interest-based advertising</li>
+      <li>Sell advertising inventory to any third party</li>
+    </ul>
+    <div class="highlight-box">
+      The App's Google Play listing is marked as containing <strong>Ads: No</strong> and <strong>In-app purchases: No</strong>.
+    </div>
+  </div>
+
+  <!-- 8. Your rights -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-purple">⚖️</div>
+      <h2 class="section-title">8. Your Rights</h2>
+    </div>
+    <p>Under applicable privacy law (including GDPR and the UK Data Protection Act 2018), individuals have rights regarding their personal data. Because <strong>we hold no personal data about you</strong>, most of these rights are satisfied by default.</p>
+    <p>However, you have the right to:</p>
+    <ul>
+      <li><strong>Delete your game data</strong> at any time by clearing the App's storage or uninstalling it from your device.</li>
+      <li><strong>Contact us</strong> at any time to ask questions about our data practices.</li>
+      <li><strong>Lodge a complaint</strong> with a supervisory authority if you believe your rights have been infringed. In the UK, this is the <a href="https://ico.org.uk" target="_blank" rel="noopener" style="color:var(--accent);">Information Commissioner's Office (ICO)</a>.</li>
+    </ul>
+    <p>Residents of California may also have rights under the <strong>California Consumer Privacy Act (CCPA)</strong>. As we collect no personal information, we do not sell personal information, and no opt-out is required.</p>
+  </div>
+
+  <!-- 9. Changes -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-grey">🔄</div>
+      <h2 class="section-title">9. Changes to This Policy</h2>
+    </div>
+    <p>We may update this Privacy Policy from time to time. If we make any material changes — particularly those that affect how data is collected or used — we will update the "Last updated" date at the top of this page and, where appropriate, notify users through the App or the Google Play store listing.</p>
+    <p>We encourage you to review this policy periodically. Continued use of the App after any changes constitutes your acceptance of the revised policy.</p>
+    <p>The current version of this policy is always available at the URL linked in the App's Google Play store listing and within the App's Settings screen.</p>
+  </div>
+
+  <!-- 10. Governing law -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🏛️</div>
+      <h2 class="section-title">10. Governing Law</h2>
+    </div>
+    <p>This Privacy Policy is governed by and construed in accordance with the laws of <strong>England and Wales</strong>. Any disputes arising from this policy shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+  </div>
+
+  <!-- Contact -->
+  <div class="contact-card">
+    <h2>📬 Contact Us</h2>
+    <p>If you have any questions, concerns, or requests regarding this Privacy Policy or the privacy practices of Maths Jumper, please contact us:</p>
+    <!-- Replace with your real contact email before publishing -->
+    <a href="mailto:privacy@yourdomain.com" class="contact-email">privacy@yourdomain.com</a>
+    <p style="margin-top:16px;font-size:13px;color:rgba(255,255,255,0.45);">
+      We aim to respond to all privacy enquiries within <strong style="color:rgba(255,255,255,0.65);">30 days</strong>.
+    </p>
+  </div>
+
+  <!-- Data practices at a glance -->
+  <div style="margin-top:32px;text-align:center;">
+    <p style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;">Data practices at a glance</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+      <span class="chip">✓ No personal data collected</span>
+      <span class="chip">✓ No ads</span>
+      <span class="chip">✓ No in-app purchases</span>
+      <span class="chip">✓ No account required</span>
+      <span class="chip">✓ No tracking</span>
+      <span class="chip">✓ COPPA compliant</span>
+      <span class="chip">✓ GDPR compliant</span>
+      <span class="chip">✓ UK Children's Code</span>
+      <span class="chip">✓ Safe for children</span>
+      <span class="chip red">✗ Does not sell data</span>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 Maths Jumper. All rights reserved.</p>
+  <p style="margin-top:6px;">This policy was last reviewed in June 2026.</p>
+</footer>
+
+</body>
+</html>
