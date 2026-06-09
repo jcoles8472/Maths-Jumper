@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="color-scheme:light only;background:#1a1a2e;filter:none !important;-webkit-filter:none !important;">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<!-- ── FORCE LIGHT MODE: prevents Android WebView / Samsung Internet
+<!-- ── FORCE LIGHT MODE: prevents Android WebView / Samsung Internet / WhatsApp
      from applying a forced dark-mode filter over the game colours ── -->
 <meta name="color-scheme" content="light only"/>
 <meta name="supported-color-schemes" content="light"/>
+<meta name="theme-color" content="#1a1a2e"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <title>Maths Jumper</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
 <style>
@@ -60,7 +62,21 @@ body {
     --ans-pink-dk:   #c01a45 !important;
   }
   /* Prevent the WebView brightness/hue filter on the root element */
-  html { filter: none !important; }
+  html {
+    filter: none !important;
+    -webkit-filter: none !important;
+    background-color: #1a1a2e !important;
+  }
+  body {
+    background-color: #1a1a2e !important;
+    color: white !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
+  /* Force all elements to ignore dark mode remapping */
+  * {
+    -webkit-text-fill-color: unset !important;
+  }
 }
 
 /* Prevent High-Contrast / forced-colours remapping on Accessibility modes */
@@ -88,7 +104,7 @@ body {
   --ans-pink:    #f54b6e;
   --ans-pink-dk: #c01a45;
 }
-html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursive,sans-serif; background:#1a1a2e; }
+html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursive,sans-serif; background:#1a1a2e !important; background-color:#1a1a2e !important; color:white !important; filter:none !important; -webkit-filter:none !important; }
 .phone-wrap { display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
 .phone { position:relative; width:390px; height:844px; overflow:hidden; border-radius:40px; box-shadow:0 40px 80px rgba(0,0,0,.7); transform-origin:center center; container-type:inline-size; }
 
@@ -2375,7 +2391,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 </style>
 </head>
-<body>
+<body style="background:#1a1a2e !important;background-color:#1a1a2e !important;color:white !important;filter:none !important;-webkit-filter:none !important;">
 <div class="phone-wrap">
 <div class="phone" id="phone">
 
