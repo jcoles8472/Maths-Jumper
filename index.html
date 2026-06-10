@@ -446,7 +446,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   width: 74px; height: 70px;
   border-radius: 14px;
   border: none; outline: none;
-  background: white;
+  background: #fdf6e8;
   cursor: pointer;
   padding: 0;
   box-shadow: 0 5px 0 rgba(0,0,0,.18), 0 8px 20px rgba(0,0,0,.15);
@@ -487,7 +487,9 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 #screen-stages {
   display: flex; flex-direction: column; align-items: center;
   padding: 0 16px;
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
 }
 #screen-chars { display:flex; flex-direction:column; align-items:center; padding:0 16px; justify-content:center; }
 .screen-bg-blur { position:absolute; inset:0; background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center/cover; filter:blur(3px) brightness(.7); z-index:0; }
@@ -497,9 +499,9 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .back-btn svg { width:22px; height:22px; fill:white; filter:drop-shadow(0 1px 2px rgba(0,0,0,.2)); flex-shrink:0; }
 .back-btn:active { transform:translateY(4px); box-shadow:0 1px 0 var(--yellow-dark); }
 .coins-badge { background:var(--purple-dark); color:white; border-radius:50px; padding:8px 16px; font-size:15px; font-weight:900; }
-.sel-title-wrap { width:100%; text-align:center; margin:10px 0 4px; position:relative; z-index:20; }
-.sel-title-sub  { font-size:13px; font-weight:700; color:var(--text-dark); background:rgba(255,255,255,.8); border-radius:20px; padding:4px 14px; display:inline-block; }
-.sel-title-main { display:block; font-size:38px; font-weight:900; color:white; text-shadow:0 4px 0 var(--purple-dark); letter-spacing:1px; margin-top:4px; }
+.sel-title-wrap { width:100%; text-align:center; margin:10px 0 4px; position:relative; z-index:20; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.sel-title-main { display:block; font-size:34px; font-weight:900; color:white; text-shadow:0 4px 0 var(--purple-dark); letter-spacing:1px; margin-top:4px; white-space:nowrap; order:1; }
+.sel-title-sub  { font-size:13px; font-weight:700; color:var(--text-dark); background:rgba(255,255,255,.8); border-radius:20px; padding:4px 14px; display:inline-block; order:2; }
 /* Stage grid */
 .stage-grid {
   display: grid;
@@ -509,14 +511,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   margin-top: 6px;
   position: relative;
   z-index: 20;
-  /* scroll: use flex-grow so it fills whatever height remains after
-     the header + title rows; fall back to a generous max-height */
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Android WebView momentum scroll */
-  overscroll-behavior-y: contain;    /* prevent pull-to-refresh while scrolling */
-  flex: 1 1 auto;                    /* grow to fill remaining flex space */
-  max-height: calc(100% - 140px);    /* safety cap: phone height minus header */
-  padding-bottom: 16px;
+  padding-bottom: 24px;
   scrollbar-width: none;
 }
 .stage-grid::-webkit-scrollbar { display:none; }
@@ -953,21 +948,33 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   z-index: 30;
 }
 
-/* LET'S GO button on char screen */
+/* LET'S GO button on char screen — matches .btn-play dimensions */
 .chars-lets-go-btn {
-  display: block; width: 72%; margin: 16px auto 0;
-  padding: 17px 24px;
+  display: flex; align-items: center;
+  width: calc(100% - 28px); margin: 16px 14px 0;
+  padding: 0;
   background: linear-gradient(to bottom, #8be43c 0%, #68d326 55%, #4ab915 100%);
   color: white; border: none; border-radius: 50px;
-  font-family: 'Nunito', cursive; font-size: 22px; font-weight: 900; letter-spacing: 2px;
+  font-family: 'Nunito', cursive; font-size: 20px; font-weight: 900; letter-spacing: 2px;
   cursor: pointer; position: relative; z-index: 20; overflow: hidden;
   text-shadow: 0 3px 0 rgba(0,0,0,.1), 0 5px 10px rgba(0,0,0,.15);
   box-shadow:
-    0 12px 28px rgba(0,0,0,.22),
+    0 14px 28px rgba(0,150,50,.25),
     inset 0 3px 0 rgba(255,255,255,.28),
     inset 0 -5px 0 rgba(0,0,0,.1);
   transition: transform .12s ease, box-shadow .12s ease;
   flex-shrink: 0;
+      bottom: 30px;
+}
+.chars-lets-go-btn .btn-play-icon {
+  background: rgba(255,255,255,.2);
+  border-right: 2px solid rgba(255,255,255,.15);
+}
+.chars-lets-go-btn .btn-play-icon-inner svg { fill: #4ab915; }
+.chars-lets-go-btn .btn-play-label {
+  flex: 1; text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,.25);
+  padding-right: 8px;
 }
 .chars-lets-go-btn::after {
   content: ""; position: absolute; inset: 8px; border-radius: 40px;
@@ -1443,7 +1450,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 /* ── Auto-Scale Adjustment for the Oops Sprite ── */
 .g-redy[src*="opps"] {
-  height: 112px; /* Pulls the height down slightly to offset the tight asset cropping */
+  height: 125px; /* Pulls the height down slightly to offset the tight asset cropping */
 }
 /* Hidden during hint mode */
 .g-redy.hint-hidden { opacity:0 !important; pointer-events:none; }
@@ -2160,15 +2167,38 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .training-intro-groups { display: flex; gap: 6px; align-items: center; }
 .training-intro-group { background: rgba(255,220,0,.2); border: 2px solid #ffe84d; border-radius: 10px; padding: 4px 8px; font-size: 18px; }
 .training-intro-btn {
+  display: flex; align-items: center;
+  width: calc(100% - 28px); margin: 16px 14px 0;
+  padding: 0;
   background: linear-gradient(to bottom, #8be43c 0%, #68d326 55%, #4ab915 100%);
   color: white; border: none; border-radius: 50px;
-  padding: 16px 40px; font-family: 'Nunito', cursive;
-  font-size: 20px; font-weight: 900; letter-spacing: 1px;
-  cursor: pointer;
-  box-shadow: 0 8px 0 #2e7d32, 0 12px 28px rgba(0,0,0,.3);
-  transition: transform .12s, box-shadow .12s;
+  font-family: 'Nunito', cursive; font-size: 20px; font-weight: 900; letter-spacing: 2px;
+  cursor: pointer; position: relative; overflow: hidden;
+  text-shadow: 0 3px 0 rgba(0,0,0,.1), 0 5px 10px rgba(0,0,0,.15);
+  box-shadow:
+    0 14px 28px rgba(0,150,50,.25),
+    inset 0 3px 0 rgba(255,255,255,.28),
+    inset 0 -5px 0 rgba(0,0,0,.1);
+  transition: transform .12s ease, box-shadow .12s ease;
+  flex-shrink: 0;
 }
-.training-intro-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #2e7d32; }
+.training-intro-btn .btn-play-icon {
+  background: rgba(255,255,255,.2);
+  border-right: 2px solid rgba(255,255,255,.15);
+}
+.training-intro-btn .btn-play-icon-inner svg { fill: #4ab915; }
+.training-intro-btn .btn-play-label {
+  flex: 1; text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,.25);
+  padding-right: 8px;
+}
+.training-intro-btn::after {
+  content: ""; position: absolute; inset: 8px; border-radius: 40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,.32) 0%, rgba(255,255,255,.14) 18%, rgba(255,255,255,0) 44%);
+  pointer-events: none;
+}
+.training-intro-btn:hover  { transform: translateY(-2px); }
+.training-intro-btn:active { transform: translateY(4px); box-shadow: 0 5px 12px rgba(0,0,0,.2), inset 0 3px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.08); }
 
 /* ═══════════════════════════════════════════════════
    STAGE COMPLETE CUTSCENE OVERLAY
@@ -2305,10 +2335,11 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: 3px;
-  background: rgba(0,0,0,.3);
+  background: rgba(0,0,0,.18);
   transition: background .18s;
+  z-index: 1;
 }
-.cutscene-card:active .cutscene-card-play { background: rgba(0,0,0,.5); }
+.cutscene-card:active .cutscene-card-play { background: rgba(0,0,0,.45); }
 .cutscene-play-circle {
   width: 30px; height: 30px;
   background: rgba(255,255,255,.92);
@@ -2328,22 +2359,57 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   padding: 0 4px;
   line-height: 1.2;
 }
-/* Lock overlay for locked cards */
+/* Lock overlay for locked cards — sits over the preview image */
 .cutscene-card-lock {
   position: absolute; inset: 0;
-  background: rgba(0,0,0,.62);
+  background: rgba(20, 5, 50, 0.72);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: 4px;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 1;
 }
-.cutscene-lock-icon { font-size: 20px; }
+/* Gold glowing padlock */
+.cutscene-lock-icon {
+  font-size: 22px;
+  filter: drop-shadow(0 0 6px rgba(245,197,24,.8)) drop-shadow(0 0 12px rgba(245,197,24,.5));
+  animation: lockGlow 2s ease-in-out infinite;
+}
+@keyframes lockGlow {
+  0%,100% { filter: drop-shadow(0 0 5px rgba(245,197,24,.7)) drop-shadow(0 0 10px rgba(245,197,24,.4)); }
+  50%     { filter: drop-shadow(0 0 10px rgba(245,197,24,1)) drop-shadow(0 0 20px rgba(245,197,24,.7)); }
+}
 .cutscene-lock-label {
   font-size: 8px; font-weight: 900;
-  color: rgba(255,255,255,.7);
+  color: white;
   text-align: center;
   padding: 0 5px;
   line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0,0,0,.8);
+}
+
+/* Preview image shown on ALL cards (locked and unlocked) */
+.cutscene-card-preview {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 0;
+}
+
+/* For locked cards: the preview is darkened via the overlay above */
+.cutscene-card.locked .cutscene-card-preview {
+  opacity: 0.6;
+}
+
+/* Fallback gradient (shown when no preview image loads) */
+.cutscene-card-thumb-fallback {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #1a0533 0%, #3d1278 60%, #0d0025 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  z-index: 0;
 }
 
 /* ── In-rewards video player modal ── */
@@ -2523,8 +2589,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     <div class="coins-badge" id="stage-coins-badge">⭐ 0</div>
   </div>
   <div class="sel-title-wrap">
+    <span class="sel-title-main">SELECT STAGE</span>
     <span class="sel-title-sub">Pick your challenge level!</span>
-    <span class="sel-title-main">SELECT<br/>STAGE</span>
   </div>
   <div class="stage-grid" id="stage-grid"></div>
 </div>
@@ -2552,8 +2618,15 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Character grid -->
   <div class="char-grid-new" id="char-grid"></div>
 
-  <!-- LET'S GO button -->
-  <button class="chars-lets-go-btn" onclick="onCharsLetsGo()">LET'S GO!</button>
+  <!-- LET'S GO button — matches btn-play structure -->
+  <button class="chars-lets-go-btn" onclick="onCharsLetsGo()">
+    <div class="btn-play-icon">
+      <div class="btn-play-icon-inner">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+    </div>
+    <span class="btn-play-label">LET'S GO!</span>
+  </button>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -2786,11 +2859,11 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <div class="info-scroll-area">
 
     <!-- Sun easter egg — triple-tap reveals dev mode -->
-    <div id="settings-sun-wrap" style="text-align:center;padding:6px 0 2px;position:relative;z-index:5;">
+    <div id="settings-sun-wrap" style="text-align:right;padding:26px 30px 2px;position:relative;z-index:5;">
       <img id="settings-sun"
         src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-sun.png"
         alt="☀️"
-        style="width:52px;height:52px;object-fit:contain;cursor:pointer;filter:drop-shadow(0 3px 8px rgba(255,180,0,.5));transition:transform .15s;"
+        style="width:70px;height:70px;object-fit:contain;cursor:pointer;filter:drop-shadow(0 3px 8px rgba(255,180,0,.5));transition:transform .15s;"
         onerror="this.outerHTML='<span id=\'settings-sun\' style=\'font-size:36px;cursor:pointer;display:inline-block;\'>☀️</span>'"
         ontouchstart="this.style.transform='scale(0.88)'"
         ontouchend="this.style.transform='scale(1)'"
@@ -2901,7 +2974,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     <!-- DATA -->
     <div class="settings-section-label">💾 Data</div>
     <button class="settings-reset-btn" onclick="confirmResetData()">
-      🗑️ Reset All Progress &amp; Coins
+      🗑️ Reset All Progress, Coins &amp; Achievements
     </button>
 
 
@@ -2950,17 +3023,14 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     <div class="coins-badge" id="mastery-coins-badge">⭐ 0</div>
   </div>
   <!-- Resume game pill — only visible when accessed mid-game -->
-  <div id="mastery-resume-bar" style="display:none;position:relative;z-index:25;text-align:center;padding:6px 16px 0;">
-    <button onclick="resumeFromMastery()" style="
-      background:linear-gradient(to bottom,#8be43c,#4ab915);
-      color:white;border:none;border-radius:50px;
-      padding:10px 28px;font-family:'Nunito',cursive;
-      font-size:15px;font-weight:900;letter-spacing:1px;
-      cursor:pointer;box-shadow:0 5px 0 #2e7d32;
-      transition:transform .1s,box-shadow .1s;
-    " onmousedown="this.style.transform='translateY(3px)';this.style.boxShadow='0 2px 0 #2e7d32'"
-       onmouseup="this.style.transform='';this.style.boxShadow='0 5px 0 #2e7d32'">
-      ▶ Resume Game
+  <div id="mastery-resume-bar" style="display:none;position:absolute;bottom:30px;left:0;right:0;z-index:25;text-align:center;">
+    <button class="chars-lets-go-btn" onclick="resumeFromMastery()">
+      <div class="btn-play-icon">
+        <div class="btn-play-icon-inner">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+      <span class="btn-play-label">RESUME GAME</span>
     </button>
   </div>
   <div class="chars-title-wrap">
@@ -2971,7 +3041,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <div id="mastery-stats-strip" style="
     position:relative;z-index:20;
     display:flex;justify-content:space-around;align-items:center;
-    background:rgba(255,255,255,.2);
+    background:rgba(0,0,0,.3);
     margin:10px 14px 6px;border-radius:16px;padding:10px 4px;
   "></div>
   <!-- 12×12 grid -->
@@ -4786,7 +4856,7 @@ function saveSettingsBool(key, val){
 }
 
 function confirmResetData(){
-  if(confirm('Reset ALL progress, coins, and unlocks? This cannot be undone!')){
+  if(confirm('Reset ALL progress, coins, achievements, and unlocks? This cannot be undone!')){
     localStorage.removeItem('mj_state');
     location.reload();
   }
@@ -5702,22 +5772,43 @@ function renderRewards() {
     const card = document.createElement('div');
     card.className = 'cutscene-card ' + (earned ? 'earned' : 'locked');
 
-    // Thumbnail: use a <video> element with the poster frame trick
-    // (loads first frame as poster via JS after mount)
-    card.innerHTML = `
-      <div class="cutscene-card-thumb-fallback">${c.emoji}</div>
-      ${earned ? `
-        <div class="cutscene-card-play">
-          <div class="cutscene-play-circle">▶</div>
-          <div class="cutscene-card-label">${c.title}</div>
-        </div>
-      ` : `
-        <div class="cutscene-card-lock">
-          <div class="cutscene-lock-icon">🔒</div>
-          <div class="cutscene-lock-label">${c.unlockHint}</div>
-        </div>
-      `}
-    `;
+    // Always render a preview image as base background
+    // Use a <video> element with #t=0.1 to show the first frame as poster
+    const previewEl = document.createElement('video');
+    previewEl.className = 'cutscene-card-preview';
+    previewEl.src = c.src + '#t=0.1';
+    previewEl.preload = 'metadata';
+    previewEl.muted = true;
+    previewEl.playsInline = true;
+    previewEl.setAttribute('disablepictureinpicture', '');
+    previewEl.style.pointerEvents = 'none';
+
+    card.appendChild(previewEl);
+
+    // Fallback emoji gradient (shown behind if video fails to load)
+    const fallback = document.createElement('div');
+    fallback.className = 'cutscene-card-thumb-fallback';
+    fallback.textContent = c.emoji;
+    card.appendChild(fallback);
+
+    // Overlay: play button (earned) or lock (locked)
+    if (earned) {
+      const playOverlay = document.createElement('div');
+      playOverlay.className = 'cutscene-card-play';
+      playOverlay.innerHTML = `
+        <div class="cutscene-play-circle">▶</div>
+        <div class="cutscene-card-label">${c.title}</div>
+      `;
+      card.appendChild(playOverlay);
+    } else {
+      const lockOverlay = document.createElement('div');
+      lockOverlay.className = 'cutscene-card-lock';
+      lockOverlay.innerHTML = `
+        <div class="cutscene-lock-icon">🔒</div>
+        <div class="cutscene-lock-label">${c.unlockHint}</div>
+      `;
+      card.appendChild(lockOverlay);
+    }
 
     if (earned) {
       card.onclick = () => openRewardsVideo(c.src, c.title);
@@ -5992,9 +6083,9 @@ function renderMasteryGrid(){
   const legend = document.createElement('div');
   legend.style.cssText = 'display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;';
   legend.innerHTML = `
-    <span style="font-size:11px;font-weight:900;color:#8be43c;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;">✓ Mastered</span>
-    <span style="font-size:11px;font-weight:900;color:#ff9800;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;">% Practising</span>
-    <span style="font-size:11px;font-weight:900;color:rgba(255,255,255,.7);background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;">Not seen</span>
+    <span style="font-size:11px;font-weight:900;color:#8be43c;background:rgba(0,0,0,.3);padding:4px 10px;border-radius:20px;">✓ Mastered</span>
+    <span style="font-size:11px;font-weight:900;color:#ff9800;background:rgba(0,0,0,.3);padding:4px 10px;border-radius:20px;">% Practising</span>
+    <span style="font-size:11px;font-weight:900;color:rgba(255,255,255,.7);background:rgba(0,0,0,.3);padding:4px 10px;border-radius:20px;">Not seen</span>
   `;
   wrap.appendChild(legend);
 }
@@ -6029,7 +6120,14 @@ function showTrainingIntro(onDone){
       <div style="font-size:26px;font-weight:900;color:white;">2 × 3 = <span style="color:#8be43c">6</span> ⭐</div>
     </div>
     <div class="training-intro-sub" style="margin-bottom:16px;font-size:13px;">Tap the correct answer from the buttons.<br>Tap the card anytime to skip tips! 👆</div>
-    <button class="training-intro-btn" id="training-intro-go">Let's go! 🚀</button>
+    <button class="training-intro-btn" id="training-intro-go">
+      <div class="btn-play-icon">
+        <div class="btn-play-icon-inner">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C9.5 2 6 5.5 6 10c0 2.5 1 4.7 2.5 6.2L7 21l5-1.5 5 1.5-1.5-4.8C17 14.7 18 12.5 18 10c0-4.5-3.5-8-6-8zm0 3c.8 0 1.5.3 2 .8L12 9l-2-3.2c.5-.5 1.2-.8 2-.8zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+        </div>
+      </div>
+      <span class="btn-play-label">LET'S GO!</span>
+    </button>
   `;
 
   gameEl.appendChild(overlay);
