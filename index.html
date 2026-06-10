@@ -2455,13 +2455,16 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .rewards-video-close:active { background: rgba(255,255,255,.4); }
 .rewards-video-title {
   position: absolute;
-  top: 16px; left: 60px; right: 60px;
+  top: 30px; left: 60px; right: 60px;
   text-align: center;
-  font-size: 14px; font-weight: 900;
+  font-size: 34px; font-weight: 900;
   color: white;
-  text-shadow: 0 2px 6px rgba(0,0,0,.7);
+  text-shadow: 0 4px 0 var(--purple-dark), 0 2px 16px rgba(0,0,0,.3);
+  letter-spacing: 1px;
+  line-height: 1.15;
   z-index: 10;
   pointer-events: none;
+  text-transform: uppercase;
 }
 
 </style>
@@ -3047,11 +3050,10 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     <span class="chars-title-main">MY FACT GRID</span>
   </div>
   <!-- Mastery stats strip -->
-  <div id="mastery-stats-strip" style="
+  <div id="mastery-stats-strip" class="info-card accent-purple" style="
     position:relative;z-index:20;
     display:flex;justify-content:space-around;align-items:center;
-    background:rgba(0,0,0,.3);
-    margin:10px 14px 6px;border-radius:16px;padding:10px 4px;
+    margin:10px 14px 6px;padding:10px 4px;
   "></div>
   <!-- 12×12 grid -->
   <div style="position:relative;z-index:20;overflow-y:auto;max-height:570px;padding:0 8px 16px;">
@@ -5668,7 +5670,7 @@ const CUTSCENES = [
     subtitle: 'Easy Wins',
     emoji: '⭐',
     color: 'yellow',
-    src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-end-cut-scene.mp4',
+    src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-one-complete.mp4',
     // Earned when the player has reached at least Stage 2 (i.e. completed Stage 1)
     earnedWhen: s => (s.highestStage ?? 1) >= 2,
     unlockHint: 'Complete Stage 1 to unlock',
@@ -5679,7 +5681,7 @@ const CUTSCENES = [
     subtitle: 'Doubles',
     emoji: '🔥',
     color: 'orange',
-    src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-end-cut-scene.mp4',
+    src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-two-complete.mp4',
     earnedWhen: s => (s.highestStage ?? 1) >= 3,
     unlockHint: 'Complete Stage 2 to unlock',
   },
@@ -6002,23 +6004,23 @@ function renderMasteryGrid(){
   if(strip){
     strip.innerHTML = `
       <div style="text-align:center;flex:1;">
-        <div style="font-size:22px;font-weight:900;color:#8be43c;line-height:1;">${mc}</div>
-        <div style="font-size:10px;font-weight:800;color:#8be43c;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Mastered</div>
+        <div style="font-size:22px;font-weight:900;color:#388e3c;line-height:1;">${mc}</div>
+        <div style="font-size:10px;font-weight:800;color:#388e3c;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Mastered</div>
       </div>
-      <div style="width:1px;height:32px;background:rgba(255,255,255,.15);"></div>
+      <div style="width:1px;height:32px;background:rgba(0,0,0,.12);"></div>
       <div style="text-align:center;flex:1;">
-        <div style="font-size:22px;font-weight:900;color:#ffb04a;line-height:1;">${seenCount - mc}</div>
-        <div style="font-size:10px;font-weight:800;color:#ffb04a;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Practising</div>
+        <div style="font-size:22px;font-weight:900;color:#e65100;line-height:1;">${seenCount - mc}</div>
+        <div style="font-size:10px;font-weight:800;color:#e65100;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Practising</div>
       </div>
-      <div style="width:1px;height:32px;background:rgba(255,255,255,.15);"></div>
+      <div style="width:1px;height:32px;background:rgba(0,0,0,.12);"></div>
       <div style="text-align:center;flex:1;">
-        <div style="font-size:22px;font-weight:900;color:rgba(255,255,255,.45);line-height:1;">${total144 - seenCount}</div>
-        <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Not seen</div>
+        <div style="font-size:22px;font-weight:900;color:#9e9e9e;line-height:1;">${total144 - seenCount}</div>
+        <div style="font-size:10px;font-weight:800;color:#9e9e9e;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Not seen</div>
       </div>
-      <div style="width:1px;height:32px;background:rgba(255,255,255,.15);"></div>
+      <div style="width:1px;height:32px;background:rgba(0,0,0,.12);"></div>
       <div style="text-align:center;flex:1;">
-        <div style="font-size:22px;font-weight:900;color:#ffe84d;line-height:1;">${pct}%</div>
-        <div style="font-size:10px;font-weight:800;color:#ffe84d;opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Complete</div>
+        <div style="font-size:22px;font-weight:900;color:var(--purple-dark);line-height:1;">${pct}%</div>
+        <div style="font-size:10px;font-weight:800;color:var(--purple-dark);opacity:.85;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">Complete</div>
       </div>
     `;
   }
@@ -6092,9 +6094,9 @@ function renderMasteryGrid(){
   const legend = document.createElement('div');
   legend.style.cssText = 'display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;';
   legend.innerHTML = `
-    <span style="font-size:11px;font-weight:900;color:#8be43c;background:rgba(0,0,0,.3);padding:4px 10px;border-radius:20px;">✓ Mastered</span>
-    <span style="font-size:11px;font-weight:900;color:#ff9800;background:rgba(0,0,0,.3);padding:4px 10px;border-radius:20px;">% Practising</span>
-    <span style="font-size:11px;font-weight:900;color:rgba(255,255,255,.7);background:rgba(0,0,0,.3);padding:4px 10px;border-radius:20px;">Not seen</span>
+    <span class="info-card accent-purple" style="font-size:11px;font-weight:900;color:#388e3c;padding:4px 10px 4px 15px;margin-bottom:0;">✓ Mastered</span>
+    <span class="info-card accent-purple" style="font-size:11px;font-weight:900;color:#e65100;padding:4px 10px 4px 15px;margin-bottom:0;">% Practising</span>
+    <span class="info-card accent-purple" style="font-size:11px;font-weight:900;color:#9e9e9e;padding:4px 10px 4px 15px;margin-bottom:0;">Not seen</span>
   `;
   wrap.appendChild(legend);
 }
@@ -6288,6 +6290,19 @@ function showCutscene(onDone) {
 
   // Store callback for when player hits Continue
   window._cutsceneOnDone = onDone || null;
+
+  // Pick video based on current stage
+  const _cutsceneStage = getCurrentStage();
+  const CUTSCENE_URLS = {
+    1: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-one-complete.mp4',
+    2: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-two-complete.mp4',
+  };
+  const stageVideoUrl = CUTSCENE_URLS[_cutsceneStage]
+    || 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-end-cut-scene.mp4';
+  if (video.src !== stageVideoUrl) {
+    video.src = stageVideoUrl;
+    video.load();
+  }
 
   // Respect global mute setting
   const sfxOn = (loadState().sfxOn !== false);
