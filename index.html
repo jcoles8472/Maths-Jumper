@@ -84,6 +84,23 @@ body {
   * { forced-color-adjust: none; }
 }
 
+/* ── Hint nudge: gentle pulse after a child misses twice ── */
+@keyframes hintNudge {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.12); }
+}
+.g-hint-btn.hint-nudge { animation: hintNudge 1s ease-in-out infinite; }
+
+/* ── Reduced motion: respect OS accessibility setting.
+     Vestibular-sensitive kids get a calm, static UI. ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 :root {
   --purple:      #5c3fa3;
   --purple-btn:  #6b4dbf;
@@ -1244,7 +1261,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     right: -14px;
     bottom: 35%;
     transform: translate(-50%, -50%);
-    z-index: 22;
+    z-index: 23;
     display: flex;
     align-items: flex-start;
     gap: 6px;
@@ -1544,7 +1561,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 ───────────────────────────────────────────── */
 .nl-overlay {
   position:absolute;
-  top:475px; left:0; right:0; bottom:168px;
+  top:56.3%; left:0; right:0; bottom:19.9%;
   z-index:28;
   display:flex; flex-direction:column;
   align-items:center; justify-content:center;
@@ -1746,7 +1763,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* Number callout */
 .nl-callout {
-  position:absolute; top:445px; left:50%; transform:translateX(-50%) translateY(0) scale(0);
+  position:absolute; top:52.7%; left:50%; transform:translateX(-50%) translateY(0) scale(0);
   background:var(--purple-dark); color:white;
   border-radius:50px; padding:8px 20px;
   font-size:18px; font-weight:900;
@@ -2815,7 +2832,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
       <span class="g-world-val" id="g-world-val">1 - 1</span>
     </div>
     <div class="g-timer" id="g-timer-pill">
-      <span class="g-timer-icon" id="g-timer-icon">⏱</span><span id="g-timer">240</span>
+      <span class="g-timer-icon" id="g-timer-icon">⏱</span><span id="g-timer">4:00</span>
     </div>
     <div class="g-timer g-table-label hidden" id="g-table-label">
       📚 <span id="g-table-label-text">1× Table</span>
@@ -2842,7 +2859,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Bird + speech bubble -->
   <div class="g-bird-wrap" id="g-bird-wrap">
    
-    <div class="g-bubble" id="g-bubble"><span id="bubble-text">Let's multiply!</span><span class="bubble-coin-pop" id="bubble-coin-pop"></span></div>
+    <div class="g-bubble" id="g-bubble" aria-live="polite"><span id="bubble-text">Let's multiply!</span><span class="bubble-coin-pop" id="bubble-coin-pop"></span></div>
   </div>
 
   <!-- SRS badge -->
@@ -2900,8 +2917,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <div class="g-qcount" id="g-qcount"></div>
 
   <!-- Quit confirmation modal -->
-  <div class="quit-modal-overlay" id="quit-modal-overlay">
-    <div class="quit-modal">
+  <div class="quit-modal-overlay" id="quit-modal-overlay" onclick="if(event.target===this) closeQuitModal()">
+    <div class="quit-modal" role="dialog" aria-label="Quit this round?">
       <div class="quit-modal-icon">🚪</div>
       <div class="quit-modal-title">Quit this round?</div>
       <div class="quit-modal-sub">Your progress in this round will be lost, but your stars and mastery are saved!</div>
@@ -3526,6 +3543,7 @@ function masteredCount(){
 
 // Session question-start timestamp for response-time tracking
 let _qStartTime = 0;
+let _wrongAttemptsThisQ = 0;
 
 /* ═══════════════════════════════════════════════════
    UTILITIES
@@ -3976,6 +3994,11 @@ function generateChoices(q){
    These buttons are NEVER rebuilt during a question.
 ─────────────────────────────────────────────────────*/
 function renderQ(q){
+  // Reset per-question wrong-attempt tracking + hint nudge
+  _wrongAttemptsThisQ = 0;
+  const _hn = document.getElementById('g-hint-btn');
+  if(_hn) _hn.classList.remove('hint-nudge');
+
   // Reset blank to default state for new question
   const _blankEl = document.querySelector('.g-blank');
   if(_blankEl){
@@ -4258,6 +4281,8 @@ function checkAns(chosen, q, btn){
     btn.textContent = '✓ '+chosen;
     gameScore+=10; sessionCoins+=2; streak++; answered++;
     haptic(50); // short buzz for correct
+    playCorrectDing();
+    _wrongAttemptsThisQ = 0;
     updateCoinDisplay();
     updateProgress();
     checkStreak(streak);
@@ -4306,6 +4331,8 @@ function checkAns(chosen, q, btn){
     btn.classList.add('wrong');
     streak=0;
     haptic([80, 40, 80]); // double-buzz for wrong
+    playWrongBoop();
+    _wrongAttemptsThisQ++;
     setRedyState('incorrect');
 
     // Redy speaks — explicit "try again" guidance
@@ -4370,13 +4397,19 @@ function checkAns(chosen, q, btn){
       cancelStrategyTimer();
       setHintVisible();
     }
-    // Re-enable all buttons except the wrong one — player must try again
+    // Re-enable all buttons except the wrong one — player must try again.
+    // 900ms "think time" lockout discourages rapid guess-mashing (vs learning).
     setTimeout(()=>{
       document.querySelectorAll('.ans-btn').forEach(b=>{
         if(b === btn) return; // keep wrong button red and disabled
         b.disabled = false;
       });
-    }, 400);
+      // After 2 misses on the same question, gently draw attention to the hint
+      if(_wrongAttemptsThisQ >= 2 && !isUltimate){
+        const hb = document.getElementById('g-hint-btn');
+        if(hb && hb.style.display !== 'none'){ hb.classList.add('hint-nudge'); }
+      }
+    }, 900);
   }
 }
 
@@ -4610,17 +4643,7 @@ function startGame(){
 
   // Timer countdown (not used for Stage 0 — no time limit)
   if(!isTraining){
-    timerInt = setInterval(()=>{
-      timerVal--;
-      const timerEl = document.getElementById('g-timer');
-      const timerPill = document.getElementById('g-timer-pill');
-      if(timerEl){
-        timerEl.textContent = formatCountdown(timerVal);
-      }
-      // Urgent red styling when <= 30s remain
-      if(timerPill && timerVal <= 30) timerPill.classList.add('urgent');
-      if(timerVal <= 0){ clearInterval(timerInt); endGame(); }
-    }, 1000);
+    startTimerInterval();
   }
 
   closeHint();
@@ -4645,6 +4668,33 @@ function formatCountdown(secs){
   const s = Math.max(0, secs) % 60;
   return `${m}:${String(s).padStart(2,'0')}`;
 }
+
+/* ── Shared countdown starter (used by startGame, resume, visibility) ── */
+function startTimerInterval(){
+  clearInterval(timerInt);
+  timerInt = setInterval(()=>{
+    timerVal--;
+    const timerEl   = document.getElementById('g-timer');
+    const timerPill = document.getElementById('g-timer-pill');
+    if(timerEl) timerEl.textContent = formatCountdown(timerVal);
+    if(timerPill && timerVal <= 30) timerPill.classList.add('urgent');
+    if(timerVal <= 0){ clearInterval(timerInt); endGame(); }
+  }, 1000);
+}
+
+/* ── Auto-pause: kids switch apps / lock the tablet mid-round.
+     Pause the countdown while the page is hidden and resume on return,
+     so they never come back to a lost game. ── */
+document.addEventListener('visibilitychange', ()=>{
+  const inGame = !document.getElementById('screen-game').classList.contains('hidden');
+  const isTraining = (getCurrentStage() === 0);
+  if(!inGame || isTraining || _midGamePaused) return;
+  if(document.hidden){
+    clearInterval(timerInt);
+  } else if(timerVal > 0){
+    startTimerInterval();
+  }
+});
 
 /* ── End game ───────────────────────────────────── */
 function endGame(){
@@ -5058,6 +5108,7 @@ function endSession(){
      Completing the line auto-marks the Q correct.
 ═══════════════════════════════════════════════════ */
 function setHintVisible(){
+  if(loadState().hintsOn === false) return; // respect Settings → Hints toggle
   document.getElementById('g-hint-btn').classList.add('visible');
   // Show hint icon inside the blank box and make it clickable
   const blank = document.querySelector('.g-blank');
@@ -5528,7 +5579,11 @@ function semitoneToHz(baseHz, semitones) {
 }
 
 /* ── Play a single melodic note ────────────────────────── */
+/* Respect the Settings → Sound Effects toggle for ALL WebAudio sounds */
+function sfxEnabled(){ return loadState().sfxOn !== false; }
+
 function playNote(hz, wave='sine', gainVal=0.5, duration=0.22, startDelay=0) {
+  if(!sfxEnabled()) return;
   try {
     const ctx = getAudioCtx();
     const t   = ctx.currentTime + startDelay;
@@ -5554,6 +5609,7 @@ function playNote(hz, wave='sine', gainVal=0.5, duration=0.22, startDelay=0) {
 
 /* ── Boing landing sound ────────────────────────────────── */
 function playBoing() {
+  if(!sfxEnabled()) return;
   try {
     const ctx = getAudioCtx();
     const t   = ctx.currentTime;
@@ -5568,6 +5624,18 @@ function playBoing() {
     osc.connect(gain); gain.connect(ctx.destination);
     osc.start(t); osc.stop(t + 0.22);
   } catch(e) {}
+}
+
+/* ── Answer feedback sounds (kid-friendly) ─────────────── */
+function playCorrectDing() {
+  // Cheerful two-note rising "ding-ding!"
+  playNote(659.25, 'sine', 0.4, 0.16);          // E5
+  playNote(987.77, 'sine', 0.45, 0.28, 0.11);   // B5
+}
+function playWrongBoop() {
+  // Soft, gentle low boop — encouraging, never harsh
+  playNote(220, 'triangle', 0.22, 0.22);
+  playNote(185, 'triangle', 0.18, 0.24, 0.14);
 }
 
 /* ── 3-note fanfare for the answer stone ───────────────── */
@@ -5724,6 +5792,7 @@ document.addEventListener('visibilitychange', () => {
    work-arounds described above. ───────────────────────── */
 function _speak(text, { rate = 0.95, pitch = 1.02, volume = 1 } = {}){
   if (!window.speechSynthesis || !text) return;
+  if (loadState().ttsOn === false) return; // respect Settings → Read Aloud toggle
   const synth = window.speechSynthesis;
 
   const fire = () => {
@@ -6528,14 +6597,7 @@ function resumeFromMastery() {
   const stage = getCurrentStage();
   const isTraining = (stage === 0);
   if(!isTraining && timerVal > 0){
-    timerInt = setInterval(()=>{
-      timerVal--;
-      const timerEl = document.getElementById('g-timer');
-      const timerPill = document.getElementById('g-timer-pill');
-      if(timerEl) timerEl.textContent = formatCountdown(timerVal);
-      if(timerPill && timerVal <= 30) timerPill.classList.add('urgent');
-      if(timerVal <= 0){ clearInterval(timerInt); endGame(); }
-    }, 1000);
+    startTimerInterval();
   }
 }
 
@@ -6546,6 +6608,22 @@ function masteryGoBack() {
     showScreen('screen-home');
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   KEYBOARD SUPPORT (desktop / Chromebook classrooms)
+   1–4 press answer buttons, Esc closes the quit modal.
+═══════════════════════════════════════════════════ */
+document.addEventListener('keydown', (e)=>{
+  const quitOpen = document.getElementById('quit-modal-overlay').classList.contains('open');
+  if(e.key === 'Escape' && quitOpen){ closeQuitModal(); return; }
+  const inGame = !document.getElementById('screen-game').classList.contains('hidden');
+  if(!inGame || quitOpen) return;
+  const idx = ['1','2','3','4'].indexOf(e.key);
+  if(idx === -1) return;
+  const btns = document.querySelectorAll('.ans-btn');
+  const btn = btns[idx];
+  if(btn && !btn.disabled) btn.click();
+});
 
 /* ═══════════════════════════════════════════════════
    HAPTIC FEEDBACK
