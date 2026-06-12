@@ -123,6 +123,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 #fs-btn:hover { background: rgba(255,255,255,.35); }
 .screen { position:absolute; inset:0; z-index:10; transition:opacity .3s ease, transform .3s ease; }
 .screen.hidden { opacity:0; pointer-events:none; transform:scale(.96); }
+#mastery-scroll-area { overflow-y:auto; -webkit-overflow-scrolling:touch; }
 
 /* ─────────────────────────────────────────────
    HOME SCREEN  — Juicy 3D mobile game aesthetic
@@ -491,7 +492,16 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
 }
-#screen-chars { display:flex; flex-direction:column; align-items:center; padding:0 16px; justify-content:center; }
+#screen-chars { display:flex; flex-direction:column; align-items:center; overflow:hidden; }
+.chars-scroll-area {
+  position: relative; z-index: 20;
+  width: 100%; flex: 1; min-height: 0;
+  display: flex; flex-direction: column; align-items: center;
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.chars-scroll-area::-webkit-scrollbar { display: none; }
 .screen-bg-blur { position:absolute; inset:0; background:url('https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-bg.png') center/cover; filter:blur(3px) brightness(.7); z-index:0; }
 .sel-header { width:100%; display:flex; align-items:center; justify-content:space-between; padding:14px 0 0; position:relative; z-index:20; }
 .back-btn { width:46px; height:46px; background:var(--yellow); border:none; border-radius:12px; font-size:22px; font-weight:900; color:white; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 0 var(--yellow-dark); transition:transform .1s,box-shadow .1s; overflow:hidden; position:relative; }
@@ -774,7 +784,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* ─────────────────────────────────────────────
    NEW CHARACTER SELECT SCREEN
 ───────────────────────────────────────────── */
-#screen-chars { overflow: hidden; }
+/* #screen-chars now scrolls on smaller screens (see base rule above) */
 
 /* Sky gradient background */
 .chars-bg {
@@ -951,7 +961,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* LET'S GO button on char screen — matches .btn-play dimensions */
 .chars-lets-go-btn {
   display: flex; align-items: center;
-  width: calc(100% - 28px); margin: 16px 14px 0;
+  width: calc(100% - 28px); margin: 16px 14px 30px;
   padding: 0;
   background: linear-gradient(to bottom, #8be43c 0%, #68d326 55%, #4ab915 100%);
   color: white; border: none; border-radius: 50px;
@@ -964,7 +974,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     inset 0 -5px 0 rgba(0,0,0,.1);
   transition: transform .12s ease, box-shadow .12s ease;
   flex-shrink: 0;
-      bottom: 30px;
 }
 .chars-lets-go-btn .btn-play-icon {
   background: rgba(255,255,255,.2);
@@ -2708,18 +2717,21 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     <span class="chars-title-main">CHOOSE YOUR<br/>CHARACTER</span>
   </div>
 
-  <!-- Character grid -->
-  <div class="char-grid-new" id="char-grid"></div>
+  <!-- Scrollable content area: grid + button (bg/header/title stay fixed) -->
+  <div class="chars-scroll-area">
+    <!-- Character grid -->
+    <div class="char-grid-new" id="char-grid"></div>
 
-  <!-- LET'S GO button — matches btn-play structure -->
-  <button class="chars-lets-go-btn" onclick="onCharsLetsGo()">
-    <div class="btn-play-icon">
-      <div class="btn-play-icon-inner">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+    <!-- LET'S GO button — matches btn-play structure -->
+    <button class="chars-lets-go-btn" onclick="onCharsLetsGo()">
+      <div class="btn-play-icon">
+        <div class="btn-play-icon-inner">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+        </div>
       </div>
-    </div>
-    <span class="btn-play-label">LET'S GO!</span>
-  </button>
+      <span class="btn-play-label">LET'S GO!</span>
+    </button>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -3078,6 +3090,19 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
     <div style="height:20px"></div>
   </div>
+
+  <!-- Reset progress confirmation modal -->
+  <div class="quit-modal-overlay" id="reset-modal-overlay">
+    <div class="quit-modal">
+      <div class="quit-modal-icon">🗑️</div>
+      <div class="quit-modal-title">Reset everything?</div>
+      <div class="quit-modal-sub">This will reset ALL progress, coins, achievements, and unlocks. This cannot be undone!</div>
+      <div class="quit-modal-btns">
+        <button class="quit-modal-btn quit-modal-btn-stay" onclick="closeResetModal()">Cancel</button>
+        <button class="quit-modal-btn quit-modal-btn-quit" onclick="performResetData()">Reset</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- CELEBRATION OVERLAY (Stage 5 win) -->
@@ -3116,20 +3141,10 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 <div class="screen hidden" id="screen-mastery">
   <div class="chars-bg"></div>
   <div class="chars-ground"></div>
+  <div id="mastery-scroll-area" style="position:relative;z-index:20;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;">
   <div class="chars-header">
     <button class="back-btn" id="mastery-back-btn" onclick="masteryGoBack()"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
     <div class="coins-badge" id="mastery-coins-badge">⭐ 0</div>
-  </div>
-  <!-- Resume game pill — only visible when accessed mid-game -->
-  <div id="mastery-resume-bar" style="display:none;position:absolute;bottom:30px;left:0;right:0;z-index:25;text-align:center;">
-    <button class="chars-lets-go-btn" onclick="resumeFromMastery()">
-      <div class="btn-play-icon">
-        <div class="btn-play-icon-inner">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-      </div>
-      <span class="btn-play-label">RESUME GAME</span>
-    </button>
   </div>
   <div class="chars-title-wrap">
     <span class="chars-title-sub">Green = mastered · Orange = practising · Grey = not seen</span>
@@ -3142,8 +3157,20 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     margin:10px 14px 6px;padding:10px 4px;
   "></div>
   <!-- 12×12 grid -->
-  <div style="position:relative;z-index:20;overflow-y:auto;max-height:570px;padding:0 8px 16px;">
+  <div style="position:relative;z-index:20;padding:0 8px 16px;">
     <div id="mastery-grid-wrap" style="padding-bottom:6px;"></div>
+  </div>
+  <!-- Resume game pill — only visible when accessed mid-game -->
+  <div id="mastery-resume-bar" style="display:none;position:relative;z-index:25;text-align:center;padding:0 14px 20px;">
+    <button class="chars-lets-go-btn" onclick="resumeFromMastery()">
+      <div class="btn-play-icon">
+        <div class="btn-play-icon-inner">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+      <span class="btn-play-label">RESUME GAME</span>
+    </button>
+  </div>
   </div>
 </div>
 
@@ -4994,10 +5021,14 @@ function saveSettingsBool(key, val){
 }
 
 function confirmResetData(){
-  if(confirm('Reset ALL progress, coins, achievements, and unlocks? This cannot be undone!')){
-    localStorage.removeItem('mj_state');
-    location.reload();
-  }
+  document.getElementById('reset-modal-overlay').classList.add('open');
+}
+function closeResetModal(){
+  document.getElementById('reset-modal-overlay').classList.remove('open');
+}
+function performResetData(){
+  localStorage.removeItem('mj_state');
+  location.reload();
 }
 
 function endSession(){
@@ -5854,7 +5885,14 @@ function checkAndUnlockAchievements() {
   ACHIEVEMENTS.forEach(a => {
     if (earnedIds.includes(a.id)) return;
     const val = getAchievementStat(a.stat);
-    if (val >= a.target) {
+    // Some stats start at a non-zero baseline (e.g. Stage 1 is the
+    // starting stage, and Redy is unlocked by default). Subtract that
+    // baseline so a freshly-reset profile doesn't instantly "achieve"
+    // targets it was already sitting on before any progress was made.
+    const baseline = (a.stat === 'highestStage' || a.stat === 'unlockedCharsCount') ? 1 : 0;
+    const adjVal = Math.max(0, val - baseline);
+    const adjTarget = Math.max(1, a.target - baseline);
+    if (adjVal >= adjTarget) {
       newEarns.push(a.id);
     }
   });
