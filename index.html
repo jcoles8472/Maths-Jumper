@@ -2458,7 +2458,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .cutscene-card:active .cutscene-card-play { background: rgba(0,0,0,.45); }
 .cutscene-play-circle {
   width: 30px; height: 30px;
-  background: rgba(255,255,255,.92);
+  background: var(--yellow);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 3px 10px rgba(0,0,0,.4);
@@ -2467,7 +2467,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   flex-shrink: 0;
 }
 .cutscene-card-label {
-  font-size: 9px; font-weight: 900;
+  font-size: 12px; font-weight: 900;
   color: white;
   text-shadow: 0 1px 4px rgba(0,0,0,.8);
   letter-spacing: .3px;
@@ -2498,7 +2498,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   50%     { filter: drop-shadow(0 0 10px rgba(245,197,24,1)) drop-shadow(0 0 20px rgba(245,197,24,.7)); }
 }
 .cutscene-lock-label {
-  font-size: 8px; font-weight: 900;
+  font-size: 12px; font-weight: 900;
   color: white;
   text-align: center;
   padding: 0 5px;
@@ -3324,10 +3324,13 @@ function showCorrectSequence(q) {
     // Step 2 — commutativity (only if meaningful)
     if(q.a !== q.b) {
       const commuteMsg = `You also know\n${q.b} × ${q.a} = ${q.ans}! 🎉`;
-      showBubble(commuteMsg, 'commute', 3);
-      sessionCoins += 3;
+      showBubble(commuteMsg, 'commute', 1);
+      // NOTE: only add to the in-session counter here. sessionCoins is
+      // added to the saved coin total once at end-of-session (endGame /
+      // endSession) — saving it here too caused this bonus to be counted
+      // twice toward the permanent balance.
+      sessionCoins += 1;
       updateCoinDisplay();
-      saveState({coins: getCoins() + 3});
 
       // Inject commutative pair only once per unique fact per session
       if(!q._commutePair){
@@ -4226,7 +4229,7 @@ function checkStreak(n){
   const msg=STREAK_MSGS[n]; if(!msg) return;
   const b=document.getElementById('streak-banner');
   b.textContent=msg; b.classList.remove('hide'); b.classList.add('show');
-  const bonus = n>=10?15 : n>=5?8 : 4;
+  const bonus = n>=10?5 : n>=5?3 : 2;
   sessionCoins+=bonus; updateCoinDisplay();
   setTimeout(()=>{ b.classList.remove('show'); b.classList.add('hide'); },2000);
 }
@@ -4316,7 +4319,7 @@ function checkAns(chosen, q, btn){
     }
     // Speed Round bonus (Q9-10) — only for regular stages, not review mode
     if(!isUltimate && !isTraining && !reviewMode && questionIndex >= 9){
-      sessionCoins+=5; updateCoinDisplay();
+      sessionCoins+=1; updateCoinDisplay();
       showToast('Speed Bonus! ⚡', 2000);
     }
     // Stage 5: check if all 30 done
@@ -5055,8 +5058,10 @@ function applyStageUnlock(){
   // Force highestStage to exactly the slider value (dev override)
   const s = loadState();
   s.highestStage = val;
+  // Dev mode: unlocking stages also unlocks all characters
+  s.unlockedChars = CHARACTERS.map(c => c.id);
   localStorage.setItem('mj_state', JSON.stringify(s));
-  showToast(`✅ Stages 0–${val} unlocked!`, 2200);
+  showToast(`✅ Stages 0–${val} unlocked! All characters unlocked!`, 2200);
   showScreen('screen-home');
   refreshHome();
 }
@@ -5407,8 +5412,9 @@ function interactiveHop(targetIdx){
     const _isFinalInter = targetIdx >= nlStones.length - 1;
     playHopNote(targetIdx, nlStep, _isFinalInter);
     // CRA visual groups: removed per design update
-    sessionCoins+=5; updateCoinDisplay();
-    saveState({coins:getCoins()+5});
+    // No per-hop coin reward — the number-line hint is a learning aid,
+    // not a coin source. Completing the question still earns the
+    // standard +2 via finalTapAfterHint, minus the -1 hint-open cost.
     scrollToStone(targetIdx);
 
     if(targetIdx>=nlStones.length-1){
@@ -5985,10 +5991,10 @@ const REWARDS_MILESTONES = [
 
 const STAR_TIPS = [
   { icon:'⭐', color:'yellow', title:'Correct Answer',      desc:'Earn +2 stars for every correct answer.' },
-  { icon:'🔥', color:'orange', title:'Streak Bonus (3)',     desc:'+4 stars for a 3-answer streak.' },
-  { icon:'⚡', color:'blue',   title:'Speed Bonus (Q9–10)', desc:'+5 stars for correct answers in the speed round.' },
+  { icon:'🔥', color:'orange', title:'Streak Bonus',        desc:'+2 stars for a 3-streak, +3 for a 5-streak, +5 for a 10-streak!' },
+  { icon:'⚡', color:'blue',   title:'Speed Bonus (Q9–10)', desc:'+1 star for correct answers in the speed round.' },
   { icon:'💡', color:'purple', title:'Hint Cost',            desc:'Using the hint costs 1 star — use it wisely!' },
-  { icon:'🤝', color:'green',  title:'Commutative Bonus',   desc:'+3 stars when Redy spots a commutativity fact.' },
+  { icon:'🤝', color:'green',  title:'Commutative Bonus',   desc:'+1 star when Redy spots a commutativity fact.' },
 ];
 
 /* ── Cutscene definitions for the rewards gallery ── */
@@ -6213,13 +6219,13 @@ const HOWTO_STEPS = [
   { icon:'❓', color:'yellow', title:'Answer the Question',
     desc:'A multiplication question appears on the card. Tap the correct answer from the four coloured buttons at the bottom.' },
   { icon:'🔥', color:'orange', title:'Build a Streak',
-    desc:'Get several answers right in a row to earn streak bonuses — +4 stars for a 3-streak, +8 for a 5-streak!' },
+    desc:'Get several answers right in a row to earn streak bonuses — +2 stars for a 3-streak, +3 for a 5-streak, +5 for a 10-streak!' },
   { icon:'💡', color:'green',  title:'Use the Hint',
     desc:'Stuck? Tap the HINT button. Redy hops along a number line to count it out. Each hint costs 1 star.' },
   { icon:'⚡', color:'blue',   title:'Speed Round (Q9 & Q10)',
-    desc:'The last two questions are Speed Round! No hints allowed, but a correct answer earns a +5 star bonus.' },
+    desc:'The last two questions are Speed Round! A correct answer earns a +1 star bonus.' },
   { icon:'⭐', color:'yellow', title:'Earn Stars',
-    desc:'+2 stars per correct answer, +3 for commutative facts, +4/8/15 for streaks, +5 for speed round answers.' },
+    desc:'+2 stars per correct answer, +1 for commutative facts, +2/3/5 for streaks, +1 for speed round answers.' },
   { icon:'🏆', color:'orange', title:'Unlock Achievements',
     desc:'Complete challenges to earn achievement badges — check the Achievements tab to see your progress.' },
 ];
