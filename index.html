@@ -1912,26 +1912,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 
 /* ─────────────────────────────────────────────
-   SHOP MODAL
-───────────────────────────────────────────── */
-.modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,.6); z-index:80; display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .3s; }
-.modal-overlay.open { opacity:1; pointer-events:auto; }
-.modal-sheet { width:100%; background:var(--panel-bg); border-radius:28px 28px 0 0; padding:24px 20px 32px; transform:translateY(100%); transition:transform .35s cubic-bezier(.34,1.2,.64,1); }
-.modal-overlay.open .modal-sheet { transform:translateY(0); }
-.modal-title { font-size:22px; font-weight:900; color:var(--text-dark); text-align:center; margin-bottom:4px; }
-.modal-sub   { font-size:13px; color:#888; font-weight:700; text-align:center; margin-bottom:16px; }
-.modal-coins-row { text-align:center; color:var(--yellow-dark); font-size:17px; font-weight:900; margin-bottom:16px; }
-.skin-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-.skin-card  { border-radius:16px; padding:14px 8px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; border:3px solid transparent; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,.1); transition:border-color .2s,transform .15s; }
-.skin-card:active { transform:scale(.96); }
-.skin-card.equipped { border-color:var(--yellow); }
-.skin-cube  { width:54px; height:54px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:28px; box-shadow:0 4px 0 rgba(0,0,0,.2); }
-.skin-label { font-size:11px; font-weight:900; color:var(--text-dark); }
-.skin-cost  { font-size:10px; font-weight:900; color:var(--yellow-dark); }
-.skin-owned { font-size:10px; font-weight:900; color:#4caf50; }
-.modal-close { display:block; width:100%; margin-top:18px; padding:14px; background:var(--purple-btn); color:white; border:none; border-radius:50px; font-family:'Nunito',cursive; font-size:17px; font-weight:900; cursor:pointer; box-shadow:0 5px 0 var(--purple-dark); }
-
-/* ─────────────────────────────────────────────
    SETTINGS SCREEN  (matches Friends / Achievements style)
 ───────────────────────────────────────────── */
 
@@ -3321,8 +3301,10 @@ function showCorrectSequence(q) {
 
   bubbleTimeout = setTimeout(() => {
     if(_skipped) return;
-    // Step 2 — commutativity (only if meaningful)
-    if(q.a !== q.b) {
+    // Step 2 — commutativity (only if meaningful, and only the first time
+    // this fact pair appears — the injected reverse-order question
+    // (_commutePair) already showed this tip and bonus for the original)
+    if(q.a !== q.b && !q._commutePair) {
       const commuteMsg = `You also know\n${q.b} × ${q.a} = ${q.ans}! 🎉`;
       showBubble(commuteMsg, 'commute', 1);
       // NOTE: only add to the in-session counter here. sessionCoins is
@@ -3375,15 +3357,6 @@ function getBubble() {
   ];
   return pool[Math.floor(Math.random() * pool.length)];
 }
-
-const SKINS = [
-  { id:'red',    label:'Classic', color:'#e53935', emoji:'😊', cost:0   },
-  { id:'blue',   label:'Ocean',   color:'#1e88e5', emoji:'😎', cost:50  },
-  { id:'green',  label:'Forest',  color:'#43a047', emoji:'🌿', cost:50  },
-  { id:'purple', label:'Cosmic',  color:'#8e24aa', emoji:'🔮', cost:50  },
-  { id:'gold',   label:'Legend',  color:'#f9a825', emoji:'👑', cost:100 },
-  { id:'rainbow',label:'Rainbow', color:'linear-gradient(135deg,#f44336,#ff9800,#ffeb3b,#4caf50,#2196f3,#9c27b0)', emoji:'🌈', cost:150 },
-];
 
 const CHARACTERS = [
   { id:'redy', name:'Redy', emoji:null,
@@ -3477,8 +3450,6 @@ function loadState()  { try{ return JSON.parse(localStorage.getItem('mj_state'))
 function saveState(p) { const s={...loadState(),...p}; localStorage.setItem('mj_state',JSON.stringify(s)); return s; }
 const getCoins        = () => loadState().coins         ?? 0;
 const getHighestStage = () => loadState().highestStage  ?? 1;
-const getUnlockedSkins= () => loadState().unlockedSkins ?? ['red'];
-const getEquippedSkin = () => loadState().equippedSkin  ?? 'red';
 const getCurrentStage = () => loadState().currentStage  ?? 1;
 const getSelectedChar = () => loadState().selectedChar  ?? 'redy';
 const getUnlockedChars= () => loadState().unlockedChars ?? ['redy'];
@@ -3502,18 +3473,20 @@ function recordFactResult(a, b, correct, responseMs){
   const f = fm[a][b];
   f.attempts++;
   f.totalMs = (f.totalMs ?? 0) + responseMs;
+  let newlyMastered = false;
   if(correct){
     f.correct++;
     // Mark mastered: 3+ correct, avg response < 5 s
     if(!f.masteredAt && f.correct >= 3 && (f.totalMs / f.attempts) < 5000){
       f.masteredAt = Date.now();
       // Queue a celebration toast (done outside this fn)
-      f._newlyMastered = true;
+      newlyMastered = true;
     }
   }
   f.lastSeen = Date.now();
   saveState({ factMastery: fm });
-  return f;
+  // Return a copy with the transient flag — keeps it out of saved storage
+  return { ...f, _newlyMastered: newlyMastered };
 }
 
 function isFactMastered(a, b){
@@ -3808,31 +3781,6 @@ function onCharsLetsGo(){
 }
 
 /* ═══════════════════════════════════════════════════
-   SHOP
-═══════════════════════════════════════════════════ */
-function openShop()  { renderShop(); document.getElementById('shop-modal').classList.add('open'); }
-function closeShop() { document.getElementById('shop-modal').classList.remove('open'); refreshHome(); }
-function renderShop(){
-  const coins=getCoins(), unlocked=getUnlockedSkins(), equipped=getEquippedSkin();
-  document.getElementById('shop-coins-display').textContent=`Your coins: ⭐ ${coins}`;
-  const grid=document.getElementById('skin-grid'); grid.innerHTML='';
-  SKINS.forEach(sk=>{
-    const isOwned=unlocked.includes(sk.id), isEquipped=sk.id===equipped, canAfford=coins>=sk.cost;
-    const card=document.createElement('div');
-    card.className='skin-card'+(isEquipped?' equipped':'');
-    const bg=sk.color.startsWith('linear')?`background:${sk.color}`:`background:${sk.color}`;
-    card.innerHTML=`<div class="skin-cube" style="${bg}">${sk.emoji}</div><div class="skin-label">${sk.label}</div>${isEquipped?`<div class="skin-owned">✓ ON</div>`:isOwned?`<div class="skin-owned">Owned</div>`:canAfford?`<div class="skin-cost">⭐ ${sk.cost}</div>`:`<div class="skin-cost" style="color:#ccc">⭐ ${sk.cost}</div>`}`;
-    card.onclick=()=>{
-      if(isEquipped) return;
-      if(isOwned)       { saveState({equippedSkin:sk.id}); showToast(`Equipped ${sk.label}! ${sk.emoji}`); renderShop(); }
-      else if(canAfford){ saveState({coins:getCoins()-sk.cost,unlockedSkins:[...getUnlockedSkins(),sk.id],equippedSkin:sk.id}); showToast(`Unlocked ${sk.label}! ${sk.emoji}`); renderShop(); }
-      else              showToast(`Need ⭐ ${sk.cost-getCoins()} more coins!`);
-    };
-    grid.appendChild(card);
-  });
-}
-
-/* ═══════════════════════════════════════════════════
    GAME ENGINE
 ═══════════════════════════════════════════════════ */
 
@@ -3845,6 +3793,9 @@ let questionIndex  = 0;  // 1-based index of current question in session
 let sessionTotalQuestions = 10; // total questions for the current session (incl. warm-ups & review)
 let timerVal    = 240;
 let timerInt    = null;
+let _gameEnding = false; // re-entrancy guard for endGame() — prevents double-counting
+                          // if both the timer-expiry path and the "all questions
+                          // answered" path fire for the same session (Stage 5 race)
 
 // ── Mistake Review state ─────────────────────────────
 let wrongQuestions  = [];   // questions answered incorrectly this round
@@ -3860,7 +3811,6 @@ let currentQ    = null;   // { a, b, ans }
 let currentChoices = [];  // array of 4 numbers, set once in renderQ
 
 let questionQueue = [];
-let srsQueue      = [];
 
 // ── Hint state ──────────────────────────────────────
 let hintOpen    = false;
@@ -4297,7 +4247,6 @@ function checkAns(chosen, q, btn){
     const _responseMs = Date.now() - _qStartTime;
     const _factResult = recordFactResult(q.a, q.b, true, _responseMs);
     if(_factResult._newlyMastered){
-      _factResult._newlyMastered = false;
       setTimeout(()=> showToast(`🏆 You've cracked ${q.a}×${q.b}=${q.ans} for good!`, 2800), 1800);
     }
 
@@ -4324,6 +4273,10 @@ function checkAns(chosen, q, btn){
     }
     // Stage 5: check if all 30 done
     if(isUltimate && answered >= 30){
+      // Stop the countdown right away — otherwise a timer tick to 0 during
+      // this delay would call endGame() itself (showing "Time's Up" to a
+      // player who just won, and double-saving the session's coins).
+      clearInterval(timerInt);
       setTimeout(()=>endGame(), 1200);
       return;
     }
@@ -4510,33 +4463,25 @@ function advanceQuestion(){
   }
 
   // ── NORMAL MODE ──
-  const due = srsQueue.filter(r=>r.retryAt<=answered);
-  if(due.length){
-    currentQ=due[0].q;
-    srsQueue=srsQueue.filter(r=>r.retryAt>answered);
-    document.getElementById('g-srs').classList.add('visible');
-    setTimeout(()=>document.getElementById('g-srs').classList.remove('visible'),1200);
-  } else {
-    if(!questionQueue.length){
-      // Normal round finished — check for missed questions
-      if(wrongQuestions.length > 0){
-        // Enter review mode
-        reviewMode = true;
-        reviewQueue = [...wrongQuestions].sort(() => Math.random() - 0.5);
-        wrongQuestions = []; // clear so review errors repopulate cleanly
-        sessionTotalQuestions += reviewQueue.length;
-        showToast(`📝 Review Round! ${reviewQueue.length} question${reviewQueue.length>1?'s':''} to fix!`, 2800);
-        currentQ = reviewQueue.shift();
-        questionIndex++;
-        renderQ(currentQ);
-        return;
-      }
-      endGame();
+  if(!questionQueue.length){
+    // Normal round finished — check for missed questions
+    if(wrongQuestions.length > 0){
+      // Enter review mode
+      reviewMode = true;
+      reviewQueue = [...wrongQuestions].sort(() => Math.random() - 0.5);
+      wrongQuestions = []; // clear so review errors repopulate cleanly
+      sessionTotalQuestions += reviewQueue.length;
+      showToast(`📝 Review Round! ${reviewQueue.length} question${reviewQueue.length>1?'s':''} to fix!`, 2800);
+      currentQ = reviewQueue.shift();
+      questionIndex++;
+      renderQ(currentQ);
       return;
     }
-    currentQ=questionQueue.shift();
-    document.getElementById('g-srs').classList.remove('visible');
+    endGame();
+    return;
   }
+  currentQ=questionQueue.shift();
+  document.getElementById('g-srs').classList.remove('visible');
   questionIndex++;
   renderQ(currentQ);
 }
@@ -4571,6 +4516,7 @@ function startGame(){
   wrongQuestions=[]; reviewMode=false; reviewQueue=[];
   _commuteInjectedThisSession = new Set();
   _midGamePaused = false;
+  _gameEnding = false; // reset endGame() re-entrancy guard for the new session
   // Also hide resume bar in case it was showing
   const resumeBar = document.getElementById('mastery-resume-bar');
   if(resumeBar) resumeBar.style.display = 'none';
@@ -4701,6 +4647,13 @@ document.addEventListener('visibilitychange', ()=>{
 
 /* ── End game ───────────────────────────────────── */
 function endGame(){
+  // Guard against being called twice for the same session (e.g. the
+  // countdown timer hitting 0 in the same window as the "all questions
+  // answered" success path on Stage 5) — without this, coins and
+  // lifetime stats would be saved twice.
+  if(_gameEnding) return;
+  _gameEnding = true;
+
   clearInterval(timerInt);
   // Hide review banner
   const _rb = document.getElementById('review-mode-banner');
@@ -4745,14 +4698,16 @@ function endGame(){
   });
   checkAndUnlockAchievements();
 
-  // Stage 5: did they answer all 30 in time?
-  if(stage === 5 && answered >= 30 && timerVal > 0){
+  // Stage 5: did they answer all 30 questions? (Reaching 30 always means
+  // they did so while the timer was running — basing this on `answered`
+  // alone avoids a race with the timer hitting 0 in the same instant.)
+  if(stage === 5 && answered >= 30){
     showCelebration();
     return;
   }
 
-  // Stage 5 failure (ran out of time)
-  if(stage === 5 && (answered < 30 || timerVal <= 0)){
+  // Stage 5 failure (ran out of time before finishing)
+  if(stage === 5 && answered < 30){
     showUltimateFail();
     return;
   }
@@ -5061,7 +5016,10 @@ function applyStageUnlock(){
   // Dev mode: unlocking stages also unlocks all characters
   s.unlockedChars = CHARACTERS.map(c => c.id);
   localStorage.setItem('mj_state', JSON.stringify(s));
-  showToast(`✅ Stages 0–${val} unlocked! All characters unlocked!`, 2200);
+  // Stage 5 (Ultimate Showdown) unlocks once highestStage reaches 4 — same
+  // rule renderStages uses — so reflect that in the confirmation toast.
+  const ultimateMsg = val >= 4 ? ' + Ultimate Showdown' : '';
+  showToast(`✅ Stages 0–${val}${ultimateMsg} unlocked! All characters unlocked!`, 2200);
   showScreen('screen-home');
   refreshHome();
 }
