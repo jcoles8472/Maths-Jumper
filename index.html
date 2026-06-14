@@ -4288,8 +4288,8 @@ function checkAns(chosen, q, btn){
       setTimeout(()=>endGame(), 1200);
       return;
     }
-    // Speak full equation then show pattern/commute tips
-    speakFullEquation(q);
+    // showCorrectSequence handles speaking — calling speakFullEquation here
+    // too caused Android to hear the first word twice (cancel + restart).
     setTimeout(()=>showCorrectSequence(q), 400);
   } else {
     btn.classList.add('wrong');
@@ -5439,7 +5439,7 @@ function finalTapAfterHint(q, btn){
   btn.textContent='✓ '+q.ans;
   gameScore+=10; sessionCoins+=2; streak++; answered++;
   updateCoinDisplay(); updateProgress(); checkStreak(streak);
-  speakFullEquation(q);
+  // showCorrectSequence speaks the equation — no duplicate call here.
   setTimeout(()=>showCorrectSequence(q), 400);
 }
 
@@ -5749,22 +5749,11 @@ if (window.speechSynthesis) {
   }, 500);
 }
 
-/* ── Keep-alive: prevents Android Chrome from cutting off
-   speech after ~14 seconds of continuous output. ────── */
-let _speechKeepAliveTimer = null;
-function _startSpeechKeepAlive(){
-  if (!isAndroid || _speechKeepAliveTimer) return;
-  _speechKeepAliveTimer = setInterval(() => {
-    const synth = window.speechSynthesis;
-    if (synth && synth.speaking) {
-      synth.pause();
-      synth.resume();
-    }
-  }, 4000);
-}
-function _stopSpeechKeepAlive(){
-  if (_speechKeepAliveTimer) { clearInterval(_speechKeepAliveTimer); _speechKeepAliveTimer = null; }
-}
+/* ── Keep-alive removed: all utterances here are short (<5s) so the
+   14-second Android cutoff never applies. The pause()/resume() pulse
+   caused its own mid-word stutter on Pixel / Google TTS. ────────── */
+function _startSpeechKeepAlive(){ /* no-op */ }
+function _stopSpeechKeepAlive(){  /* no-op */ }
 
 /* ── Reset a wedged synth engine when the app/tab regains focus ── */
 document.addEventListener('visibilitychange', () => {
@@ -5805,9 +5794,23 @@ function _speak(text, { rate = 0.95, pitch = 1.02, volume = 1 } = {}){
   synth.cancel();
 
   if (isAndroid) {
-    // Android Chrome can silently drop speak() if it's called in the
-    // same tick as cancel(); a short delay lets the engine settle.
-    setTimeout(fire, 120);
+    // Android's TTS engine processes cancel() asynchronously — if we call
+    // speak() before it has fully stopped, it emits the first phoneme of
+    // the old utterance then immediately starts the new one, causing the
+    // "three... THREE times one" double-start stutter.
+    // Fix: poll synth.speaking/pending until the engine is truly idle,
+    // then fire. Cap at 300 ms so we never hang indefinitely.
+    let _waited = 0;
+    const _poll = setInterval(() => {
+      _waited += 20;
+      if (!synth.speaking && !synth.pending) {
+        clearInterval(_poll);
+        fire();
+      } else if (_waited >= 300) {
+        clearInterval(_poll);
+        fire(); // give up waiting and speak anyway
+      }
+    }, 20);
   } else {
     fire();
   }
