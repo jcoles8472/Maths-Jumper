@@ -3309,7 +3309,11 @@ function showCorrectSequence(q) {
       updateCoinDisplay();
 
       // Inject commutative pair only once per unique fact per session
-      if(!q._commutePair){
+      // Skip in Stage 0 (training): questions are sequential and injecting
+      // commutative pairs inflates `answered`, corrupts progress tracking,
+      // shows wrong table labels, and triggers "All 12 tables mastered" early.
+      const _isTrainingMode = (getCurrentStage() === 0);
+      if(!q._commutePair && !_isTrainingMode){
         const _commuteKey = `${q.a}x${q.b}`;
         if(!_commuteInjectedThisSession.has(_commuteKey)){
           _commuteInjectedThisSession.add(_commuteKey);
@@ -3797,6 +3801,7 @@ let _gameEnding = false; // re-entrancy guard for endGame() — prevents double-
                           // if both the timer-expiry path and the "all questions
                           // answered" path fire for the same session (Stage 5 race)
 
+let sessionStartOffset = 0; // Training offset fixed at session start — never re-read mid-session
 // ── Mistake Review state ─────────────────────────────
 let wrongQuestions  = [];   // questions answered incorrectly this round
 let reviewMode      = false; // true when we're re-testing missed questions
@@ -3842,7 +3847,7 @@ function getTrainingOffset(){ return loadState().trainingOffset ?? 0; }
 
 function buildTrainingQueue(){
   questionQueue = [];
-  const offset = getTrainingOffset();
+  const offset = sessionStartOffset; // fixed at session start — never re-read mid-session
   // Build from offset onward so resumed sessions continue from where they left off
   for(let tbl = 1; tbl <= 12; tbl++){
     for(let mul = 1; mul <= 12; mul++){
@@ -3855,7 +3860,7 @@ function buildTrainingQueue(){
 
 // Return the table currently being shown based on answered count + offset
 function currentTrainingTable(){
-  const offset = getTrainingOffset();
+  const offset = sessionStartOffset; // fixed at session start
   const pos = offset + answered; // total questions answered across all sessions
   return Math.min(12, Math.floor(pos / 12) + 1);
 }
@@ -4377,7 +4382,7 @@ function updateProgress(){
   const total = stage === 5 ? 30 : stage === 0 ? 144 : TOTAL;
 
   // For Stage 0 progress bar, base % on the global position (offset + answered)
-  const globalPos = stage === 0 ? (getTrainingOffset() + answered) : answered;
+  const globalPos = stage === 0 ? (sessionStartOffset + answered) : answered;
 
   // During review mode: hold bar at 100% so it doesn't jump backwards
   const pct = reviewMode ? 100 : Math.min(100, globalPos / total * 100);
@@ -4410,7 +4415,7 @@ function updateProgress(){
   // Training: update the progress pill
   if(stage === 0){
     // Toast when crossing into a new table
-    const qWithinTable = (getTrainingOffset() + answered) % 12;
+    const qWithinTable = (sessionStartOffset + answered) % 12;
     if(answered > 0 && qWithinTable === 0){
       const tbl = currentTrainingTable();
       showToast(`🎉 ${tbl - 1}× table complete! Starting ${tbl}× table!`, 2500);
@@ -4426,7 +4431,7 @@ function advanceQuestion(){
 
   // Stage 0: sequential — check if we've just crossed into a new ×table
   if(stage === 0){
-    const offset  = getTrainingOffset();
+    const offset  = sessionStartOffset; // fixed at session start
     const totalDone = offset + answered;
     const tbl = Math.min(12, Math.floor(totalDone / 12) + 1);
 
@@ -4512,6 +4517,7 @@ function applyCharacterTheme(){
 function startGame(){
   const stage = getCurrentStage();
   gameScore=0; sessionCoins=0; streak=0; answered=0; questionIndex=0; hintEverUsedThisGame=false;
+  sessionStartOffset = getTrainingOffset(); // capture once — never re-read mid-session
   wrongQuestions=[]; reviewMode=false; reviewQueue=[];
   _commuteInjectedThisSession = new Set();
   _midGamePaused = false;
@@ -4664,7 +4670,7 @@ function endGame(){
 
   // Training (Stage 0): save progress and show completion screen
   if(stage === 0){
-    const totalDone = getTrainingOffset() + answered;
+    const totalDone = sessionStartOffset + answered;
     saveState({
       coins:           totalCoins,
       trainingOffset:  Math.min(144, totalDone), // save how far they got
