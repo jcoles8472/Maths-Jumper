@@ -3623,7 +3623,11 @@ function startBeginner(){
 }
 
 function startChallenger(){
-  saveState({ currentStage: 1 });
+  // Resume whichever challenger stage (1-5) the player last played.
+  // If they were in Training (stage 0) or have never played, default to 1.
+  const lastStage = getCurrentStage();
+  const resumeStage = (lastStage >= 1 && lastStage <= 5) ? lastStage : 1;
+  saveState({ currentStage: resumeStage });
   showScreen('screen-game');
 }
 
@@ -4274,8 +4278,8 @@ function checkAns(chosen, q, btn){
       const picBlank = document.querySelector('.pic-blank');
       if(picBlank){ picBlank.textContent = chosen; picBlank.style.color = '#388e3c'; picBlank.style.borderColor = '#4caf50'; }
     }
-    // Speed Round bonus (Q9-10) — only for regular stages, not review mode
-    if(!isUltimate && !isTraining && !reviewMode && questionIndex >= 9){
+    // Speed Round bonus (Q9-10) — only if answered within 5 seconds
+    if(!isUltimate && !isTraining && !reviewMode && questionIndex >= 9 && _responseMs <= 5000){
       sessionCoins+=1; updateCoinDisplay();
       showToast('Speed Bonus! ⚡', 2000);
     }
