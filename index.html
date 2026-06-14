@@ -1648,15 +1648,20 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* Character slot sitting above each stone circle */
 .nl-char-slot {
-  width:80px; height:70px;
+  width:80px; height:0;
   display:flex; align-items:flex-end; justify-content:center;
   position:relative; overflow:visible;
+}
+/* Only give height when the character image is actually present */
+.nl-char-slot:has(img) {
+  height:70px;
 }
 .nl-char-slot img {
   width:64px; height:64px; object-fit:contain;
   filter:drop-shadow(0 3px 6px rgba(0,0,0,.35));
   transform-origin:bottom center;
   display:block;
+      margin-bottom: 10px;
 }
 /* Jump arc animation for the character slot */
 .nl-char-slot.jumping img {
@@ -3352,6 +3357,7 @@ const CHARACTERS = [
     imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy.png',
     imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-redy.png',
     imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy.png',
+    imgJump:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-redy-jump.png',
     bgUrl:       BASE+'mj-ingame-bg.png',
     themeColor:  '#c0392b',
     cost: 0,
@@ -3361,6 +3367,7 @@ const CHARACTERS = [
     imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-dino.png',
     imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-dino.png',
     imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-dino.png',
+    imgJump:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-dino-jump.png',
     imgCorrect:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-dino-correct.png',
     imgOpps:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-dino-opps.png',
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-dino.png',
@@ -3373,6 +3380,7 @@ const CHARACTERS = [
     imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-unia.png',
     imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-unia.png',
     imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-unia.png',
+    imgJump:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-unia-jump.png',
     imgCorrect:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-unia-correct.png',
     imgOpps:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-unia-opps.png',
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-unia.png',
@@ -3384,6 +3392,7 @@ const CHARACTERS = [
     imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-robo.png',
     imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-robo.png',
     imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-robo.png',
+    imgJump:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-robo-jump.png',
     imgCorrect:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-robo-correct.png',
     imgOpps:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-robo-opps.png',
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-robo.png',
@@ -3395,6 +3404,7 @@ const CHARACTERS = [
     imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-pip.png',
     imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-pip.png',
     imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-pip.png',
+    imgJump:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-pip-jump.png',
     imgCorrect:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-pip-correct.png',
     imgOpps:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-pip-opps.png',
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-pip.png',
@@ -3406,6 +3416,7 @@ const CHARACTERS = [
     imgDefault:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-leo.png',
     imgSelected: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-character-select-OL-leo.png',
     imgIngame:   'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-leo.png',
+    imgJump:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-leo-jump.png',
     imgCorrect:  'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-leo-correct.png',
     imgOpps:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-leo-opps.png',
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-leo.png',
@@ -4492,8 +4503,8 @@ function applyCharacterTheme(){
 
   // 2. Number-line jumper sprite (the <img> inside .nl-char-slot)
   const nlImg = document.querySelector('.nl-char-slot img');
-  if(nlImg && charObj.imgIngame){
-    nlImg.src = charObj.imgIngame;
+  if(nlImg){
+    nlImg.src = charObj.imgJump || charObj.imgIngame;
   }
 }
 
@@ -5190,10 +5201,10 @@ function buildNL(q){
   const track=document.getElementById('nl-track');
   track.innerHTML='';
 
-  // Get character image for the hint — prefer ingame variant
+  // Get character image for the hint — prefer jump variant
   const charObj = CHARACTERS.find(c=>c.id===getSelectedChar()) || CHARACTERS[0];
-  const charSrc = charObj.imgIngame || charObj.img
-    || 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-redy.png';
+  const charSrc = charObj.imgJump || charObj.imgIngame || charObj.img
+    || 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-redy-jump.png';
 
   nlStones.forEach((val,idx)=>{
     const stone=document.createElement('div');
@@ -5303,6 +5314,16 @@ function demoHopTo(targetIdx){
           nlDemoActive=false; nlInteractive=true;
           // Reset Redy to stone 0 for interactive practice
           nlCurrent=0;
+          // Physically move the character image back to slot 0
+          const _charImg = document.getElementById('nl-redy-img');
+          if(_charImg){
+            const _charSrc = _charImg.src;
+            // Clear the image from wherever the demo left it
+            if(_charImg.parentNode) _charImg.parentNode.innerHTML = '';
+            // Place it back on stone 0
+            const _slot0 = document.getElementById('nlch-0');
+            if(_slot0) _slot0.innerHTML = `<img src="${_charSrc}" alt="Redy" id="nl-redy-img"/>`;
+          }
           updateStoneClasses();
           scrollToStone(0);
           document.getElementById('nl-overlay').classList.add('interactive');
