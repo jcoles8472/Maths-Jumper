@@ -1189,6 +1189,11 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   white-space: nowrap;
   font-size: clamp(10px, 3cqi, 13px) !important;
 }
+/* Stages 1–5 table-label pill: blue (matches timer) */
+.g-table-label.stage-mode {
+  background: #3aabf0 !important;
+  box-shadow: 0 5px 0 #1a7fc4, 0 2px 8px rgba(0,0,0,.18) !important;
+}
 .g-timer.hidden, .g-table-label.hidden { display: none !important; }
 .g-timer-icon { font-size: 18px; line-height: 1; }
 
@@ -1918,10 +1923,10 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* Developer mode card */
 .settings-dev-card {
   background: linear-gradient(135deg, #1a0533, #3d1278);
-  border-radius: 20px; padding: 16px 18px;
+  border-radius: 20px; padding: 16px 18px 20px;
   border: 2px solid #7c4dff;
   box-shadow: 0 6px 0 #12003a, 0 10px 28px rgba(74,20,140,.4);
-  position: relative; overflow: hidden; margin-bottom: 10px;
+  position: relative; margin-bottom: 14px;
 }
 .settings-dev-card::before {
   content: ''; position: absolute; inset: 0;
@@ -1957,7 +1962,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* Stage unlock slider */
 .settings-stages-unlock {
   margin-top: 10px; background: rgba(255,255,255,.1); border-radius: 14px;
-  padding: 12px 14px; border: 1px solid rgba(255,255,255,.15); display: none;
+  padding: 12px 14px 16px; border: 1px solid rgba(255,255,255,.15); display: none;
+  overflow: visible;
 }
 .settings-stages-unlock.visible { display: block; }
 .settings-stages-bar-wrap { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
@@ -1974,7 +1980,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 .settings-slider::-webkit-slider-thumb:active { transform: scale(1.2); }
 .settings-slider::-moz-range-thumb { width: 28px; height: 28px; background: linear-gradient(135deg, #7c4dff, #e040fb); border-radius: 50%; cursor: pointer; border: 3px solid white; }
-.settings-stage-labels { display: flex; justify-content: space-between; padding: 2px 1px 0; font-size: 9px; font-weight: 900; color: rgba(255,255,255,.5); }
 .settings-unlock-confirm {
   margin-top: 10px; background: linear-gradient(to bottom, #8be43c, #4ab915); color: white;
   border: none; border-radius: 50px; width: 100%; padding: 11px;
@@ -2011,7 +2016,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 
 /* Toast */
-.toast { position:absolute; bottom:56px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:8px 20px; font-size:14px; font-weight:900; opacity:0; pointer-events:none; z-index:90; transition:all .3s; white-space:nowrap; }
+.toast { position:absolute; bottom:56px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:10px 20px; font-size:13px; font-weight:900; opacity:0; pointer-events:none; z-index:90; transition:all .3s; white-space:normal; text-align:center; max-width:calc(100% - 32px); box-sizing:border-box; line-height:1.4; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
 /* ── Quit confirmation modal ── */
@@ -2402,7 +2407,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   box-shadow: 0 4px 10px rgba(0,0,0,.25);
   transition: transform .18s cubic-bezier(.34,1.4,.64,1), box-shadow .18s;
   aspect-ratio: 9/10;
-  background: #0d0025;
+  background: rgba(255, 255, 255, .7);
   border: 2px solid transparent;
 }
 .cutscene-card:active { transform: scale(.96); }
@@ -2418,13 +2423,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   display: block;
   opacity: 0.85;
 }
-/* Thumbnail fallback gradient when no poster */
-.cutscene-card-thumb-fallback {
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, #1a0533 0%, #3d1278 60%, #0d0025 100%);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
-}
+/* .cutscene-card-thumb-fallback removed — preview image is used instead */
 /* Dark scrim + play icon for earned cards */
 .cutscene-card-play {
   position: absolute; inset: 0;
@@ -2458,7 +2457,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* Lock overlay for locked cards — sits over the preview image */
 .cutscene-card-lock {
   position: absolute; inset: 0;
-  background: rgba(20, 5, 50, 0.72);
+  background: rgba(20, 5, 50, 0.1);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: 4px;
@@ -2500,14 +2499,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   opacity: 0.6;
 }
 
-/* Fallback gradient (shown when no preview image loads) */
-.cutscene-card-thumb-fallback {
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, #1a0533 0%, #3d1278 60%, #0d0025 100%);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
-  z-index: 0;
-}
+/* .cutscene-card-thumb-fallback (duplicate block) removed */
 
 /* ── In-rewards video player modal ── */
 .rewards-video-modal {
@@ -2808,8 +2800,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <div class="g-header">
     <button class="g-back" onclick="showQuitModal()"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
     <div class="g-world">
-      <span class="g-world-label">WORLD</span>
-      <span class="g-world-val" id="g-world-val">1 - 1</span>
+      <span class="g-world-label">STAGE</span>
+      <span class="g-world-val" id="g-world-val">1</span>
     </div>
     <div class="g-timer" id="g-timer-pill">
       <span class="g-timer-icon" id="g-timer-icon">⏱</span><span id="g-timer">4:00</span>
@@ -2981,7 +2973,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
         <div class="settings-dev-row">
           <div class="settings-dev-text">
             <div class="settings-dev-title">👑 Unlock All Stages</div>
-            <div class="settings-dev-sub">Slide to choose how many stages to unlock. Great for testing or letting little ones explore!</div>
+            <div class="settings-dev-sub">Slide to choose how many stages to unlock. Also unlocks all characters. Great for testing or letting little ones explore!</div>
           </div>
           <label class="settings-toggle">
             <input type="checkbox" id="settings-dev-toggle" onchange="onDevToggle(this.checked)"/>
@@ -2999,9 +2991,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
                 min="0" max="5" step="1" value="0"
                 oninput="onStageSliderChange(this.value)"/>
             </div>
-          </div>
-          <div class="settings-stage-labels">
-            <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
           </div>
           <button class="settings-unlock-confirm" onclick="applyStageUnlock()">✅ Apply Unlock</button>
         </div>
@@ -4030,6 +4019,9 @@ function renderQ(q){
   // Update question counter pill
   updateQCount();
 
+  // Update table label pill to reflect current question's actual table (all stages)
+  updateTableLabelPill(q.a);
+
   // ── Contextual strategy cue (4s, 8s, 12s tables) ────────
   cancelStrategyTimer();
   const _strategyCue = {4:"Stuck? Try doubling the 2s answer! 🤔",
@@ -4404,13 +4396,12 @@ function updateProgress(){
   checkMilestone('star2', m2);
   checkMilestone('star3', m3);
 
-  // Training: update the table label + progress pill
+  // Training: update the progress pill
   if(stage === 0){
-    const tbl = currentTrainingTable();
-    updateTableLabelPill(tbl);
     // Toast when crossing into a new table
     const qWithinTable = (getTrainingOffset() + answered) % 12;
     if(answered > 0 && qWithinTable === 0){
+      const tbl = currentTrainingTable();
       showToast(`🎉 ${tbl - 1}× table complete! Starting ${tbl}× table!`, 2500);
     }
   }
@@ -4427,9 +4418,6 @@ function advanceQuestion(){
     const offset  = getTrainingOffset();
     const totalDone = offset + answered;
     const tbl = Math.min(12, Math.floor(totalDone / 12) + 1);
-
-    // Update the table label pill
-    updateTableLabelPill(tbl);
 
     // Save offset progress so child can resume
     saveState({ trainingOffset: totalDone });
@@ -4552,12 +4540,11 @@ function startGame(){
   // Apply character-specific background and number-line sprite
   applyCharacterTheme();
 
-  // World label
+  // Stage label
   if(isTraining){
-    const tbl = currentTrainingTable();
-    document.getElementById('g-world-val').textContent = `0 - ${tbl}`;
+    document.getElementById('g-world-val').textContent = 'Training';
   } else {
-    document.getElementById('g-world-val').textContent = `${stage} - 1`;
+    document.getElementById('g-world-val').textContent = stage;
   }
 
   document.getElementById('g-progress-fill').style.width='0%';
@@ -4568,14 +4555,15 @@ function startGame(){
   if(timerDiv) timerDiv.classList.remove('urgent');
 
   // Stage 0: hide timer, show table-label pill
+  // Stages 1–5: show timer only, hide table-label pill
   if(isTraining){
     if(timerDiv)      timerDiv.classList.add('hidden');
-    if(tableLabelDiv) tableLabelDiv.classList.remove('hidden');
+    if(tableLabelDiv) { tableLabelDiv.classList.remove('hidden'); tableLabelDiv.classList.remove('stage-mode'); }
     const startTbl = currentTrainingTable();
     updateTableLabelPill(startTbl);
   } else {
     if(timerDiv)      timerDiv.classList.remove('hidden');
-    if(tableLabelDiv) tableLabelDiv.classList.add('hidden');
+    if(tableLabelDiv) { tableLabelDiv.classList.add('hidden'); tableLabelDiv.classList.remove('stage-mode'); }
   }
   document.querySelector('.g-equation').style.fontSize = '65px';
   ['star1','star2','star3'].forEach(id=>{
@@ -4698,11 +4686,9 @@ function endGame(){
   });
   checkAndUnlockAchievements();
 
-  // Stage 5: did they answer all 30 questions? (Reaching 30 always means
-  // they did so while the timer was running — basing this on `answered`
-  // alone avoids a race with the timer hitting 0 in the same instant.)
+  // Stage 5: did they answer all 30 questions? Play the cutscene first, then celebrate
   if(stage === 5 && answered >= 30){
-    showCelebration();
+    showCutscene(() => showCelebration());
     return;
   }
 
@@ -5015,11 +5001,18 @@ function applyStageUnlock(){
   s.highestStage = val;
   // Dev mode: unlocking stages also unlocks all characters
   s.unlockedChars = CHARACTERS.map(c => c.id);
+  // Dev mode: if unlocking stage 5, also satisfy the Stage 5 cutscene
+  // earnedWhen condition (lifetimeCoins >= 1 AND lifetimeCorrect >= 30)
+  // so the "Ultimate Showdown complete" cutscene is visible in Rewards.
+  if(val >= 5){
+    s.lifetimeCoins   = Math.max(s.lifetimeCoins   ?? 0, 1);
+    s.lifetimeCorrect = Math.max(s.lifetimeCorrect ?? 0, 30);
+  }
   localStorage.setItem('mj_state', JSON.stringify(s));
   // Stage 5 (Ultimate Showdown) unlocks once highestStage reaches 4 — same
   // rule renderStages uses — so reflect that in the confirmation toast.
   const ultimateMsg = val >= 4 ? ' + Ultimate Showdown' : '';
-  showToast(`✅ Stages 0–${val}${ultimateMsg} unlocked! All characters unlocked!`, 2200);
+  showToast(`✅ Stages 0–${val}${ultimateMsg} unlocked! All characters unlocked!`, 3200);
   showScreen('screen-home');
   refreshHome();
 }
@@ -5964,6 +5957,7 @@ const CUTSCENES = [
     emoji: '⭐',
     color: 'yellow',
     src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-one-complete.mp4',
+    thumb: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-video-preview-stage-one.png',
     // Earned when the player has reached at least Stage 2 (i.e. completed Stage 1)
     earnedWhen: s => (s.highestStage ?? 1) >= 2,
     unlockHint: 'Complete Stage 1 to unlock',
@@ -5975,6 +5969,7 @@ const CUTSCENES = [
     emoji: '🔥',
     color: 'orange',
     src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-two-complete.mp4',
+    thumb: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-video-preview-stage-two.png',
     earnedWhen: s => (s.highestStage ?? 1) >= 3,
     unlockHint: 'Complete Stage 2 to unlock',
   },
@@ -5984,7 +5979,8 @@ const CUTSCENES = [
     subtitle: 'Patterns',
     emoji: '💫',
     color: 'purple',
-    src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-end-cut-scene.mp4',
+    src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-three-complete.mp4',
+    thumb: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-video-preview-stage-three.png',
     earnedWhen: s => (s.highestStage ?? 1) >= 4,
     unlockHint: 'Complete Stage 3 to unlock',
   },
@@ -5995,16 +5991,18 @@ const CUTSCENES = [
     emoji: '🏆',
     color: 'blue',
     src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-four-complete.mp4',
+    thumb: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-video-preview-stage-four.png',
     earnedWhen: s => (s.highestStage ?? 1) >= 5,
     unlockHint: 'Complete Stage 4 to unlock',
   },
   {
     id: 'stage5',
-    title: 'Ultimate Showdown!',
+    title: 'Ultimate Showdown Completed!',
     subtitle: 'Champion',
     emoji: '👑',
     color: 'pink',
-    src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-end-cut-scene.mp4',
+    src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-five-complete.mp4',
+    thumb: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-video-preview-stage-five.png',
     earnedWhen: s => !!(s.lifetimeCoins ?? 0) && (s.highestStage ?? 1) >= 5 && (s.lifetimeCorrect ?? 0) >= 30,
     unlockHint: 'Complete the Ultimate Showdown to unlock',
   },
@@ -6076,24 +6074,17 @@ function renderRewards() {
     const card = document.createElement('div');
     card.className = 'cutscene-card ' + (earned ? 'earned' : 'locked');
 
-    // Always render a preview image as base background
-    // Use a <video> element with #t=0.1 to show the first frame as poster
-    const previewEl = document.createElement('video');
+    // Use a dedicated preview image as the card thumbnail
+    const previewEl = document.createElement('img');
     previewEl.className = 'cutscene-card-preview';
-    previewEl.src = c.src + '#t=0.1';
-    previewEl.preload = 'metadata';
-    previewEl.muted = true;
-    previewEl.playsInline = true;
-    previewEl.setAttribute('disablepictureinpicture', '');
+    previewEl.src = c.thumb;
+    previewEl.alt = c.title;
     previewEl.style.pointerEvents = 'none';
 
     card.appendChild(previewEl);
 
-    // Fallback emoji gradient (shown behind if video fails to load)
-    const fallback = document.createElement('div');
-    fallback.className = 'cutscene-card-thumb-fallback';
-    fallback.textContent = c.emoji;
-    card.appendChild(fallback);
+    // No fallback overlay — the preview image covers the card;
+    // the card's dark background (#0d0025) shows if the image fails.
 
     // Overlay: play button (earned) or lock (locked)
     if (earned) {
@@ -6639,7 +6630,11 @@ function showCutscene(onDone) {
   const CUTSCENE_URLS = {
     1: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-one-complete.mp4',
     2: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-two-complete.mp4',
+    3: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-three-complete.mp4',
+
     4: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-four-complete.mp4',
+    5: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-five-complete.mp4',
+
   };
   const stageVideoUrl = CUTSCENE_URLS[_cutsceneStage]
     || 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-end-cut-scene.mp4';
