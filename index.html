@@ -4995,10 +4995,13 @@ function applyStageUnlock(){
   const slider = document.getElementById('settings-stage-slider');
   if(!slider) return;
   const val = parseInt(slider.value);
-  saveState({ highestStage: Math.max(val, getHighestStage() > val ? getHighestStage() : val) });
-  // Force highestStage to exactly the slider value (dev override)
+  // highestStage represents the furthest stage reached (i.e. next to play).
+  // Selecting stage N in dev mode means "Stage N is complete", so store val+1.
+  // This ensures earnedWhen checks (>= N+1) correctly unlock cutscenes for stage N.
+  const devHighest = val + 1;
+  saveState({ highestStage: Math.max(devHighest, getHighestStage() > devHighest ? getHighestStage() : devHighest) });
   const s = loadState();
-  s.highestStage = val;
+  s.highestStage = devHighest;
   // Dev mode: unlocking stages also unlocks all characters
   s.unlockedChars = CHARACTERS.map(c => c.id);
   // Dev mode: if unlocking stage 5, also satisfy the Stage 5 cutscene
@@ -5958,7 +5961,7 @@ const CUTSCENES = [
     color: 'yellow',
     src: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-one-complete.mp4',
     thumb: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-video-preview-stage-one.png',
-    // Earned when the player has reached at least Stage 2 (i.e. completed Stage 1)
+    // Earned when the player has completed Stage 1 (highestStage advances to 2)
     earnedWhen: s => (s.highestStage ?? 1) >= 2,
     unlockHint: 'Complete Stage 1 to unlock',
   },
