@@ -3294,15 +3294,13 @@ function resetBubble() {
 }
 
 /* Sequence shown after correct answer:
-   800ms  → pattern tip (green)
-   1800ms → commutativity tip if a≠b (purple) + coin bonus
-             then: queue the commutative pair as the VERY NEXT question
-   2600ms → reset to normal bubble, advance question
-   TAP the question card or bubble to skip the wait immediately.
+   speech ends  → pattern tip shown
+   +800ms       → commutativity tip if a≠b (purple) + coin bonus
+   +900ms/700ms → reset bubble, advance question
+   TAP the question card or bubble to skip immediately (cancels speech → onend fires → resolves promise).
 */
 function showCorrectSequence(q) {
   const table = q.a;
-  speakFullEquation(q);
 
   // Enable skip-tap on the question card and bubble
   let _skipped = false;
@@ -3310,7 +3308,7 @@ function showCorrectSequence(q) {
     if(_skipped) return;
     _skipped = true;
     if(bubbleTimeout){ clearTimeout(bubbleTimeout); bubbleTimeout = null; }
-    window.speechSynthesis && window.speechSynthesis.cancel();
+    window.speechSynthesis && window.speechSynthesis.cancel(); // triggers onend → resolves promise
     _clearSkipListeners();
     resetBubble();
     advanceQuestion();
@@ -3328,63 +3326,62 @@ function showCorrectSequence(q) {
     const bubble = document.getElementById('g-bubble');
     if(card)   card.addEventListener('click', skipSequence, { once: true });
     if(bubble) bubble.addEventListener('click', skipSequence, { once: true });
-    // Add a subtle tap-to-skip hint on the bubble
-    const btext = document.getElementById('bubble-text');
-    if(btext && !_skipped){
-      const origText = btext.textContent;
-      // Append micro-hint without overwriting the tip
-      bubble && (bubble.title = 'Tap to skip');
-    }
+    bubble && (bubble.title = 'Tap to skip');
   }, 200);
 
-  // Step 1 — pattern tip
-  const pattern = getPattern(table);
-  showBubble(pattern, 'pattern', null);
-
-  bubbleTimeout = setTimeout(() => {
+  // Speak first — show tips only after speech finishes naturally
+  speakFullEquation(q).then(() => {
     if(_skipped) return;
-    // Step 2 — commutativity (only if meaningful, and only the first time
-    // this fact pair appears — the injected reverse-order question
-    // (_commutePair) already showed this tip and bonus for the original)
-    if(q.a !== q.b && !q._commutePair) {
-      const commuteMsg = `You also know\n${q.b} × ${q.a} = ${q.ans}! 🎉`;
-      showBubble(commuteMsg, 'commute', 1);
-      // NOTE: only add to the in-session counter here. sessionCoins is
-      // added to the saved coin total once at end-of-session (endGame /
-      // endSession) — saving it here too caused this bonus to be counted
-      // twice toward the permanent balance.
-      sessionCoins += 1;
-      updateCoinDisplay();
 
-      // Inject commutative pair only once per unique fact per session
-      // Skip in Stage 0 (training): questions are sequential and injecting
-      // commutative pairs inflates `answered`, corrupts progress tracking,
-      // shows wrong table labels, and triggers "All 12 tables mastered" early.
-      const _isTrainingMode = (getCurrentStage() === 0);
-      if(!q._commutePair && !_isTrainingMode){
-        const _commuteKey = `${q.a}x${q.b}`;
-        if(!_commuteInjectedThisSession.has(_commuteKey)){
-          _commuteInjectedThisSession.add(_commuteKey);
-          const commuteQ = { a: q.b, b: q.a, ans: q.ans, _commutePair: true };
-          questionQueue.unshift(commuteQ);
+    // Step 1 — pattern tip
+    const pattern = getPattern(table);
+    showBubble(pattern, 'pattern', null);
+
+    bubbleTimeout = setTimeout(() => {
+      if(_skipped) return;
+      // Step 2 — commutativity (only if meaningful, and only the first time
+      // this fact pair appears — the injected reverse-order question
+      // (_commutePair) already showed this tip and bonus for the original)
+      if(q.a !== q.b && !q._commutePair) {
+        const commuteMsg = `You also know\n${q.b} × ${q.a} = ${q.ans}! 🎉`;
+        showBubble(commuteMsg, 'commute', 1);
+        // NOTE: only add to the in-session counter here. sessionCoins is
+        // added to the saved coin total once at end-of-session (endGame /
+        // endSession) — saving it here too caused this bonus to be counted
+        // twice toward the permanent balance.
+        sessionCoins += 1;
+        updateCoinDisplay();
+
+        // Inject commutative pair only once per unique fact per session
+        // Skip in Stage 0 (training): questions are sequential and injecting
+        // commutative pairs inflates `answered`, corrupts progress tracking,
+        // shows wrong table labels, and triggers "All 12 tables mastered" early.
+        const _isTrainingMode = (getCurrentStage() === 0);
+        if(!q._commutePair && !_isTrainingMode){
+          const _commuteKey = `${q.a}x${q.b}`;
+          if(!_commuteInjectedThisSession.has(_commuteKey)){
+            _commuteInjectedThisSession.add(_commuteKey);
+            const commuteQ = { a: q.b, b: q.a, ans: q.ans, _commutePair: true };
+            questionQueue.unshift(commuteQ);
+          }
         }
-      }
 
-      bubbleTimeout = setTimeout(() => {
-        if(_skipped) return;
-        _clearSkipListeners();
-        resetBubble();
-        advanceQuestion();
-      }, 900);
-    } else {
-      bubbleTimeout = setTimeout(() => {
-        if(_skipped) return;
-        _clearSkipListeners();
-        resetBubble();
-        advanceQuestion();
-      }, 700);
-    }
-  }, 1000);
+        bubbleTimeout = setTimeout(() => {
+          if(_skipped) return;
+          _clearSkipListeners();
+          resetBubble();
+          advanceQuestion();
+        }, 900);
+      } else {
+        bubbleTimeout = setTimeout(() => {
+          if(_skipped) return;
+          _clearSkipListeners();
+          resetBubble();
+          advanceQuestion();
+        }, 700);
+      }
+    }, 800);
+  });
 }
 
 /* BUBBLES is now a function so it can inject the player name */
@@ -3845,6 +3842,7 @@ let gameScore      = 0;
 let sessionCoins   = 0;
 let streak         = 0;
 let answered       = 0;
+let passPoints     = 0;   // pass/fail score: +1 correct, -0.5 wrong (stages 1–4)
 let questionIndex  = 0;  // 1-based index of current question in session
 let sessionTotalQuestions = 10; // total questions for the current session (incl. warm-ups & review)
 let timerVal    = 240;
@@ -3883,8 +3881,12 @@ let nlCurrent   = 0;      // which stone index Redy is on
 let nlDemoTimer = null;
 
 const TOTAL = 10;
-// Minimum correct answers needed to pass a stage and advance (60% of TOTAL)
-const PASS_THRESHOLD = 6;
+// Pass requirement for stages 1–4: points-based system
+// +1 per correct answer, -0.5 per wrong answer, need 20 points to pass
+const PASS_POINTS_TARGET  = 20;
+const PASS_POINTS_CORRECT = 1;
+const PASS_POINTS_WRONG   = -0.5;
+const PASS_MIN_QUESTIONS  = 5;   // must attempt at least 5 questions to be scored
 
 /* ── Question generation ──────────────────────────── */
 function makeQ(stage){
@@ -4247,10 +4249,8 @@ function checkStreak(n){
 }
 
 function updateCoinDisplay(){
-  // Bottom session-star counter shows coins earned this session
   const scoreEl = document.getElementById('g-score');
   if(scoreEl) scoreEl.textContent = sessionCoins;
-  // Also update the home coin counter if visible
   const homeCoinsEl = document.getElementById('home-coin-num');
   if(homeCoinsEl) homeCoinsEl.textContent = getCoins() + sessionCoins;
 }
@@ -4295,6 +4295,7 @@ function checkAns(chosen, q, btn){
     btn.classList.add('correct');
     btn.textContent = '✓ '+chosen;
     gameScore+=10; sessionCoins+=2; streak++; answered++;
+    passPoints += PASS_POINTS_CORRECT;
     haptic(50); // short buzz for correct
     playCorrectDing();
     _wrongAttemptsThisQ = 0;
@@ -4351,6 +4352,7 @@ function checkAns(chosen, q, btn){
     haptic([80, 40, 80]); // double-buzz for wrong
     playWrongBoop();
     _wrongAttemptsThisQ++;
+    passPoints += PASS_POINTS_WRONG;
     setRedyState('incorrect');
 
     // Redy speaks — explicit "try again" guidance
@@ -4570,7 +4572,7 @@ function applyCharacterTheme(){
 /* ── Start game ─────────────────────────────────── */
 function startGame(){
   const stage = getCurrentStage();
-  gameScore=0; sessionCoins=0; streak=0; answered=0; questionIndex=0; hintEverUsedThisGame=false;
+  gameScore=0; sessionCoins=0; streak=0; answered=0; passPoints=0; questionIndex=0; hintEverUsedThisGame=false;
   sessionStartOffset = getTrainingOffset(); // capture once — never re-read mid-session
   wrongQuestions=[]; reviewMode=false; reviewQueue=[];
   _commuteInjectedThisSession = new Set();
@@ -4742,7 +4744,9 @@ function endGame(){
   const _prevHighest = getHighestStage();
   const _newHighest = Math.max(_prevHighest, stage);
   // Only unlock next stage if: this is the furthest they've gone AND they passed
-  const _passed = (stage >= 1 && stage <= 4) ? answered >= PASS_THRESHOLD : true;
+  const _passed = (stage >= 1 && stage <= 4)
+    ? (questionIndex >= PASS_MIN_QUESTIONS && passPoints >= PASS_POINTS_TARGET)
+    : true;
   const _unlockedNew = _nextStage && _newHighest < _nextStage && _passed;
   // Check personal best for this stage
   const _isNewBest = checkPersonalBest(stage, sessionCoins);
@@ -4770,15 +4774,14 @@ function endGame(){
     return;
   }
 
-  // Stages 1–4: player must get at least PASS_THRESHOLD correct to pass
-  if(stage >= 1 && stage <= 4 && answered < PASS_THRESHOLD){
-    showStageFailOverlay({ correct: answered, needed: PASS_THRESHOLD, total: TOTAL, stage });
+  // Stages 1–4: player must reach PASS_POINTS_TARGET points to pass
+  if(stage >= 1 && stage <= 4 && !_passed){
+    showStageFailOverlay({ correct: answered, total: questionIndex, points: passPoints, target: PASS_POINTS_TARGET, minQ: PASS_MIN_QUESTIONS });
     return;
   }
 
   // Show cutscene first, then reveal session summary on Continue
   showCutscene(() => {
-    // Make the session star counter show the total earned this game
     const scoreEl = document.getElementById('g-score');
     if(scoreEl) scoreEl.textContent = sessionCoins;
     const homeNum = document.getElementById('home-coin-num');
@@ -4803,6 +4806,7 @@ function endGame(){
       coins: sessionCoins,
       mastered: _mc,
       correct: answered,
+      points: passPoints,
       isNewBest: _isNewBest,
       weak: _weak,
       unlockedNew: !!_unlockedNew,
@@ -4814,7 +4818,7 @@ function endGame(){
 }
 
 /* ── Session Complete overlay (styled like the training intro card) ── */
-function showSessionCompleteOverlay({ coins, mastered, correct, isNewBest, weak, unlockedNew }){
+function showSessionCompleteOverlay({ coins, mastered, correct, points, isNewBest, weak, unlockedNew }){
   const gameEl = document.getElementById('screen-game');
   if(!gameEl) return;
 
@@ -4826,6 +4830,9 @@ function showSessionCompleteOverlay({ coins, mastered, correct, isNewBest, weak,
   const _currentStage = getCurrentStage();
   const _nextStage    = _currentStage < 5 ? _currentStage + 1 : null;
   const _showContinue = _nextStage !== null;
+  const _showPoints   = _currentStage >= 1 && _currentStage <= 4;
+  const _safePoints   = Math.max(0, points ?? 0);
+  const _ptsDisplay   = _safePoints % 1 === 0 ? _safePoints : _safePoints.toFixed(1);
 
   // Button label: show unlock message if a new stage was just unlocked
   const _continueBtnHTML = _showContinue ? (() => {
@@ -4845,7 +4852,7 @@ function showSessionCompleteOverlay({ coins, mastered, correct, isNewBest, weak,
   overlay.id = 'session-complete-overlay';
   overlay.innerHTML = `
     <div class="session-complete-emoji">🏆</div>
-    <div class="session-complete-title">Session Complete!${isNewBest ? '<span class="session-complete-badge">🎉 New Best!</span>' : ''}</div>
+    <div class="session-complete-title">Stage Passed!${isNewBest ? '<span class="session-complete-badge">🎉 New Best!</span>' : ''}</div>
     <div class="session-complete-stats">
       <div class="session-complete-stat">
         <div class="session-complete-stat-num" style="color:#ffe84d">${coins}</div>
@@ -4855,10 +4862,16 @@ function showSessionCompleteOverlay({ coins, mastered, correct, isNewBest, weak,
         <div class="session-complete-stat-num" style="color:#8be43c">${mastered}</div>
         <div class="session-complete-stat-label">Facts mastered</div>
       </div>
-      <div class="session-complete-stat">
-        <div class="session-complete-stat-num" style="color:#3aabf0">${correct}</div>
-        <div class="session-complete-stat-label">Correct</div>
-      </div>
+      ${_showPoints
+        ? `<div class="session-complete-stat">
+             <div class="session-complete-stat-num" style="color:#3aabf0">${_ptsDisplay}</div>
+             <div class="session-complete-stat-label">Pass points</div>
+           </div>`
+        : `<div class="session-complete-stat">
+             <div class="session-complete-stat-num" style="color:#3aabf0">${correct}</div>
+             <div class="session-complete-stat-label">Correct</div>
+           </div>`
+      }
     </div>
     <div class="session-complete-sub">${weak.length ? `Still practising: <strong style="color:#ffe84d">${weak.map(f=>`${f.a}x${f.b}`).join('  ')}</strong>` : `<strong style="color:#8be43c">No weak spots this session!</strong>`}</div>
     ${_continueBtnHTML}
@@ -4946,55 +4959,64 @@ function showUltimateFail(){
   });
 }
 
-/* ── Stage Fail overlay (stages 1–4, not enough correct answers) ── */
-function showStageFailOverlay({ correct, needed, total, stage }){
+/* ── Stage Fail overlay (stages 1–4, points below target) ── */
+function showStageFailOverlay({ correct, total, points, target, minQ }){
   const gameEl = document.getElementById('screen-game');
   if(!gameEl) return;
 
-  // Clean up any existing overlay
   const old = document.getElementById('stage-fail-overlay');
   if(old) old.remove();
 
-  const pct = Math.round((correct / total) * 100);
-  const stillNeed = needed - correct;
+  const tooFew    = total < minQ;
+  const safePoints = Math.max(0, points);
+  const pct        = Math.min(100, Math.round((safePoints / target) * 100));
+  const wrong      = total - correct;
+
+  let subMsg;
+  if(total === 0){
+    subMsg = `<strong style="color:#ff7043">No answers submitted!</strong><br>Answer questions during the timer to score points.`;
+  } else if(tooFew){
+    subMsg = `Only <strong style="color:#ff7043">${total} question${total!==1?'s':''}</strong> attempted — you need at least <strong style="color:#ffe84d">${minQ}</strong> to be scored.`;
+  } else {
+    const gap = (target - safePoints).toFixed(1).replace('.0','');
+    subMsg = `<strong style="color:#ff7043">${gap} more point${gap!=='1'?'s':''}</strong> needed to pass.<br>Each correct = <strong style="color:#8be43c">+1pt</strong> &nbsp;·&nbsp; Each wrong = <strong style="color:#ff7043">−0.5pt</strong>`;
+  }
 
   const overlay = document.createElement('div');
   overlay.className = 'stage-fail-overlay';
   overlay.id = 'stage-fail-overlay';
   overlay.innerHTML = `
     <div class="stage-fail-emoji">😬</div>
-    <div class="stage-fail-title">So Close!</div>
+    <div class="stage-fail-title">Not Quite There!</div>
     <div class="stage-fail-stats">
       <div class="session-complete-stat">
-        <div class="stage-fail-stat-num" style="color:#ff7043">${correct}</div>
-        <div class="stage-fail-stat-label">Correct</div>
+        <div class="stage-fail-stat-num" style="color:#ff7043">${safePoints % 1 === 0 ? safePoints : safePoints.toFixed(1)}</div>
+        <div class="stage-fail-stat-label">Your points</div>
       </div>
       <div class="session-complete-stat">
-        <div class="stage-fail-stat-num" style="color:#ffe84d">${needed}</div>
+        <div class="stage-fail-stat-num" style="color:#ffe84d">${target}</div>
         <div class="stage-fail-stat-label">Needed to pass</div>
       </div>
       <div class="session-complete-stat">
-        <div class="stage-fail-stat-num" style="color:#ce93d8">${total}</div>
-        <div class="stage-fail-stat-label">Total questions</div>
+        <div class="stage-fail-stat-num" style="color:#8be43c">${correct}</div>
+        <div class="stage-fail-stat-label">Correct</div>
+      </div>
+      <div class="session-complete-stat">
+        <div class="stage-fail-stat-num" style="color:#f54b6e">${wrong}</div>
+        <div class="stage-fail-stat-label">Wrong</div>
       </div>
     </div>
     <div class="stage-fail-progress-wrap">
       <div class="stage-fail-progress-fill" id="fail-progress-fill" style="width:0%"></div>
     </div>
-    <div class="stage-fail-progress-label">${pct}% — need ${Math.round((needed/total)*100)}% to pass</div>
-    <div class="stage-fail-sub">
-      ${correct === 0
-        ? `<strong style="color:#ff7043">No answers submitted!</strong><br>You need at least <strong style="color:#ffe84d">${needed} correct</strong> to pass this stage.`
-        : `You need <strong style="color:#ffe84d">${stillNeed} more correct answer${stillNeed !== 1 ? 's' : ''}</strong> to unlock Stage ${stage + 1}.<br>Keep practising — you've got this! 💪`
-      }
-    </div>
+    <div class="stage-fail-progress-label">${safePoints % 1 === 0 ? safePoints : safePoints.toFixed(1)} / ${target} points</div>
+    <div class="stage-fail-sub">${subMsg}</div>
     <button class="stage-fail-btn stage-fail-btn-retry" id="stage-fail-retry">▶ TRY AGAIN</button>
     <button class="stage-fail-btn stage-fail-btn-home" id="stage-fail-home">🏠 HOME</button>
   `;
 
   gameEl.appendChild(overlay);
 
-  // Animate the progress bar after a short delay
   requestAnimationFrame(() => {
     setTimeout(() => {
       const fill = document.getElementById('fail-progress-fill');
@@ -5585,6 +5607,7 @@ function finalTapAfterHint(q, btn){
   btn.classList.add('correct');
   btn.textContent='✓ '+q.ans;
   gameScore+=10; sessionCoins+=2; streak++; answered++;
+  passPoints += PASS_POINTS_CORRECT;
   updateCoinDisplay(); updateProgress(); checkStreak(streak);
   // showCorrectSequence speaks the equation — no duplicate call here.
   setTimeout(()=>showCorrectSequence(q), 400);
@@ -5967,22 +5990,48 @@ function _speak(text, { rate = 0.95, pitch = 1.02, volume = 1 } = {}){
    Speaks "Three times four... is twelve!" with human pacing.
 ──────────────────────────────────────────────────────── */
 function speakFullEquation(q){
-  if(!window.speechSynthesis) return;
-  const name     = getPlayerName();
+  if(!window.speechSynthesis) return Promise.resolve();
+  if(loadState().ttsOn === false) return Promise.resolve();
 
-  // Strategic punctuation pauses prevent the robotic, flat delivery
-  const equation = `${numWord(q.a)} times... ${numWord(q.b)}, is... ${numWord(q.ans)}!`;
+  const sentence = `${numWord(q.a)} times ${numWord(q.b)}, is ${numWord(q.ans)}!`;
 
-  const prefixes = name ? [
-    `Wow, ${name}! `,
-    `Yes, ${name}! `,
-    ``,
-  ] : [''];
-  const prefix   = prefixes[Math.floor(Math.random() * prefixes.length)];
-  const sentence = prefix + equation;
+  // Return a Promise that resolves when the utterance ends (or errors/cancels).
+  // A 4s safety timeout ensures we never get stuck waiting if onend misfires.
+  return new Promise(resolve => {
+    const synth = window.speechSynthesis;
+    if(!bestFemaleVoice) loadBestVoice();
 
-  // Dropping pitch to 1.02 removes metallic distortion, rate 0.92 sounds like a patient teacher
-  _speak(sentence, { rate: 0.92, pitch: 1.02, volume: 1 });
+    const u = new SpeechSynthesisUtterance(sentence);
+    if(bestFemaleVoice){ u.voice = bestFemaleVoice; u.lang = bestFemaleVoice.lang; }
+    else { u.lang = 'en-GB'; }
+    u.rate   = 0.95;
+    u.pitch  = 1.02;
+    u.volume = 1;
+
+    let _resolved = false;
+    const done = () => { if(!_resolved){ _resolved = true; resolve(); } };
+
+    u.onend   = done;
+    u.onerror = done; // cancelled or error — resolve immediately so game continues
+    setTimeout(done, 4000); // safety net
+
+    _stopSpeechKeepAlive();
+    synth.cancel();
+
+    if(isAndroid){
+      let _waited = 0;
+      const _poll = setInterval(() => {
+        _waited += 20;
+        if(!synth.speaking && !synth.pending){
+          clearInterval(_poll); synth.speak(u);
+        } else if(_waited >= 300){
+          clearInterval(_poll); synth.speak(u);
+        }
+      }, 20);
+    } else {
+      synth.speak(u);
+    }
+  });
 }
 /* ── Single number counting ─────────────────────────── */
 function speakNum(n){
