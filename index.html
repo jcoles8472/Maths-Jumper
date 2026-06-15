@@ -2021,7 +2021,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 
 /* Toast */
-.toast { position:absolute; bottom:56px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:10px 20px; font-size:13px; font-weight:900; opacity:0; pointer-events:none; z-index:90; transition:all .3s; white-space:normal; text-align:center; max-width:calc(100% - 32px); box-sizing:border-box; line-height:1.4; }
+.toast { position:absolute; bottom:160px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:10px 20px; font-size:13px; font-weight:900; opacity:0; pointer-events:none; z-index:90; transition:all .3s; white-space:normal; text-align:center; max-width:calc(100% - 32px); box-sizing:border-box; line-height:1.4; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
 /* ── Quit confirmation modal ── */
@@ -2099,21 +2099,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* ── Bubble mode transition flash ── */
 .g-bubble { transition: background .25s ease, color .25s ease, transform .25s ease, box-shadow .2s ease; }
 
-/* Review Mode banner */
-.review-mode-banner {
-  display: none;
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  background: linear-gradient(90deg, #ff9800, #e65100);
-  color: white;
-  text-align: center;
-  font-size: 13px; font-weight: 900;
-  padding: 6px 12px;
-  letter-spacing: .5px;
-  z-index: 50;
-  box-shadow: 0 3px 10px rgba(0,0,0,.25);
-}
-.review-mode-banner.active { display: block; }
+
 
 /* ── Mastery Grid ── */
 .mg-table { border-collapse: separate; border-spacing: 3px; width: 100%; table-layout: fixed; }
@@ -2292,6 +2278,74 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .session-complete-btn-home:active {
   transform: translateY(4px);
   box-shadow: 0 5px 12px rgba(0,0,0,.2), inset 0 3px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.08);
+}
+
+/* ── Stage Fail overlay ── */
+.stage-fail-overlay {
+  position: absolute; inset: 0; z-index: 200;
+  background: linear-gradient(160deg, #1a0533 0%, #3d1278 60%, #0d0025 100%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 30px 24px; text-align: center;
+  overflow-y: auto;
+  animation: fadeSlideUp .4s ease both;
+}
+@keyframes failShake {
+  0%,100%{transform:translateX(0) scale(1)}
+  20%{transform:translateX(-10px) scale(1.05)}
+  40%{transform:translateX(10px) scale(1.05)}
+  60%{transform:translateX(-6px)}
+  80%{transform:translateX(6px)}
+}
+.stage-fail-emoji { font-size: 72px; margin-bottom: 12px; animation: failShake 0.7s ease .2s both; }
+.stage-fail-title { font-size: 28px; font-weight: 900; color: white; text-shadow: 0 4px 0 #8b0000; margin-bottom: 8px; }
+.stage-fail-stats {
+  background: rgba(255,255,255,.1); border-radius: 20px;
+  padding: 16px 20px; margin-bottom: 16px; width: 100%;
+  border: 2px solid rgba(255,255,255,.15);
+  display: flex; justify-content: space-around;
+}
+.stage-fail-stat-num { font-size: 22px; font-weight: 900; }
+.stage-fail-stat-label { font-size: 9px; font-weight: 700; opacity: .7; text-transform: uppercase; color: #ce93d8; margin-top: 2px; }
+.stage-fail-progress-wrap {
+  width: 100%; background: rgba(255,255,255,.12); border-radius: 50px;
+  height: 20px; margin-bottom: 8px; overflow: hidden;
+  border: 2px solid rgba(255,255,255,.15);
+}
+.stage-fail-progress-fill {
+  height: 100%; border-radius: 50px;
+  background: linear-gradient(to right, #f54b6e, #ff8a65);
+  transition: width .8s cubic-bezier(.34,1.56,.64,1);
+}
+.stage-fail-progress-label { font-size: 13px; font-weight: 900; color: #ce93d8; margin-bottom: 18px; }
+.stage-fail-sub { font-size: 14px; font-weight: 700; color: #ce93d8; margin-bottom: 20px; line-height: 1.5; }
+.stage-fail-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; max-width: 320px; margin: 8px 0 0;
+  padding: 16px 0;
+  border: none; border-radius: 50px;
+  font-family: 'Nunito', cursive; font-size: 18px; font-weight: 900; letter-spacing: 1.5px;
+  color: white; text-shadow: 0 2px 4px rgba(0,0,0,.25);
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.stage-fail-btn::after {
+  content: ""; position: absolute; inset: 6px; border-radius: 40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,.32) 0%, rgba(255,255,255,.14) 18%, rgba(255,255,255,0) 44%);
+  pointer-events: none;
+}
+.stage-fail-btn:hover { transform: translateY(-2px); }
+.stage-fail-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 5px 12px rgba(0,0,0,.2), inset 0 3px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.08) !important;
+}
+.stage-fail-btn-retry {
+  background: linear-gradient(to bottom, #ff7043 0%, #f44336 55%, #c62828 100%);
+  box-shadow: 0 14px 28px rgba(200,0,0,.3), inset 0 3px 0 rgba(255,255,255,.28), inset 0 -5px 0 rgba(0,0,0,.1);
+}
+.stage-fail-btn-home {
+  background: linear-gradient(to bottom, #b580f8 0%, #7c44d6 55%, #5e28b8 100%);
+  box-shadow: 0 14px 28px rgba(100,0,200,.25), inset 0 3px 0 rgba(255,255,255,.28), inset 0 -5px 0 rgba(0,0,0,.1);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -2797,11 +2851,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <!-- Background -->
   <div class="game-bg"></div>
 
-  <!-- Review Mode Banner -->
-  <div class="review-mode-banner" id="review-mode-banner">
-    📝 REVIEW ROUND — Fix your mistakes to finish!
-  </div>
-
   <div class="g-header">
     <button class="g-back" onclick="showQuitModal()"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
     <div class="g-world">
@@ -2915,9 +2964,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <video
     class="cutscene-video"
     id="cutscene-video"
-    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-end-cut-scene.mp4"
     playsinline
-    preload="auto"
+    preload="none"
     loop
     muted
   ></video>
@@ -3835,6 +3883,8 @@ let nlCurrent   = 0;      // which stone index Redy is on
 let nlDemoTimer = null;
 
 const TOTAL = 10;
+// Minimum correct answers needed to pass a stage and advance (60% of TOTAL)
+const PASS_THRESHOLD = 6;
 
 /* ── Question generation ──────────────────────────── */
 function makeQ(stage){
@@ -4418,11 +4468,11 @@ function updateProgress(){
 
   // Training: update the progress pill
   if(stage === 0){
-    // Toast when crossing into a new table
+    // Toast when crossing into a new table — delayed so it shows after question advances
     const qWithinTable = (sessionStartOffset + answered) % 12;
     if(answered > 0 && qWithinTable === 0){
       const tbl = currentTrainingTable();
-      showToast(`🎉 ${tbl - 1}× table complete! Starting ${tbl}× table!`, 2500);
+      setTimeout(() => showToast(`🎉 ${tbl - 1}× table complete! Starting ${tbl}× table!`, 2500), 1200);
     }
   }
 }
@@ -4691,14 +4741,15 @@ function endGame(){
   const _nextStage = stage < 5 ? stage + 1 : null;
   const _prevHighest = getHighestStage();
   const _newHighest = Math.max(_prevHighest, stage);
-  // Auto-unlock next stage if this is the furthest they've gone
-  const _unlockedNew = _nextStage && _newHighest < _nextStage;
+  // Only unlock next stage if: this is the furthest they've gone AND they passed
+  const _passed = (stage >= 1 && stage <= 4) ? answered >= PASS_THRESHOLD : true;
+  const _unlockedNew = _nextStage && _newHighest < _nextStage && _passed;
   // Check personal best for this stage
   const _isNewBest = checkPersonalBest(stage, sessionCoins);
 
   saveState({
     coins:          totalCoins,
-    highestStage:   _unlockedNew ? _nextStage : _newHighest,
+    highestStage:   (_unlockedNew && _passed) ? _nextStage : _newHighest,
     lifetimeCoins:  (s.lifetimeCoins  ?? 0) + sessionCoins,
     lifetimeCorrect:(s.lifetimeCorrect ?? 0) + answered,
     lastGameCorrect: answered,
@@ -4719,13 +4770,14 @@ function endGame(){
     return;
   }
 
+  // Stages 1–4: player must get at least PASS_THRESHOLD correct to pass
+  if(stage >= 1 && stage <= 4 && answered < PASS_THRESHOLD){
+    showStageFailOverlay({ correct: answered, needed: PASS_THRESHOLD, total: TOTAL, stage });
+    return;
+  }
+
   // Show cutscene first, then reveal session summary on Continue
-  const _unlockedMsg = (_unlockedNew && _nextStage <= 5)
-    ? `🔓 Stage ${_nextStage} unlocked!` : null;
-
   showCutscene(() => {
-    if (_unlockedMsg) showToast(_unlockedMsg, 3000);
-
     // Make the session star counter show the total earned this game
     const scoreEl = document.getElementById('g-score');
     if(scoreEl) scoreEl.textContent = sessionCoins;
@@ -4753,6 +4805,7 @@ function endGame(){
       correct: answered,
       isNewBest: _isNewBest,
       weak: _weak,
+      unlockedNew: !!_unlockedNew,
     });
 
     const _coinsValEl = document.getElementById('g-coins-val');
@@ -4761,13 +4814,31 @@ function endGame(){
 }
 
 /* ── Session Complete overlay (styled like the training intro card) ── */
-function showSessionCompleteOverlay({ coins, mastered, correct, isNewBest, weak }){
+function showSessionCompleteOverlay({ coins, mastered, correct, isNewBest, weak, unlockedNew }){
   const gameEl = document.getElementById('screen-game');
   if(!gameEl) return;
 
   // Remove any existing overlay before adding a fresh one
   const old = document.getElementById('session-complete-overlay');
   if(old) old.remove();
+
+  // Work out what the next stage is so we can show CONTINUE vs nothing
+  const _currentStage = getCurrentStage();
+  const _nextStage    = _currentStage < 5 ? _currentStage + 1 : null;
+  const _showContinue = _nextStage !== null;
+
+  // Button label: show unlock message if a new stage was just unlocked
+  const _continueBtnHTML = _showContinue ? (() => {
+    if(unlockedNew && _nextStage !== null){
+      // Unlocked padlock icon + "Stage X Unlocked!" label
+      return `<button class="session-complete-btn session-complete-btn-play" id="session-complete-play" style="gap:10px;">
+        <span style="font-size:22px;line-height:1;flex-shrink:0;">🔓</span>
+        <span>STAGE ${_nextStage} UNLOCKED!</span>
+      </button>`;
+    } else {
+      return `<button class="session-complete-btn session-complete-btn-play" id="session-complete-play">▶ CONTINUE</button>`;
+    }
+  })() : '';
 
   const overlay = document.createElement('div');
   overlay.className = 'session-complete-overlay';
@@ -4789,18 +4860,23 @@ function showSessionCompleteOverlay({ coins, mastered, correct, isNewBest, weak 
         <div class="session-complete-stat-label">Correct</div>
       </div>
     </div>
-    <div class="session-complete-sub">${weak.length ? `Still practising: <strong style="color:#ffe84d">${weak.map(f=>`${f.a}×${f.b}`).join('  ')}</strong>` : `<strong style="color:#8be43c">🌟 No weak spots this session!</strong>`}</div>
-    <button class="session-complete-btn session-complete-btn-play" id="session-complete-play">▶ PLAY AGAIN</button>
+    <div class="session-complete-sub">${weak.length ? `Still practising: <strong style="color:#ffe84d">${weak.map(f=>`${f.a}x${f.b}`).join('  ')}</strong>` : `<strong style="color:#8be43c">No weak spots this session!</strong>`}</div>
+    ${_continueBtnHTML}
     <button class="session-complete-btn session-complete-btn-mastery" id="session-complete-mastery">📊 MY FACT MASTERY GRID</button>
     <button class="session-complete-btn session-complete-btn-home" id="session-complete-home">🏠 HOME</button>
   `;
   gameEl.appendChild(overlay);
 
-  document.getElementById('session-complete-play').onclick = () => {
-    overlay.remove();
-    document.querySelector('.g-equation').style.fontSize='65px';
-    startGame();
-  };
+  const playBtn = document.getElementById('session-complete-play');
+  if(playBtn && _nextStage !== null){
+    playBtn.onclick = () => {
+      overlay.remove();
+      // Advance to the next stage and start immediately
+      saveState({ currentStage: _nextStage });
+      document.querySelector('.g-equation').style.fontSize='65px';
+      startGame();
+    };
+  }
   document.getElementById('session-complete-mastery').onclick = () => showMasteryGrid();
   document.getElementById('session-complete-home').onclick = () => {
     overlay.remove();
@@ -4868,6 +4944,73 @@ function showUltimateFail(){
     btn.style.cssText = `grid-column:span 2;background:${bg};box-shadow:0 6px 0 ${sh};font-size:17px;padding:16px;`;
     btn.textContent = lbl; btn.onclick = fn; grid.appendChild(btn);
   });
+}
+
+/* ── Stage Fail overlay (stages 1–4, not enough correct answers) ── */
+function showStageFailOverlay({ correct, needed, total, stage }){
+  const gameEl = document.getElementById('screen-game');
+  if(!gameEl) return;
+
+  // Clean up any existing overlay
+  const old = document.getElementById('stage-fail-overlay');
+  if(old) old.remove();
+
+  const pct = Math.round((correct / total) * 100);
+  const stillNeed = needed - correct;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'stage-fail-overlay';
+  overlay.id = 'stage-fail-overlay';
+  overlay.innerHTML = `
+    <div class="stage-fail-emoji">😬</div>
+    <div class="stage-fail-title">So Close!</div>
+    <div class="stage-fail-stats">
+      <div class="session-complete-stat">
+        <div class="stage-fail-stat-num" style="color:#ff7043">${correct}</div>
+        <div class="stage-fail-stat-label">Correct</div>
+      </div>
+      <div class="session-complete-stat">
+        <div class="stage-fail-stat-num" style="color:#ffe84d">${needed}</div>
+        <div class="stage-fail-stat-label">Needed to pass</div>
+      </div>
+      <div class="session-complete-stat">
+        <div class="stage-fail-stat-num" style="color:#ce93d8">${total}</div>
+        <div class="stage-fail-stat-label">Total questions</div>
+      </div>
+    </div>
+    <div class="stage-fail-progress-wrap">
+      <div class="stage-fail-progress-fill" id="fail-progress-fill" style="width:0%"></div>
+    </div>
+    <div class="stage-fail-progress-label">${pct}% — need ${Math.round((needed/total)*100)}% to pass</div>
+    <div class="stage-fail-sub">
+      ${correct === 0
+        ? `<strong style="color:#ff7043">No answers submitted!</strong><br>You need at least <strong style="color:#ffe84d">${needed} correct</strong> to pass this stage.`
+        : `You need <strong style="color:#ffe84d">${stillNeed} more correct answer${stillNeed !== 1 ? 's' : ''}</strong> to unlock Stage ${stage + 1}.<br>Keep practising — you've got this! 💪`
+      }
+    </div>
+    <button class="stage-fail-btn stage-fail-btn-retry" id="stage-fail-retry">▶ TRY AGAIN</button>
+    <button class="stage-fail-btn stage-fail-btn-home" id="stage-fail-home">🏠 HOME</button>
+  `;
+
+  gameEl.appendChild(overlay);
+
+  // Animate the progress bar after a short delay
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const fill = document.getElementById('fail-progress-fill');
+      if(fill) fill.style.width = pct + '%';
+    }, 200);
+  });
+
+  document.getElementById('stage-fail-retry').onclick = () => {
+    overlay.remove();
+    document.querySelector('.g-equation').style.fontSize = '65px';
+    startGame();
+  };
+  document.getElementById('stage-fail-home').onclick = () => {
+    overlay.remove();
+    showScreen('screen-home');
+  };
 }
 
 /* ── Stage 5 victory celebration ── */
@@ -6668,43 +6811,68 @@ function showCutscene(onDone) {
     1: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-one-complete.mp4',
     2: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-two-complete.mp4',
     3: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-three-complete.mp4',
-
     4: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-four-complete.mp4',
     5: 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-cutscene-stage-five-complete.mp4',
-
   };
   const stageVideoUrl = CUTSCENE_URLS[_cutsceneStage]
     || 'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-end-cut-scene.mp4';
-  if (video.src !== stageVideoUrl) {
-    video.src = stageVideoUrl;
-    video.load();
-  }
 
   // Respect global mute setting
   const sfxOn = (loadState().sfxOn !== false);
   video.muted = !sfxOn;
   video.volume = sfxOn ? 1 : 0;
 
-  // Show overlay
+  // Keep overlay hidden until first frame is painted to avoid any flicker
+  overlay.style.opacity = '0';
   overlay.classList.add('active');
 
-  // Play — must happen after a gesture on mobile; endGame is triggered
-  // by a tap so this is safe.
-  video.currentTime = 0;
-  const playPromise = video.play();
-  if (playPromise !== undefined) {
-    playPromise.catch(() => {
-      // Autoplay blocked — play muted as fallback
-      video.muted = true;
-      video.play().catch(() => {});
+  function _doPlay() {
+    video.currentTime = 0;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+    }
+    // Fade in once first frame is ready
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        overlay.style.transition = 'opacity 0.25s ease';
+        overlay.style.opacity = '1';
+      });
     });
+  }
+
+  if (video.src !== stageVideoUrl) {
+    // New video — wait for it to be ready before showing
+    video.src = stageVideoUrl;
+    video.load();
+    const onCanPlay = () => {
+      video.removeEventListener('canplay', onCanPlay);
+      _doPlay();
+    };
+    video.addEventListener('canplay', onCanPlay);
+    // Safety fallback: if canplay takes >1.5s, show anyway
+    setTimeout(() => {
+      video.removeEventListener('canplay', onCanPlay);
+      overlay.style.opacity = '1';
+    }, 1500);
+  } else {
+    // Same video already loaded — play immediately
+    _doPlay();
   }
 }
 
 function closeCutscene() {
   const overlay = document.getElementById('cutscene-overlay');
   const video   = document.getElementById('cutscene-video');
-  if (overlay) overlay.classList.remove('active');
+  if (overlay) {
+    overlay.classList.remove('active');
+    // Reset inline styles set during showCutscene so next call starts clean
+    overlay.style.opacity = '';
+    overlay.style.transition = '';
+  }
   if (video)   { video.pause(); video.currentTime = 0; }
 
   const cb = window._cutsceneOnDone;
