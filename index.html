@@ -3100,7 +3100,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
           <div class="settings-row-icon" style="background:linear-gradient(135deg,#66bb6a,#2e7d32)">🌿</div>
           <div>
             <div class="settings-row-text">Calm Mode</div>
-            <div class="settings-row-sub">Softer feedback, no timer flash, consistent wording</div>
+            <div class="settings-row-sub">No timer, softer feedback, consistent wording</div>
           </div>
         </div>
         <label class="settings-toggle light">
@@ -3549,6 +3549,9 @@ const getSelectedChar = () => loadState().selectedChar  ?? 'redy';
 const getUnlockedChars= () => loadState().unlockedChars ?? ['redy'];
 const getPlayerName   = () => loadState().playerName    || '';  // '' means not set yet
 const isCalmMode      = () => loadState().calmModeOn ?? false;
+// Untimed play: in Calm Mode, stages 1–4 have no countdown — the round ends
+// when all questions are answered instead of when a clock runs out.
+const isUntimedStage  = (stage) => isCalmMode() && stage >= 1 && stage <= 4;
 const getTrainingTable   = () => loadState().trainingTable   ?? 1;   // 1–12
 const getTrainingProgress= () => loadState().trainingProgress ?? 0;  // 0–4 within batch
 
@@ -4677,12 +4680,22 @@ function startGame(){
 
   // Stage 0: hide timer, show table-label pill
   // Stages 1–5: show timer only, hide table-label pill
+  // Calm Mode (stages 1–4): untimed — keep the timer pill visible but show ∞ (unlimited)
+  const _untimed = isUntimedStage(stage);
   if(isTraining){
     if(timerDiv)      timerDiv.classList.add('hidden');
-    if(tableLabelDiv) { tableLabelDiv.classList.remove('hidden'); tableLabelDiv.classList.remove('stage-mode'); }
-    const startTbl = currentTrainingTable();
-    updateTableLabelPill(startTbl);
+    if(tableLabelDiv) {
+      tableLabelDiv.classList.remove('hidden'); tableLabelDiv.classList.remove('stage-mode');
+      const startTbl = currentTrainingTable();
+      updateTableLabelPill(startTbl);
+    }
+  } else if(_untimed){
+    // Untimed: pill stays on screen so the layout is unchanged, but shows "unlimited"
+    if(timerDiv){ timerDiv.classList.remove('hidden'); timerDiv.classList.remove('urgent'); }
+    if(timerEl){ timerEl.textContent = '∞'; timerEl.style.fontSize = '20px'; timerEl.style.lineHeight = '1'; }
+    if(tableLabelDiv) { tableLabelDiv.classList.add('hidden'); tableLabelDiv.classList.remove('stage-mode'); }
   } else {
+    if(timerEl){ timerEl.textContent = formatCountdown(timerVal); timerEl.style.fontSize = ''; timerEl.style.lineHeight = ''; }
     if(timerDiv)      timerDiv.classList.remove('hidden');
     if(tableLabelDiv) { tableLabelDiv.classList.add('hidden'); tableLabelDiv.classList.remove('stage-mode'); }
   }
@@ -4699,8 +4712,8 @@ function startGame(){
   const hintBtn = document.getElementById('g-hint-btn');
   if(hintBtn) hintBtn.style.display = isUltimate ? 'none' : '';
 
-  // Timer countdown (not used for Stage 0 — no time limit)
-  if(!isTraining){
+  // Timer countdown (not used for Stage 0, nor for Calm Mode untimed stages 1–4)
+  if(!isTraining && !_untimed){
     startTimerInterval();
   }
 
@@ -4745,8 +4758,10 @@ function startTimerInterval(){
      so they never come back to a lost game. ── */
 document.addEventListener('visibilitychange', ()=>{
   const inGame = !document.getElementById('screen-game').classList.contains('hidden');
-  const isTraining = (getCurrentStage() === 0);
-  if(!inGame || isTraining || _midGamePaused) return;
+  const stage = getCurrentStage();
+  const isTraining = (stage === 0);
+  // No timer is running for training or Calm Mode untimed stages — nothing to pause/resume
+  if(!inGame || isTraining || isUntimedStage(stage) || _midGamePaused) return;
   if(document.hidden){
     clearInterval(timerInt);
   } else if(timerVal > 0){
@@ -6835,10 +6850,10 @@ function resumeFromMastery() {
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById('screen-game').classList.remove('hidden');
 
-  // Resume the timer countdown (if not training and timer still has time)
+  // Resume the timer countdown (not for training or Calm Mode untimed stages)
   const stage = getCurrentStage();
   const isTraining = (stage === 0);
-  if(!isTraining && timerVal > 0){
+  if(!isTraining && !isUntimedStage(stage) && timerVal > 0){
     startTimerInterval();
   }
 }
