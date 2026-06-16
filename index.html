@@ -101,6 +101,15 @@ body {
   }
 }
 
+/* ── Calm Mode (in-app toggle): same flattening as prefers-reduced-motion
+     above, but applied directly via class so it works even when the
+     device's OS-level reduced-motion setting isn't turned on. ── */
+body.calm-motion *, body.calm-motion *::before, body.calm-motion *::after {
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
+}
+
 :root {
   --purple:      #5c3fa3;
   --purple-btn:  #6b4dbf;
@@ -3083,6 +3092,25 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
       </div>
     </div>
 
+    <!-- COMFORT -->
+    <div class="settings-section-label">🌿 Comfort</div>
+    <div class="settings-card">
+      <div class="settings-row">
+        <div class="settings-row-left">
+          <div class="settings-row-icon" style="background:linear-gradient(135deg,#66bb6a,#2e7d32)">🌿</div>
+          <div>
+            <div class="settings-row-text">Calm Mode</div>
+            <div class="settings-row-sub">Softer feedback, no timer flash, consistent wording</div>
+          </div>
+        </div>
+        <label class="settings-toggle light">
+          <input type="checkbox" id="settings-calm" onchange="saveSettingsBool('calmModeOn',this.checked)"/>
+          <div class="settings-toggle-track"></div>
+          <div class="settings-toggle-thumb"></div>
+        </label>
+      </div>
+    </div>
+
     <!-- DISPLAY -->
     <div class="settings-section-label">🎨 Display</div>
     <div class="settings-card">
@@ -3214,6 +3242,16 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 </div>
 
 <script>
+/* ── Calm Mode: apply/remove reduced-motion class on <body> ──
+   Runs once immediately on load, and again whenever the toggle changes. ── */
+function applyCalmMotionClass(){
+  try {
+    const on = JSON.parse(localStorage.getItem('mj_state'))?.calmModeOn ?? false;
+    document.body.classList.toggle('calm-motion', !!on);
+  } catch(e){}
+}
+applyCalmMotionClass();
+
 /* ═══════════════════════════════════════════════════
    DATA
 ═══════════════════════════════════════════════════ */
@@ -3248,6 +3286,9 @@ const TABLE_PATTERNS = {
 
 function getPattern(table) {
   const opts = TABLE_PATTERNS[table] || TABLE_PATTERNS[2];
+  // Calm Mode: always show the same pattern tip for a given table,
+  // rather than randomly jumping between 3 different facts each time.
+  if(isCalmMode()) return opts[0];
   return opts[Math.floor(Math.random() * opts.length)];
 }
 
@@ -3386,6 +3427,10 @@ function showCorrectSequence(q) {
 
 /* BUBBLES is now a function so it can inject the player name */
 function getBubble() {
+  // Calm Mode: one consistent, predictable phrase every time —
+  // removes the unpredictability of rotating praise language.
+  if(isCalmMode()) return "Let's multiply!";
+
   const pool = [
     "Let's multiply!",
     "You got this!",
@@ -3503,6 +3548,7 @@ const getCurrentStage = () => loadState().currentStage  ?? 1;
 const getSelectedChar = () => loadState().selectedChar  ?? 'redy';
 const getUnlockedChars= () => loadState().unlockedChars ?? ['redy'];
 const getPlayerName   = () => loadState().playerName    || '';  // '' means not set yet
+const isCalmMode      = () => loadState().calmModeOn ?? false;
 const getTrainingTable   = () => loadState().trainingTable   ?? 1;   // 1–12
 const getTrainingProgress= () => loadState().trainingProgress ?? 0;  // 0–4 within batch
 
@@ -4296,7 +4342,7 @@ function checkAns(chosen, q, btn){
     btn.textContent = '✓ '+chosen;
     gameScore+=10; sessionCoins+=2; streak++; answered++;
     passPoints += PASS_POINTS_CORRECT;
-    haptic(50); // short buzz for correct
+    haptic(isCalmMode() ? 0 : 50); // short buzz for correct (off in calm mode)
     playCorrectDing();
     _wrongAttemptsThisQ = 0;
     updateCoinDisplay();
@@ -4349,20 +4395,22 @@ function checkAns(chosen, q, btn){
   } else {
     btn.classList.add('wrong');
     streak=0;
-    haptic([80, 40, 80]); // double-buzz for wrong
+    haptic(isCalmMode() ? 0 : [80, 40, 80]); // off in calm mode, double-buzz otherwise
     playWrongBoop();
     _wrongAttemptsThisQ++;
     passPoints += PASS_POINTS_WRONG;
     setRedyState('incorrect');
 
     // Redy speaks — explicit "try again" guidance
-    const _wrongMsgs = [
-      'Oops! Try a different one 👀',
-      'Not quite — have another go! 💪',
-      'Hmm, try again! You can do it 🤔',
-      'Nearly! Pick another answer 🎯',
-    ];
-    const _wMsg = _wrongMsgs[Math.floor(Math.random() * _wrongMsgs.length)];
+    // Calm Mode: always the same wording, no rotating phrases
+    const _wMsg = isCalmMode()
+      ? 'Not quite — try again! 💪'
+      : [
+          'Oops! Try a different one 👀',
+          'Not quite — have another go! 💪',
+          'Hmm, try again! You can do it 🤔',
+          'Nearly! Pick another answer 🎯',
+        ][Math.floor(Math.random() * 4)];
     showBubble(_wMsg, 'wrong-bubble', null);
 
     // Record per-fact mastery result (wrong)
@@ -4687,7 +4735,7 @@ function startTimerInterval(){
     const timerEl   = document.getElementById('g-timer');
     const timerPill = document.getElementById('g-timer-pill');
     if(timerEl) timerEl.textContent = formatCountdown(timerVal);
-    if(timerPill && timerVal <= 30) timerPill.classList.add('urgent');
+    if(timerPill && timerVal <= 30 && !isCalmMode()) timerPill.classList.add('urgent');
     if(timerVal <= 0){ clearInterval(timerInt); endGame(); }
   }, 1000);
 }
@@ -4986,7 +5034,6 @@ function showStageFailOverlay({ correct, total, points, target, minQ }){
   overlay.className = 'stage-fail-overlay';
   overlay.id = 'stage-fail-overlay';
   overlay.innerHTML = `
-    <div class="stage-fail-emoji">😬</div>
     <div class="stage-fail-title">Not Quite There!</div>
     <div class="stage-fail-stats">
       <div class="session-complete-stat">
@@ -5095,10 +5142,12 @@ function openSettings(){
   const sfxToggle = document.getElementById('settings-sfx');
   const ttsToggle = document.getElementById('settings-tts');
   const hintToggle= document.getElementById('settings-hints');
+  const calmToggle= document.getElementById('settings-calm');
   if(devToggle)  devToggle.checked  = s.devMode  ?? false;
   if(sfxToggle)  sfxToggle.checked  = s.sfxOn    ?? true;
   if(ttsToggle)  ttsToggle.checked  = s.ttsOn    ?? true;
   if(hintToggle) hintToggle.checked = s.hintsOn  ?? true;
+  if(calmToggle) calmToggle.checked = s.calmModeOn ?? false;
 
   // Sync slider
   const slider    = document.getElementById('settings-stage-slider');
@@ -5210,6 +5259,15 @@ function saveSettingsBool(key, val){
   const s = loadState();
   s[key] = val;
   localStorage.setItem('mj_state', JSON.stringify(s));
+
+  // Calm Mode: stop any vibration already in progress the instant it's switched on,
+  // and apply/remove the reduced-motion body class immediately.
+  if(key === 'calmModeOn'){
+    if(val === true){
+      try { navigator.vibrate && navigator.vibrate(0); } catch(e){}
+    }
+    document.body.classList.toggle('calm-motion', !!val);
+  }
 }
 
 function confirmResetData(){
