@@ -337,33 +337,48 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 .home-stat {
   flex: 1;
-  padding: 12px 10px;
-  display: flex; align-items: center; gap: 10px;
+  min-width: 0;
+  padding: 11px 8px;
+  display: flex; align-items: center; gap: 8px;
 }
 .home-stat + .home-stat {
   border-left: 1.5px solid #e8dcc0;
 }
+.home-stat-text { display: flex; flex-direction: column; min-width: 0; }
+.home-stat-label { font-size: 8.5px; font-weight: 900; color: #999; letter-spacing: .5px; text-transform: uppercase; line-height: 1.15; }
 .home-stat-icon-coin {
-  width: 38px; height: 38px; flex-shrink: 0;
+  width: 34px; height: 34px; flex-shrink: 0;
   background: radial-gradient(circle at 38% 32%, #ffe96e, #f5a500 60%, #c87800);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 15px;
   box-shadow: 0 3px 8px rgba(0,0,0,.2), inset 0 1px 3px rgba(255,255,255,.4);
 }
-.home-stat-icon-coin::after { content: '★'; color: rgba(255,255,255,.8); font-size: 14px; }
+.home-stat-icon-coin::after { content: '★'; color: rgba(255,255,255,.8); font-size: 13px; }
 .home-stat-icon-trophy {
-  width: 38px; height: 38px; flex-shrink: 0;
+  width: 34px; height: 34px; flex-shrink: 0;
   background: #e8d8ff;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   box-shadow: 0 3px 8px rgba(120,80,200,.2);
 }
-.home-stat-text { display: flex; flex-direction: column; }
-.home-stat-label { font-size: 10px; font-weight: 900; color: #999; letter-spacing: 1px; text-transform: uppercase; }
-.home-stat-value { font-size: 20px; font-weight: 900; color: #2a1760; line-height: 1.1; }
-.home-stat-value-sm { font-size: 14px; font-weight: 900; color: #2a1760; line-height: 1.2; }
+.home-stat-icon-streak {
+  width: 34px; height: 34px; flex-shrink: 0;
+  background: radial-gradient(circle at 40% 30%, #ffd27a, #ff8a3d 65%, #e8521b);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 3px 8px rgba(230,80,20,.25), inset 0 1px 3px rgba(255,255,255,.4);
+}
+.home-stat-icon-streak.dormant {
+  background: #e4e4ea;
+  box-shadow: 0 3px 8px rgba(0,0,0,.1);
+  filter: grayscale(1);
+  opacity: .65;
+}
+.home-stat-value { font-size: 19px; font-weight: 900; color: #2a1760; line-height: 1.1; }
+.home-stat-value-sm { font-size: 13px; font-weight: 900; color: #2a1760; line-height: 1.2; }
 
 /* ── Action buttons ── */
 .home-buttons {
@@ -2682,6 +2697,14 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
           <span class="home-stat-value-sm" id="home-mastered">0/144</span>
         </div>
       </div>
+      <!-- Daily streak -->
+      <div class="home-stat">
+        <div class="home-stat-icon-streak" id="home-streak-icon">🔥</div>
+        <div class="home-stat-text">
+          <span class="home-stat-label">DAY STREAK</span>
+          <span class="home-stat-value" id="home-streak">0</span>
+        </div>
+      </div>
     </div>
 
     <!-- Action buttons -->
@@ -3543,6 +3566,50 @@ function numWord(n){ return n<=50 ? (NW[n]||String(n)) : (NW2[n]||String(n)); }
 function loadState()  { try{ return JSON.parse(localStorage.getItem('mj_state'))||{}; }catch{ return {}; } }
 function saveState(p) { const s={...loadState(),...p}; localStorage.setItem('mj_state',JSON.stringify(s)); return s; }
 const getCoins        = () => loadState().coins         ?? 0;
+
+/* ── Daily streak ───────────────────────────────────────
+   Rewards regular, spaced practice (the rhythm that actually
+   builds multiplication fluency). Streak increments once per
+   calendar day when a session is completed. ── */
+function _todayKey(){
+  // Local-date YYYY-MM-DD (not UTC) so "today" matches the child's clock
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function _daysBetween(aKey, bKey){
+  const a = new Date(aKey + 'T00:00:00');
+  const b = new Date(bKey + 'T00:00:00');
+  return Math.round((b - a) / 86400000);
+}
+const getDailyStreak = () => loadState().dailyStreak ?? 0;
+
+// Call when a session is completed. Returns { streak, incremented } so the
+// caller can show a celebration toast only when the streak actually grows.
+function recordDailyPlay(){
+  const s = loadState();
+  const today = _todayKey();
+  const last  = s.lastPlayedDate;
+
+  if(last === today){
+    // Already counted today — no change
+    return { streak: s.dailyStreak ?? 1, incremented: false };
+  }
+
+  let streak;
+  if(last && _daysBetween(last, today) === 1){
+    streak = (s.dailyStreak ?? 0) + 1;   // consecutive day → grow
+  } else {
+    streak = 1;                          // first ever, or a gap → reset to 1
+  }
+
+  saveState({
+    dailyStreak: streak,
+    lastPlayedDate: today,
+    bestDailyStreak: Math.max(s.bestDailyStreak ?? 0, streak),
+  });
+  return { streak, incremented: true };
+}
+
 const getHighestStage = () => loadState().highestStage  ?? 1;
 const getCurrentStage = () => loadState().currentStage  ?? 1;
 const getSelectedChar = () => loadState().selectedChar  ?? 'redy';
@@ -3700,6 +3767,13 @@ function refreshHome(){
   if (coinsEl) coinsEl.textContent = coins;
   const masteredEl = document.getElementById('home-mastered');
   if (masteredEl) masteredEl.textContent = `${masteredCount()}/144`;
+
+  // Daily streak
+  const streak = getDailyStreak();
+  const streakEl = document.getElementById('home-streak');
+  if (streakEl) streakEl.textContent = streak;
+  const streakIcon = document.getElementById('home-streak-icon');
+  if (streakIcon) streakIcon.classList.toggle('dormant', streak === 0);
 
   // Update "My Progress" nav button with completion %
   const mc = masteredCount();
@@ -4342,7 +4416,7 @@ function checkAns(chosen, q, btn){
 
   if(chosen===q.ans){
     btn.classList.add('correct');
-    btn.textContent = '✓ '+chosen;
+    btn.textContent = '✓';
     gameScore+=10; sessionCoins+=2; streak++; answered++;
     passPoints += PASS_POINTS_CORRECT;
     haptic(isCalmMode() ? 0 : 50); // short buzz for correct (off in calm mode)
@@ -4779,6 +4853,22 @@ function endGame(){
   _gameEnding = true;
 
   clearInterval(timerInt);
+
+  // ── Daily streak: count this as today's practice (only if they actually
+  // answered something). Toast is shown later, after the result screen settles. ──
+  let _streakResult = { streak: getDailyStreak(), incremented: false };
+  if(answered > 0){
+    _streakResult = recordDailyPlay();
+  }
+  if(_streakResult.incremented){
+    const _sk = _streakResult.streak;
+    const _msg = _sk === 1
+      ? '🔥 Day 1 — streak started! Come back tomorrow!'
+      : `🔥 ${_sk}-day streak! Keep it going!`;
+    // Delay so it appears over the result screen rather than mid-transition
+    setTimeout(() => showToast(_msg, 3000), 1400);
+  }
+
   // Hide review banner
   const _rb = document.getElementById('review-mode-banner');
   if(_rb) _rb.classList.remove('active');
@@ -5678,7 +5768,7 @@ function autoCorrect(){
 function finalTapAfterHint(q, btn){
   document.querySelectorAll('.ans-btn').forEach(b=>{ b.disabled=true; b.classList.remove('pulse-correct'); });
   btn.classList.add('correct');
-  btn.textContent='✓ '+q.ans;
+  btn.textContent='✓';
   gameScore+=10; sessionCoins+=2; streak++; answered++;
   passPoints += PASS_POINTS_CORRECT;
   updateCoinDisplay(); updateProgress(); checkStreak(streak);
@@ -6131,6 +6221,8 @@ const ACHIEVEMENTS = [
   { id:'all_chars',   icon:'🦁', color:'pink',    title:'Full Crew',           desc:'Unlock all 6 characters.',                         target:6,   stat:'unlockedCharsCount' },
   { id:'hint_master', icon:'💡', color:'blue',    title:'Hint Master',         desc:'Use the hint 10 times.',                           target:10,  stat:'hintsUsed'    },
   { id:'no_hints',    icon:'🧠', color:'green',   title:'Brain Power',         desc:'Complete a full game without using any hints.',    target:1,   stat:'gamesNoHints' },
+  { id:'streak_day3', icon:'🔥', color:'orange',  title:'Three in a Row',      desc:'Play on 3 days in a row.',                         target:3,   stat:'bestDailyStreak' },
+  { id:'streak_day7', icon:'📅', color:'pink',    title:'Week Warrior',        desc:'Play 7 days in a row — a whole week!',             target:7,   stat:'bestDailyStreak' },
 ];
 
 function getAchievementStat(stat) {
@@ -6144,6 +6236,7 @@ function getAchievementStat(stat) {
     case 'unlockedCharsCount': return (s.unlockedChars    ?? ['redy']).length;
     case 'hintsUsed':          return s.hintsUsed         ?? 0;
     case 'gamesNoHints':       return s.gamesNoHints      ?? 0;
+    case 'bestDailyStreak':    return s.bestDailyStreak   ?? 0;
     default: return 0;
   }
 }
