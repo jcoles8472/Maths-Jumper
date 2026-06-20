@@ -1291,7 +1291,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
 /* ── Progress bar with 3 star markers ── */
 .g-progress-wrap {
-  position:absolute; top:85px; left:24px; right:18px;
+  position:absolute; top:85px; left:14px; right:14px;
   height:20px; z-index:30;
   display:flex; align-items:center;
 }
@@ -1670,7 +1670,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 /* ── Auto-Scale Adjustment for the Oops Sprite ── */
 .g-redy[src*="opps"] {
-  height: 16%; /* Pulls the height down slightly to offset the tight asset cropping */
+  height: 18%; /* Pulls the height down slightly to offset the tight asset cropping */
 }
 /* Hidden during hint mode */
 .g-redy.hint-hidden { opacity:0 !important; pointer-events:none; }
@@ -3074,7 +3074,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
   <div class="g-header">
     <button class="g-back" onclick="showQuitModal()"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-    <div class="g-world">
+    <div class="g-world" onclick="endSession(); showScreen('screen-stages');" style="cursor:pointer;" title="Select Stage">
       <span class="g-world-label">STAGE</span>
       <span class="g-world-val" id="g-world-val">1</span>
     </div>
@@ -7424,7 +7424,7 @@ refreshHome();
 /* ═══════════════════════════════════════════════════
    QUIT MODAL
 ═══════════════════════════════════════════════════ */
-let _quitDestination = null; // 'home' | 'mastery' | null
+let _quitDestination = null; // 'home' | 'mastery' | 'stages' | null
 
 function showQuitModal(dest) {
   _quitDestination = dest || 'home';
