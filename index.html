@@ -2830,7 +2830,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 
   <!-- Sky background video -->
   <div class="home-bg">
-    <video autoplay muted loop playsinline>
+    <video id="home-bg-video" autoplay muted playsinline>
       <source src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-start-bg.mp4" type="video/mp4"/>
     </video>
   </div>
@@ -7416,6 +7416,25 @@ function resetBlankSize() {
   blankEl.style.padding  = '';
 }
 
+
+// ── Seamless home background video loop ──────────────────────────────────
+// The native `loop` attribute causes a brief blank frame on some browsers.
+// Instead we manually seek back to 0 just before the video ends.
+(function() {
+  const homeBgVideo = document.getElementById('home-bg-video');
+  if (!homeBgVideo) return;
+  homeBgVideo.addEventListener('timeupdate', function() {
+    // Seek back 0.2 s before the end to avoid any decode gap
+    if (homeBgVideo.duration && homeBgVideo.currentTime >= homeBgVideo.duration - 0.2) {
+      homeBgVideo.currentTime = 0;
+    }
+  });
+  // Fallback: also handle the ended event in case timeupdate fires late
+  homeBgVideo.addEventListener('ended', function() {
+    homeBgVideo.currentTime = 0;
+    homeBgVideo.play().catch(function(){});
+  });
+})();
 
 // ── Hide rail initially
 document.getElementById('nl-rail').style.display='none';
