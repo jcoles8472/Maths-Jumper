@@ -1665,7 +1665,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 /* ── Auto-Scale Adjustment for the Oops Sprite ── */
 .g-redy[src*="opps"] {
-  height: 15%; /* Pulls the height down slightly to offset the tight asset cropping */
+  height: 30%; /* Pulls the height down slightly to offset the tight asset cropping */
 }
 /* Hidden during hint mode */
 .g-redy.hint-hidden { opacity:0 !important; pointer-events:none; }
@@ -2390,7 +2390,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 .training-intro-example-row:last-child { margin-bottom: 0; }
 .training-intro-groups { display: flex; gap: 6px; align-items: center; }
-.training-intro-group { background: rgba(255,220,0,.2); border: 2px solid #ffe84d; border-radius: 10px; padding: 4px 8px; font-size: 18px; }
+.training-intro-group { background: rgba(255,220,0,.2); border: 2px solid #ffe84d; border-radius: 10px; padding: 4px 8px; font-size: 18px; display: flex; align-items: center; gap: 2px; }
 .training-intro-btn {
   display: flex; align-items: center;
   width: calc(100% - 28px); margin: 16px 14px 0;
@@ -3478,7 +3478,7 @@ const STAGES = [
   { id:2, name:'Doubles',          tables:[4,8],         desc:'4s & 8s',       emoji:'🔥' },
   { id:3, name:'Patterns',         tables:[3,6,9],       desc:'3s, 6s & 9s',   emoji:'💫' },
   { id:4, name:'Hard Ones',        tables:[7,11,12],     desc:'7s, 11s & 12s', emoji:'🏆' },
-  { id:5, name:'Ultimate Showdown',tables:[1,2,3,4,5,6,7,8,9,10,11,12], desc:'All tables • 30 Qs • 5 min!', emoji:'👑', isUltimate:true },
+  { id:5, name:'Ultimate Showdown',tables:[1,2,3,4,5,6,7,8,9,10,11,12], desc:'All tables • 25 Qs • 5 min!', emoji:'👑', isUltimate:true },
 ];
 
 /* ── Table patterns ─────────────────────────────────────────────
@@ -4370,7 +4370,7 @@ function buildQueue(stage){
     buildTrainingQueue();
     return;
   }
-  const total = stage === 5 ? 30 : TOTAL;
+  const total = TOTAL;
   questionQueue=[];
   for(let i=0;i<total;i++) questionQueue.push(makeQ(stage));
 
@@ -4829,8 +4829,8 @@ function checkAns(chosen, q, btn){
       sessionCoins+=1; updateCoinDisplay();
       showToast('Speed Bonus! ⚡', 2000);
     }
-    // Stage 5: check if all 30 done
-    if(isUltimate && answered >= 30){
+    // Stage 5: check if all 25 done
+    if(isUltimate && answered >= TOTAL){
       // Stop the countdown right away — otherwise a timer tick to 0 during
       // this delay would call endGame() itself (showing "Time's Up" to a
       // player who just won, and double-saving the session's coins).
@@ -4935,11 +4935,19 @@ function updateProgress(){
   const _practice = (stage === 0 && _practiceTable != null);
   const _practiceBase = _practice ? (_practiceTable - 1) * 12 : 0;
   // Focused practice tracks 0–12 within the single table; full training tracks 0–144.
-  const total = stage === 5 ? 30 : stage === 0 ? (_practice ? 12 : 144) : TOTAL;
+  const total = stage === 0 ? 12 : TOTAL;
 
-  // For Stage 0 progress bar, base % on the global position (offset + answered)
+  // For Stage 0 progress bar:
+  //   • Focused practice:  position within the single table (0–12)
+  //   • Full training:     position within the CURRENT ×table (resets each table)
+  //                        Uses currentQ._seqIdx so the bar reaches 100% on the
+  //                        last question of each table, then resets for the next.
   const globalPos = stage === 0
-    ? (_practice ? (_trainingSeqPos - _practiceBase) : _trainingSeqPos)
+    ? (_practice
+        ? (_trainingSeqPos - _practiceBase)
+        : (currentQ && currentQ._seqIdx !== undefined
+            ? (currentQ._seqIdx % 12) + 1   // 1-based position within current table
+            : _trainingSeqPos % 12))
     : answered;
 
   // During review mode: hold bar at 100% so it doesn't jump backwards
@@ -4979,6 +4987,14 @@ function advanceQuestion(){
   closeHint(); // always close hint between questions
 
   const stage = getCurrentStage();
+
+  // Hard cap for Stages 1–4: end the game the moment we've served
+  // all TOTAL questions.  This prevents SRS retests, warm-up injections
+  // and review mode from pushing play beyond the 25-question maximum.
+  if(stage >= 1 && stage <= 4 && questionIndex >= TOTAL){
+    endGame();
+    return;
+  }
 
   // Stage 0: sequential — check if we've just crossed into a new ×table
   if(stage === 0){
@@ -5192,8 +5208,8 @@ function startGame(){
   closeHint();
   buildQueue(stage);
   // Total questions for this session = full queue length (incl. any warm-up
-  // facts injected by buildQueue), or 30 for the Ultimate Showdown.
-  sessionTotalQuestions = isUltimate ? 30 : questionQueue.length;
+  // facts injected by buildQueue).
+  sessionTotalQuestions = questionQueue.length;
   currentQ = questionQueue.shift();
   questionIndex = 1;
 
@@ -5331,14 +5347,14 @@ function endGame(){
   });
   checkAndUnlockAchievements();
 
-  // Stage 5: did they answer all 30 questions? Play the cutscene first, then celebrate
-  if(stage === 5 && answered >= 30){
+  // Stage 5: did they answer all 25 questions? Play the cutscene first, then celebrate
+  if(stage === 5 && answered >= TOTAL){
     showCutscene(() => showCelebration());
     return;
   }
 
   // Stage 5 failure (ran out of time before finishing)
-  if(stage === 5 && answered < 30){
+  if(stage === 5 && answered < TOTAL){
     showUltimateFail();
     return;
   }
@@ -7375,7 +7391,7 @@ function showTrainingIntro(onDone){
         </div>
       </div>
       <div style="font-size:16px;font-weight:900;color:#ffe84d;margin:6px 0;">2 groups of 3</div>
-      <div style="font-size:26px;font-weight:900;color:white;">2 × 3 = <span style="color:#8be43c">6</span> ${starImg('','width:20px;height:20px;')}</div>
+      <div style="font-size:26px;font-weight:900;color:white;display:flex;align-items:center;gap:6px;justify-content:center;">2 × 3 = <span style="color:#8be43c">6</span> ${starImg('','width:20px;height:20px;display:block;')}</div>
     </div>
     <div class="training-intro-sub" style="margin-bottom:16px;font-size:13px;">Tap the correct answer from the buttons.<br>Tap the card anytime to skip tips! 👆</div>
     <button class="training-intro-btn" id="training-intro-go">
