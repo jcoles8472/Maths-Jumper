@@ -1011,12 +1011,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   z-index: 2;
 }
 .char-lock-cost {
-  font-size: 12px; font-weight: 900;
-  color: var(--yellow);
-  background: rgba(0,0,0,.55);
-  border-radius: 20px; padding: 3px 10px;
-  display: block;
-  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+     display: none;
 }
 
 /* Name tag — overlay on bottom of image */
@@ -1670,7 +1665,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 /* ── Auto-Scale Adjustment for the Oops Sprite ── */
 .g-redy[src*="opps"] {
-  height: 18%; /* Pulls the height down slightly to offset the tight asset cropping */
+  height: 15%; /* Pulls the height down slightly to offset the tight asset cropping */
 }
 /* Hidden during hint mode */
 .g-redy.hint-hidden { opacity:0 !important; pointer-events:none; }
@@ -4200,9 +4195,18 @@ function renderChars(){
       ? `<img src="${imgSrc}" alt="${ch.name}" style="${imgFit}" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex')"/><div class="char-emoji-fallback" style="display:none">${ch.emoji||'?'}</div>`
       : `<div class="char-emoji-fallback">${ch.emoji||'?'}</div>`;
 
-    // Lock overlay — shown for locked chars regardless of state
+    // Lock overlay — shown for locked chars; displays stage/training requirement
+    let _lockLabel = '';
+    if (!trainUnlocked && trainReq > 0) {
+      const tablesNeeded = Math.floor(trainReq / 12);
+      _lockLabel = `Train ${tablesNeeded}× tables`;
+    } else if (!stageUnlocked && stageReq > 0) {
+      _lockLabel = `Clear Stage ${stageReq - 1}`;
+    } else if (!isUnlocked) {
+      _lockLabel = 'Tap to unlock!';
+    }
     const lockOverlay = !isUnlocked
-      ? `<div class="char-lock-overlay">🔒<span class="char-lock-cost">${starImg('','width:14px;height:14px;')} ${ch.cost}</span></div>`
+      ? `<div class="char-lock-overlay">🔒<span class="char-lock-cost">${_lockLabel}</span></div>`
       : '';
 
     // Check mark badge for the selected card
@@ -4233,14 +4237,12 @@ function renderChars(){
         } else {
           showToast(`Complete Stage ${stageReq - 1} first to unlock ${ch.name}! 🔒`);
         }
-      } else if (canAfford) {
-        // Unlock confirmation built into the card press
+      } else {
+        // Stage/training requirement met → unlock for free!
         const newUnlocked = [...getUnlockedChars(), ch.id];
-        saveState({ coins: getCoins() - ch.cost, unlockedChars: newUnlocked, selectedChar: ch.id });
+        saveState({ unlockedChars: newUnlocked, selectedChar: ch.id });
         showToast(`${ch.name} unlocked! 🎉`);
         renderChars();
-      } else {
-        showToast(`Need ⭐ ${ch.cost - getCoins()} more stars to unlock ${ch.name}!`);
       }
     };
 
@@ -4267,7 +4269,7 @@ let streak         = 0;
 let answered       = 0;
 let passPoints     = 0;   // pass/fail score: +1 correct, -0.5 wrong (stages 1–4)
 let questionIndex  = 0;  // 1-based index of current question in session
-let sessionTotalQuestions = 10; // total questions for the current session (incl. warm-ups & review)
+let sessionTotalQuestions = 25; // total questions for the current session (incl. warm-ups & review)
 let timerVal    = 240;
 let timerInt    = null;
 let _gameEnding = false; // re-entrancy guard for endGame() — prevents double-counting
@@ -4305,7 +4307,7 @@ let nlStones    = [];     // stone values [0, step, 2*step…]
 let nlCurrent   = 0;      // which stone index Redy is on
 let nlDemoTimer = null;
 
-const TOTAL = 10;
+const TOTAL = 25;
 // Pass requirement for stages 1–4: points-based system
 // +1 per correct answer, -0.5 per wrong answer, need 20 points to pass
 const PASS_POINTS_TARGET  = 20;
@@ -5102,7 +5104,7 @@ function startGame(){
   // Stage-specific timer setup
   const isTraining = (stage === 0);
   const isUltimate = (stage === 5);
-  timerVal = isUltimate ? 300 : 240;  // 5 min for stage 5, 4 min otherwise
+  timerVal = isTraining ? 240 : 300;  // 5 min for stages 1–5, unused for stage 0
 
   // Set the in-game character sprite to the selected character
   const charObj = CHARACTERS.find(c=>c.id===getSelectedChar()) || CHARACTERS[0];
@@ -5178,9 +5180,9 @@ function startGame(){
   document.getElementById('g-srs').classList.remove('visible');
   updateCoinDisplay();
 
-  // Hint button: hide entirely for Stage 5
+  // Hint button: hide for Stages 1–4 and Stage 5
   const hintBtn = document.getElementById('g-hint-btn');
-  if(hintBtn) hintBtn.style.display = isUltimate ? 'none' : '';
+  if(hintBtn) hintBtn.style.display = (isUltimate || (stage >= 1 && stage <= 4)) ? 'none' : '';
 
   // Timer countdown (not used for Stage 0, nor for Calm Mode untimed stages 1–4)
   if(!isTraining && !_untimed){
@@ -6853,7 +6855,7 @@ function checkAndUnlockAchievements() {
 const REWARDS_MILESTONES = [
   { stars:10,  icon:'🌱', color:'green',  title:'First 10 Stars',      desc:'You earned your first 10 stars. Well done!' },
   { stars:25,  icon:'🌟', color:'yellow', title:'Star Collector',       desc:'25 stars — you\'re on your way!' },
-  { stars:50,  icon:'🔥', color:'orange', title:'Blazing Star',         desc:'50 stars — unlock a new character!' },
+  { stars:50,  icon:'🔥', color:'orange', title:'Blazing Star',         desc:'50 stars — you\'re on a roll! Check the Star Rewards!' },
   { stars:100, icon:'💎', color:'blue',   title:'Diamond Star',         desc:'100 stars — you\'re a true Maths Jumper!' },
   { stars:200, icon:'👑', color:'purple', title:'Star Royalty',         desc:'200 stars — legendary achievement!' },
   { stars:500, icon:'🚀', color:'pink',   title:'To Infinity…',         desc:'500 stars — you\'ve gone supersonic!' },
@@ -6953,6 +6955,17 @@ function closeRewardsVideo() {
   if (video) { video.pause(); video.src = ''; }
 }
 
+/* ── Tiered Star Rewards (unlocked by lifetime coin milestones) ── */
+const COIN_REWARDS = [
+  { stars: 20,  icon: '✨', color: 'yellow', title: 'Sparkle Star',       desc: 'You\'re collecting stars like a pro! Keep it up!' },
+  { stars: 50,  icon: '🌈', color: 'pink',   title: 'Rainbow Collector',  desc: 'Fantastic effort — you\'ve hit 50 lifetime stars!' },
+  { stars: 100, icon: '👑', color: 'purple', title: 'Maths Crown',        desc: '100 stars! You\'re wearing the Maths Crown now!' },
+  { stars: 200, icon: '🚀', color: 'blue',   title: 'Rocket Rider',       desc: '200 stars — you\'ve gone supersonic! Incredible!' },
+  { stars: 350, icon: '💎', color: 'blue',   title: 'Diamond Mind',       desc: '350 stars — a diamond-hard maths brain!' },
+  { stars: 500, icon: '🏆', color: 'orange', title: 'Champion Trophy',    desc: '500 stars — you\'re an all-time Maths Champion!' },
+  { stars: 750, icon: '🌟', color: 'yellow', title: 'Legendary Star',     desc: '750 stars — legendary status unlocked. Wow!' },
+];
+
 function renderRewards() {
   const coins = getCoins();
   document.getElementById('rew-coins-badge').innerHTML = `${starImg()} ${coins}`;
@@ -7035,6 +7048,37 @@ function renderRewards() {
 
   el.appendChild(gallery);
 
+  // ── Star Rewards (tiered, lifetime-coin-gated) ──────────────
+  const lblR = document.createElement('div');
+  lblR.className = 'info-section-label';
+  lblR.textContent = '🎁 Star Rewards';
+  el.appendChild(lblR);
+
+  const rewSub = document.createElement('div');
+  rewSub.style.cssText = 'font-size:11px;font-weight:700;color:rgba(255,255,255,.65);padding:0 4px 10px;';
+  const _rewUnlocked = COIN_REWARDS.filter(r => lifetime >= r.stars).length;
+  rewSub.textContent = _rewUnlocked === 0
+    ? 'Earn lifetime stars to unlock these special rewards!'
+    : `${_rewUnlocked} of ${COIN_REWARDS.length} unlocked — keep earning stars!`;
+  el.appendChild(rewSub);
+
+  COIN_REWARDS.forEach(r => {
+    const reached = lifetime >= r.stars;
+    const pct = Math.min(100, Math.round(lifetime / r.stars * 100));
+    const card = document.createElement('div');
+    card.className = `info-card accent-${r.color}`;
+    card.innerHTML = `
+      <div class="info-icon bg-${reached ? r.color : 'grey'}">${r.icon}</div>
+      <div class="info-body">
+        <div class="info-title">${r.title}</div>
+        <div class="info-desc">${r.desc}</div>
+        ${!reached ? `<div class="info-progress-wrap"><div class="info-progress-fill" style="width:${pct}%"></div></div>` : ''}
+      </div>
+      <div class="info-badge ${reached ? 'earned' : 'stars'}">${reached ? '✓ Unlocked' : `${starImg('','width:14px;height:14px;')} ${r.stars}`}</div>
+    `;
+    el.appendChild(card);
+  });
+
   // ── Star milestones ────────────────────────────────────
   const lbl1 = document.createElement('div');
   lbl1.className = 'info-section-label'; lbl1.textContent = '🏅 Star Milestones';
@@ -7083,7 +7127,7 @@ const HOWTO_STEPS = [
   { icon:'🎮', color:'blue',   title:'Pick Your Stage',
     desc:'Head to Select Stage and choose a times table set. Start with Stage 1 (2s, 5s & 10s) if you\'re new!' },
   { icon:'🐉', color:'purple', title:'Choose Your Character',
-    desc:'Tap Friends to pick your buddy. Earn stars to unlock Dino, Unia, Robo, Pip and Leo!' },
+    desc:'Tap Friends to pick your buddy. Complete stages and training to unlock Dino, Unia, Robo, Pip and Leo for free — then spend your stars on special rewards!' },
   { icon:'❓', color:'yellow', title:'Answer the Question',
     desc:'A multiplication question appears on the card. Tap the correct answer from the four coloured buttons at the bottom.' },
   { icon:'🔥', color:'orange', title:'Build a Streak',
