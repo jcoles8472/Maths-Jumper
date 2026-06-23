@@ -1011,7 +1011,9 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   z-index: 2;
 }
 .char-lock-cost {
-     display: none;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 /* Name tag — overlay on bottom of image */
@@ -3753,7 +3755,6 @@ const CHARACTERS = [
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-dino.png',
     themeColor:  '#2e7d32',
     cost: 50,
-    trainingRequired: 72,
     desc: 'Roar power!',
     imgDefaultStyle: 'object-fit:contain;object-position:40% center;padding:0;transform:scale(0.9);',
   },
@@ -3766,8 +3767,7 @@ const CHARACTERS = [
     imgOpps:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-unia-opps.png',
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-unia.png',
     themeColor:  '#6a1fa8',
-    cost: 65,
-    trainingRequired: 144,
+    cost: 100,
     desc: 'Magical!',
   },
   { id:'robo', name:'Robo', emoji:'🤖',
@@ -3779,8 +3779,7 @@ const CHARACTERS = [
     imgOpps:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-robo-opps.png',
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-robo.png',
     themeColor:  '#1565c0',
-    cost: 100,
-    stageRequired: 2,
+    cost: 160,
     desc: 'Beep boop!',
   },
   { id:'pip', name:'Pip', emoji:null,
@@ -3792,8 +3791,7 @@ const CHARACTERS = [
     imgOpps:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-pip-opps.png',
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-pip.png',
     themeColor:  '#e65100',
-    cost: 120,
-    stageRequired: 3,
+    cost: 230,
     desc: 'Cool dude!',
   },
   { id:'leo', name:'Leo', emoji:'🦁',
@@ -3805,8 +3803,7 @@ const CHARACTERS = [
     imgOpps:     'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-leo-opps.png',
     bgUrl:       'https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-ingame-bg-leo.png',
     themeColor:  '#f9a825',
-    cost: 160,
-    stageRequired: 4,
+    cost: 300,
     desc: 'Mighty!',
   },
 ];
@@ -4164,18 +4161,10 @@ function renderChars(){
   const grid = document.getElementById('char-grid');
   grid.innerHTML = '';
 
-  const highestStage = getHighestStage();
-  const trainingOffset = loadState().trainingOffset ?? 0;
-
   CHARACTERS.forEach(ch => {
-    const isUnlocked  = unlocked.includes(ch.id);
-    const isSelected  = ch.id === sel;
-    const canAfford   = coins >= ch.cost;
-    const stageReq    = ch.stageRequired ?? 0;
-    const trainReq    = ch.trainingRequired ?? 0;
-    const stageUnlocked = highestStage >= stageReq;
-    const trainUnlocked = trainingOffset >= trainReq;
-    const reqUnlocked   = stageUnlocked && trainUnlocked;
+    const isUnlocked = unlocked.includes(ch.id);
+    const isSelected = ch.id === sel;
+    const canAfford  = coins >= ch.cost;
 
     const card = document.createElement('div');
     card.className = 'char-card-new' + (isSelected ? ' selected' : '') + (isUnlocked ? '' : ' locked');
@@ -4195,19 +4184,15 @@ function renderChars(){
       ? `<img src="${imgSrc}" alt="${ch.name}" style="${imgFit}" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex')"/><div class="char-emoji-fallback" style="display:none">${ch.emoji||'?'}</div>`
       : `<div class="char-emoji-fallback">${ch.emoji||'?'}</div>`;
 
-    // Lock overlay — shown for locked chars; displays stage/training requirement
-    let _lockLabel = '';
-    if (!trainUnlocked && trainReq > 0) {
-      const tablesNeeded = Math.floor(trainReq / 12);
-      _lockLabel = `Train ${tablesNeeded}× tables`;
-    } else if (!stageUnlocked && stageReq > 0) {
-      _lockLabel = `Clear Stage ${stageReq - 1}`;
-    } else if (!isUnlocked) {
-      _lockLabel = 'Tap to unlock!';
+    // Lock overlay — shows coin cost; green tint if player can afford it
+    let lockOverlay = '';
+    if (!isUnlocked) {
+      const affordIcon  = canAfford ? '✅' : '🔒';
+      lockOverlay = `<div class="char-lock-overlay" style="background:rgba(0,0,0,0.72);">
+        <span style="font-size:22px;line-height:1;">${affordIcon}</span>
+        <span class="char-lock-cost" style="color:#ffffff;font-size:13px;font-weight:900;margin-top:2px;">${starImg('','width:13px;height:13px;')} ${ch.cost}</span>
+      </div>`;
     }
-    const lockOverlay = !isUnlocked
-      ? `<div class="char-lock-overlay">🔒<span class="char-lock-cost">${_lockLabel}</span></div>`
-      : '';
 
     // Check mark badge for the selected card
     const checkmark = isSelected ? `<div class="char-checkmark">✓</div>` : '';
@@ -4227,22 +4212,24 @@ function renderChars(){
     card.onclick = () => {
       if (isSelected) return;
       if (isUnlocked) {
+        // Already owned — just select it
         saveState({ selectedChar: ch.id });
         renderChars();
         showToast(`${ch.name} selected! 🎉`);
-      } else if (!reqUnlocked) {
-        if (!trainUnlocked && trainReq > 0) {
-          const tablesNeeded = Math.floor(trainReq / 12);
-          showToast(`Complete up to ${tablesNeeded}× tables in Training first to unlock ${ch.name}! 🔒`);
-        } else {
-          showToast(`Complete Stage ${stageReq - 1} first to unlock ${ch.name}! 🔒`);
-        }
+      } else if (!canAfford) {
+        // Can't afford yet
+        const shortfall = ch.cost - coins;
+        showToast(`Need ${shortfall} more ⭐ to unlock ${ch.name}! Keep playing! 💪`, 2500);
       } else {
-        // Stage/training requirement met → unlock for free!
+        // Purchase: deduct coins and unlock
+        const newCoins   = coins - ch.cost;
         const newUnlocked = [...getUnlockedChars(), ch.id];
-        saveState({ unlockedChars: newUnlocked, selectedChar: ch.id });
-        showToast(`${ch.name} unlocked! 🎉`);
+        saveState({ coins: newCoins, unlockedChars: newUnlocked, selectedChar: ch.id });
+        showToast(`🎉 ${ch.name} unlocked for ${ch.cost} ⭐!`);
         renderChars();
+        // Refresh home coin counter
+        const homeNum = document.getElementById('home-coin-num');
+        if(homeNum) homeNum.innerHTML = `${starImg()} ${newCoins}`;
       }
     };
 
@@ -4579,9 +4566,15 @@ function renderQ(q){
     }, 15000);
   } else if(questionIndex <= 8){
     setHintHidden();
-    // Q1-4: 12 s delay  |  Q5-8: 18 s delay — player gets real think time
-    const hintDelay = questionIndex <= 4 ? 12000 : 18000;
-    hintTimer = setTimeout(()=>setHintVisible(), hintDelay);
+    if(_stage >= 1 && _stage <= 4){
+      // Stages 1–4: no hint at all — hide button and skip timer
+      const hintBtnEl = document.getElementById('g-hint-btn');
+      if(hintBtnEl) hintBtnEl.style.display = 'none';
+    } else {
+      // Q1-4: 12 s delay  |  Q5-8: 18 s delay — player gets real think time
+      const hintDelay = questionIndex <= 4 ? 12000 : 18000;
+      hintTimer = setTimeout(()=>setHintVisible(), hintDelay);
+    }
   } else {
     // Q9-10: Speed Round — hint completely locked
     setHintHidden();
@@ -5027,6 +5020,12 @@ function advanceQuestion(){
        && currentQ._seqIdx > sessionStartOffset){
       const newTbl = Math.floor(currentQ._seqIdx / 12) + 1;
       setTimeout(() => showToast(`🎉 ${newTbl - 1}× table complete! Starting ${newTbl}× table!`, 2500), 350);
+      // Reset progress bar milestone stars so they re-earn on the new table
+      ['star1','star2','star3'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el){ el.classList.remove('earned','animate-star-pop'); }
+      });
+      document.getElementById('g-progress-fill').style.width = '0%';
     }
 
     renderQ(currentQ);
@@ -7143,7 +7142,7 @@ const HOWTO_STEPS = [
   { icon:'🎮', color:'blue',   title:'Pick Your Stage',
     desc:'Head to Select Stage and choose a times table set. Start with Stage 1 (2s, 5s & 10s) if you\'re new!' },
   { icon:'🐉', color:'purple', title:'Choose Your Character',
-    desc:'Tap Friends to pick your buddy. Complete stages and training to unlock Dino, Unia, Robo, Pip and Leo for free — then spend your stars on special rewards!' },
+    desc:'Tap Friends to pick your buddy. Redy is free — save up your stars to buy Dino, Unia, Robo, Pip and Leo from the shop. The more you play and the better you do, the sooner you can unlock them!' },
   { icon:'❓', color:'yellow', title:'Answer the Question',
     desc:'A multiplication question appears on the card. Tap the correct answer from the four coloured buttons at the bottom.' },
   { icon:'🔥', color:'orange', title:'Build a Streak',
@@ -7159,11 +7158,11 @@ const HOWTO_STEPS = [
 ];
 
 const HOWTO_CHARS = [
-  { emoji:'🦕', name:'Dino',  cost:8,  tip:'Great starter unlock — super quick to get!' },
-  { emoji:'🦄', name:'Unia',  cost:12, tip:'Magical unicorn — the most popular choice.' },
-  { emoji:'🤖', name:'Robo',  cost:16, tip:'Robo the robot — beeps and boops for every hop.' },
-  { emoji:'🐧', name:'Pip',   cost:20, tip:'Pip the penguin — cool under pressure.' },
-  { emoji:'🦁', name:'Leo',   cost:24, tip:'Leo the lion — unlock them all quickly!' },
+  { emoji:'🦕', name:'Dino',  cost:50,  tip:'A great first unlock — keep your streaks up!' },
+  { emoji:'🦄', name:'Unia',  cost:100, tip:'Magical unicorn — save up across two stages!' },
+  { emoji:'🤖', name:'Robo',  cost:160, tip:'Robo the robot — needs real dedication!' },
+  { emoji:'🐧', name:'Pip',   cost:230, tip:'Pip the penguin — a solid mid-game challenge.' },
+  { emoji:'🦁', name:'Leo',   cost:300, tip:'Leo the lion — the ultimate reward! Earn enough stars across Stages 1–4.' },
 ];
 
 function renderHowToInto(content) {
