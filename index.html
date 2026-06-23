@@ -3480,7 +3480,7 @@ const STAGES = [
   { id:2, name:'Doubles',          tables:[4,8],         desc:'4s & 8s',       emoji:'🔥' },
   { id:3, name:'Patterns',         tables:[3,6,9],       desc:'3s, 6s & 9s',   emoji:'💫' },
   { id:4, name:'Hard Ones',        tables:[7,11,12],     desc:'7s, 11s & 12s', emoji:'🏆' },
-  { id:5, name:'Ultimate Showdown',tables:[1,2,3,4,5,6,7,8,9,10,11,12], desc:'All tables • 25 Qs • 5 min!', emoji:'👑', isUltimate:true },
+  { id:5, name:'Ultimate Showdown',tables:[2,3,4,5,6,7,8,9,10,11,12], desc:'2×–12× • 25 Qs • 5 min!', emoji:'👑', isUltimate:true },
 ];
 
 /* ── Table patterns ─────────────────────────────────────────────
@@ -3591,6 +3591,18 @@ function showCorrectSequence(q) {
   speakFullEquation(q).then(() => {
     if(_skipped) return;
 
+    // Stage 5 (Ultimate): encouragement only — no pattern/commutative tips
+    if(getCurrentStage() === 5){
+      showBubble(getUltimateEncouragement(), null, null);
+      bubbleTimeout = setTimeout(() => {
+        if(_skipped) return;
+        _clearSkipListeners();
+        resetBubble();
+        advanceQuestion();
+      }, 1200);
+      return;
+    }
+
     // Step 1 — pattern tip
     const pattern = getPattern(table);
     showBubble(pattern, 'pattern', null);
@@ -3614,8 +3626,10 @@ function showCorrectSequence(q) {
         // Skip in Stage 0 (training): questions are sequential and injecting
         // commutative pairs inflates `answered`, corrupts progress tracking,
         // shows wrong table labels, and triggers "All 12 tables mastered" early.
+        // Skip in Stage 5 (Ultimate): test stage uses pre-built unique question set.
         const _isTrainingMode = (getCurrentStage() === 0);
-        if(!q._commutePair && !_isTrainingMode){
+        const _isUltimateMode = (getCurrentStage() === 5);
+        if(!q._commutePair && !_isTrainingMode && !_isUltimateMode){
           const _commuteKey = `${q.a}x${q.b}`;
           if(!_commuteInjectedThisSession.has(_commuteKey)){
             _commuteInjectedThisSession.add(_commuteKey);
@@ -3711,9 +3725,32 @@ const USE_KNOWN_FACTS = {
   ],
 };
 
+/* ── Stage 5 encouragement pool — no strategy tips, test mode ── */
+const ULTIMATE_ENCOURAGEMENT = [
+  "Let's go! 🚀",
+  "You've got this! 💪",
+  "Keep it up! ⚡",
+  "Show them what you know! 🌟",
+  "You're on fire! 🔥",
+  "Smashing it! 👊",
+  "Believe in yourself! 🏆",
+  "You can do it! ✨",
+  "Champion mode! 👑",
+  "Go go go! 🎯",
+  "Amazing! 🌈",
+  "Power through! 💥",
+];
+function getUltimateEncouragement(){
+  return ULTIMATE_ENCOURAGEMENT[Math.floor(Math.random() * ULTIMATE_ENCOURAGEMENT.length)];
+}
+
 function getBubble(q) {
   // Calm Mode: one consistent, predictable phrase — no rotating text.
   if(isCalmMode()) return "Let's multiply!";
+
+  // Stage 5 (Ultimate Showdown): encouragement only — this is the test stage,
+  // no strategy tips or "use known facts" hints shown.
+  if(getCurrentStage() === 5) return getUltimateEncouragement();
 
   // If a question is provided and it belongs to a known table,
   // use a White Rose "use known facts" tip for that table.
@@ -4359,6 +4396,34 @@ function buildQueue(stage){
   }
   const total = TOTAL;
   questionQueue=[];
+
+  // Stage 5 (Ultimate Showdown): pre-build a unique, non-commutative question
+  // pool from 2×–12× (no trivial 1× facts, no duplicate commutative pairs).
+  if(stage === 5){
+    const stageTables = [2,3,4,5,6,7,8,9,10,11,12];
+    const seen = new Set();
+    const pool = [];
+    for(const a of stageTables){
+      for(let b = 2; b <= 12; b++){
+        // Canonical key — treats (a,b) and (b,a) as the same fact
+        const key = a <= b ? `${a}x${b}` : `${b}x${a}`;
+        if(!seen.has(key)){
+          seen.add(key);
+          // Randomly decide which factor appears first in the equation
+          const q = Math.random() < 0.5 ? { a, b, ans: a*b } : { a: b, b: a, ans: a*b };
+          pool.push(q);
+        }
+      }
+    }
+    // Fisher-Yates shuffle
+    for(let i = pool.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    questionQueue = pool.slice(0, total);
+    return;
+  }
+
   for(let i=0;i<total;i++) questionQueue.push(makeQ(stage));
 
   // ── Weak-fact warm-up: inject up to 3 personalised facts at the front ──
@@ -4534,7 +4599,7 @@ function renderQ(q){
     11: `Use ×10: ${10*q.b}, then add ${q.b} more! ➕`,
     12: `Think ×10 (${10*q.b}) + ×2 (${2*q.b}) = ? ➕`,
   }[q.a];
-  if(_WR_STRATEGY && _stage !== 0){
+  if(_WR_STRATEGY && _stage !== 0 && _stage !== 5){
     strategyTimer = setTimeout(()=>{
       const _btns = document.querySelectorAll('.ans-btn');
       const _stillActive = [..._btns].some(b=>!b.disabled);
