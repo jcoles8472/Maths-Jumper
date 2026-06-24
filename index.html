@@ -1420,7 +1420,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   left: 14px; right: 14px;
   background: var(--panel-bg);
   border-radius: 24px;
-  padding: 28px 40px;
+  padding: 20px 40px;
   box-shadow: 0 8px 32px rgba(0,0,0,.2);
   z-index: 25; text-align: center;
   border: 3px solid var(--yellow);
@@ -1453,9 +1453,12 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 .g-blank {
   border:4px dashed var(--yellow);
-  border-radius:14px;
-  padding:0 0.2em;
-  /* Width is set by scaleEquation() proportional to font size + answer digit count */
+  border-radius:16px;
+  padding:0;
+  /* Width AND height are set by scaleEquation() — square-first: a 1-digit
+     answer is a perfect square; 2–3 digit answers keep the same height and
+     only grow wider. Geometry is fully owned by JS so it scales as one
+     system with the equation numbers. */
   box-sizing:border-box;
   background:linear-gradient(160deg,#fff8e0,#ffe98a 80%);
   color:var(--yellow);
@@ -7538,10 +7541,30 @@ function showTrainingIntro(onDone){
    ───────────────────────────────────────────────────
    Treats the whole equation (numbers + blank) as one
    visual unit. Steps font-size down from 65 → 24 px
-   until eq.scrollWidth fits inside the card, keeping
-   blank width proportional to both font AND answer
-   digit count so everything scales as one system.
+   until the equation fits the card BOTH horizontally
+   and vertically, keeping the answer box square-first
+   so everything scales as one system on every device.
 ═══════════════════════════════════════════════════ */
+
+/* Shared geometry for the answer box.
+   The display font is tabular: every digit (and the "?") is exactly 0.5em
+   wide. We size a SQUARE big enough to hold a TWO-digit answer at the
+   equation's own font size — the overwhelmingly common case in the ×1–×12
+   tables. So 1- and 2-digit answers render as an identical, tidy square;
+   only 3-digit answers (100–144) outgrow it and widen into a rounded
+   rectangle of the SAME height. Because the box is pre-sized for the
+   eventual answer while it still shows "?", revealing the answer never
+   shifts the layout.
+     digit advance ≈ 0.50em · side padding ≈ 0.22em each · border 8px (4px×2) */
+function _blankDims(size, ansLen) {
+  const pad  = size * 0.22;                 // inner horizontal padding, each side
+  const bord = 8;                           // dashed border (border-box) both sides
+  const n    = Math.max(1, ansLen);
+  const side = Math.round(size * 0.5 * 2 + pad * 2 + bord); // square holds 2 digits
+  const need = Math.round(size * 0.5 * n   + pad * 2 + bord); // width for actual digits
+  return { side, width: Math.max(side, need) };
+}
+
 function scaleEquation(a, b) {
   const eq   = document.getElementById('g-equation');
   const card = document.getElementById('g-question-card');
@@ -7549,26 +7572,39 @@ function scaleEquation(a, b) {
 
   eq.classList.remove('compact', 'very-compact');
 
-  const blank   = document.querySelector('.g-blank');
-  const ansLen  = String(a * b).length;
-  // Blank width as a multiple of font-size, larger for more digits
-  const blankRatio = ansLen >= 3 ? 2.9 : ansLen >= 2 ? 2.3 : 1.9;
+  const blank  = document.querySelector('.g-blank');
+  const ansLen = String(a * b).length;
 
-  // Available inner width = clientWidth (includes padding) minus l+r padding (40+40)
-  const availWidth = card ? (card.clientWidth - 80) : 240;
+  // Card inner box. clientWidth/Height include padding but exclude the border,
+  // so subtracting the (computed) padding yields the real content area — this
+  // stays correct even if the padding is tuned per device / breakpoint.
+  let availW = 240, availH = 90;
+  if (card) {
+    const cs   = getComputedStyle(card);
+    const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    const padY = parseFloat(cs.paddingTop)  + parseFloat(cs.paddingBottom);
+    availW = card.clientWidth  - padX;
+    availH = card.clientHeight - padY;
+  }
 
-  // Apply a candidate font size and proportional blank width, then measure
+  // Apply a candidate font size + matching square-first blank, then measure.
   const apply = (size) => {
     eq.style.fontSize = size + 'px';
     eq.style.gap      = Math.max(4, Math.round(size * 0.12)) + 'px';
-    if (blank) blank.style.width = Math.round(blankRatio * size) + 'px';
+    if (blank) {
+      const { side, width } = _blankDims(size, ansLen);
+      blank.style.height = side  + 'px';
+      blank.style.width  = width + 'px';
+    }
   };
 
   let fontSize = 65;
   apply(fontSize);
 
-  // Step down in 2px increments until everything fits (or we hit the floor)
-  while (eq.scrollWidth > availWidth && fontSize > 24) {
+  // Step down until the whole equation fits the card BOTH ways. The square
+  // box height is the tallest element, so guard against it as well as width.
+  while (fontSize > 24 &&
+         (eq.scrollWidth > availW || _blankDims(fontSize, ansLen).side > availH)) {
     fontSize -= 2;
     apply(fontSize);
   }
@@ -7576,28 +7612,28 @@ function scaleEquation(a, b) {
 
 /* ═══════════════════════════════════════════════════
    ANSWER BLANK SIZING
-   The answer renders at the same font scale as the
-   equation numbers (font-size: 1em, set by CSS).
-   We only lock the height in pixels so the box stays
-   the same size as the ? state when the answer appears.
+   The box was already pre-sized for this answer's digit
+   count by scaleEquation() while it showed "?", so the
+   reveal must not change its geometry. We simply re-assert
+   the identical square-first dimensions at the current
+   font size — guaranteeing a pixel-perfect ? → answer swap.
 ═══════════════════════════════════════════════════ */
 function sizeBlankToAnswer(ans) {
   const eq      = document.getElementById('g-equation');
   const blankEl = document.querySelector('.g-blank');
   if (!eq || !blankEl) return;
-  // Lock height = equation line-height + border (8px) so ? ↔ answer size is identical
-  const eqFontPx = parseFloat(getComputedStyle(eq).fontSize);
-  blankEl.style.height = (eqFontPx * 1.1 + 8) + 'px';
+  const size   = parseFloat(getComputedStyle(eq).fontSize) || 65;
+  const ansLen = String(ans).length;
+  const { side, width } = _blankDims(size, ansLen);
+  blankEl.style.height = side  + 'px';
+  blankEl.style.width  = width + 'px';
   // font-size stays at 1em (equation scale) — no separate scaling
 }
 
-/* Reset the blank back to its ? state for a new question */
-function resetBlankSize() {
-  const blankEl = document.querySelector('.g-blank');
-  if (!blankEl) return;
-  blankEl.style.height = ''; // back to auto (line-height:1.1 × 1em)
-  // font-size and width are managed by CSS and scaleEquation() respectively
-}
+/* Reset for a new question. Box geometry (width + height) is fully owned by
+   scaleEquation(), which runs immediately before this — so there is nothing
+   to clear here. Kept as a no-op for call-site compatibility. */
+function resetBlankSize() { /* dims owned by scaleEquation() */ }
 
 
 // ── Seamless home background video loop ──────────────────────────────────
