@@ -723,7 +723,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   position: absolute; inset: 0;
   z-index: 100;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: space-between;
+  align-items: center; justify-content: flex-end;
   opacity: 0; pointer-events: none; transition: opacity .4s;
   overflow: hidden;
   background: #000;
@@ -3390,21 +3390,13 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   <video
     class="celebration-video"
     id="celebration-video"
-    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-end-cut-scene.mp4"
+    src="https://raw.githubusercontent.com/jcoles8472/Maths-Jumper/main/mj-completed-game.mp4"
     playsinline
     preload="auto"
     loop
     muted
   ></video>
-  <!-- Floating star particles -->
-  <div class="celebration-stars-bg" id="celebration-stars-bg"></div>
-  <!-- Top: trophy + title + sub -->
-  <div class="celebration-top">
-    <div class="celebration-trophy">🏆</div>
-    <div class="celebration-title" id="celebration-title">Game Completed!</div>
-    <div class="celebration-sub">🌟 You are a Maths Jumper Champion! 🌟</div>
-  </div>
-  <!-- Bottom: home button -->
+  <!-- Bottom: home button only -->
   <button class="celebration-btn" onclick="closeCelebration()">🏠 Back to Home</button>
 </div>
 
@@ -5863,31 +5855,6 @@ function showStageFailOverlay({ correct, total, points, target, minQ }){
 
 /* ── Stage 5 victory celebration ── */
 function showCelebration(){
-  // Title
-  const titleEl = document.getElementById('celebration-title');
-  if(titleEl) titleEl.textContent = 'Game Completed!';
-
-  // Floating star particles
-  const bg = document.getElementById('celebration-stars-bg');
-  if(bg){
-    bg.innerHTML = '';
-    const emojis = ['⭐','🌟','✨','💫','🏆','🎉','🎊','👑'];
-    for(let i = 0; i < 28; i++){
-      const el = document.createElement('div');
-      el.className = 'celebration-star-particle';
-      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      const size = 14 + Math.random() * 22;
-      el.style.cssText = `
-        left:${Math.random()*95}%;
-        --dur:${2.5 + Math.random()*3}s;
-        --delay:${Math.random()*2}s;
-        --size:${size}px;
-        font-size:${size}px;
-      `;
-      bg.appendChild(el);
-    }
-  }
-
   // Play background video (respect global mute setting)
   const vid = document.getElementById('celebration-video');
   if(vid){
