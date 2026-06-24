@@ -1424,8 +1424,10 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   box-shadow: 0 8px 32px rgba(0,0,0,.2);
   z-index: 25; text-align: center;
   border: 3px solid var(--yellow);
-  /* Clamp so it never overlaps the header or the character */
-  max-height: calc(100% - 115px - 330px);
+  /* Fixed height for stages 1–5 so the card never shifts between questions.
+     box-sizing:border-box means padding + border are included in the 145px. */
+  height: 145px;
+  box-sizing: border-box;
   overflow: hidden;
   display: flex; align-items: center; justify-content: center;
 }
@@ -1452,29 +1454,31 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .g-blank {
   border:4px dashed var(--yellow);
   border-radius:14px;
-  padding:2px 10px;
-  min-width:76px; box-sizing:border-box; text-align:center;
+  padding:0 0.2em;
+  /* Width is set by scaleEquation() proportional to font size + answer digit count */
+  box-sizing:border-box;
   background:linear-gradient(160deg,#fff8e0,#ffe98a 80%);
   color:var(--yellow);
-  font-size:52px; font-weight:900;
+  font-size:1em; /* always matches the equation scale — never changes */
+  font-weight:900;
+  line-height:1.1;
   white-space:nowrap;
   flex-shrink:0;
+  display:inline-flex; align-items:center; justify-content:center;
 }
-.g-equation.compact .g-blank {
-  font-size:40px; min-width:64px; padding:2px 2px;
-}
-.g-equation.very-compact .g-blank {
-  font-size:32px; min-width:54px; padding:2px 6px;
-}
+/* Compact class overrides removed — scaleEquation() handles all sizing via inline styles */
 
 /* ── Stage 0 pictorial view ── */
 .g-question-card.pictorial-mode {
   padding: 14px 12px 16px;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   align-items: center;
   flex-direction: column;
   justify-content: flex-start;
+  /* Stage 0 has variable content — restore auto height */
+  height: auto;
+  max-height: calc(100% - 115px - 230px);
+  box-sizing: content-box;
 }
 
 /* Equation stays visible in pictorial mode — sized down to fit */
@@ -1907,10 +1911,12 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   text-transform:uppercase;
   box-shadow:0 3px 0 var(--purple-dark);
   white-space:nowrap;
-  display:none;
+  /* Use visibility so the element still occupies space when hidden —
+     prevents the nl-track from jumping when the banner disappears */
+  visibility:hidden;
   position:relative;
 }
-.nl-tap-banner.visible { display:block; }
+.nl-tap-banner.visible { visibility:visible; }
 /* Downward pointer from banner */
 .nl-tap-banner::after {
   content:'';
@@ -1921,6 +1927,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   border-left:8px solid transparent;
   border-right:8px solid transparent;
   border-top:8px solid var(--purple-dark);
+  visibility:inherit;
 }
 
 /* Dust pop on landing */
@@ -4509,9 +4516,9 @@ function renderQ(q){
     _blankEl.style.cursor='';
     _blankEl.onclick=null;
     _blankEl.classList.remove('blank-correct','blank-wrong');
+    // font-size, width, height are all managed by scaleEquation / resetBlankSize
     _blankEl.style.fontSize = '';
-    _blankEl.style.minWidth = '';
-    _blankEl.style.padding  = '';
+    _blankEl.style.height   = '';
   }
 
   // Show/hide review mode banner
@@ -5411,15 +5418,69 @@ function endGame(){
   });
   checkAndUnlockAchievements();
 
-  // Stage 5: did they answer all 25 questions? Play the cutscene first, then celebrate
-  if(stage === 5 && answered >= TOTAL){
-    showCutscene(() => showCelebration());
-    return;
-  }
+  // Stage 5: show session-complete overlay with pass/fail result first
+  if(stage === 5){
+    const _passed5 = answered >= TOTAL;
+    const _mc5 = masteredCount();
+    const _weak5 = getWeakFacts(3);
 
-  // Stage 5 failure (ran out of time before finishing)
-  if(stage === 5 && answered < TOTAL){
-    showUltimateFail();
+    const gameEl5 = document.getElementById('screen-game');
+    if(gameEl5){
+      const old5 = document.getElementById('session-complete-overlay');
+      if(old5) old5.remove();
+
+      const weakHtml5 = _weak5.length
+        ? `Still practising: <strong style="color:#ffe84d">${_weak5.map(f=>`${f.a}x${f.b}`).join('  ')}</strong>`
+        : `<strong style="color:#8be43c">No weak spots this session!</strong>`;
+
+      const overlay5 = document.createElement('div');
+      overlay5.className = 'session-complete-overlay';
+      overlay5.id = 'session-complete-overlay';
+      overlay5.innerHTML = `
+        <div class="session-complete-emoji">${_passed5 ? '🏆' : '⏰'}</div>
+        <div class="session-complete-title">${_passed5 ? 'Stage 5 Passed! 🎉' : 'Not Quite — Try Again!'}</div>
+        <div class="session-complete-stats">
+          <div class="session-complete-stat">
+            <div class="session-complete-stat-num" style="color:#ffe84d">${sessionCoins}</div>
+            <div class="session-complete-stat-label">Stars earned</div>
+          </div>
+          <div class="session-complete-stat">
+            <div class="session-complete-stat-num" style="color:#8be43c">${_mc5}</div>
+            <div class="session-complete-stat-label">Facts mastered</div>
+          </div>
+          <div class="session-complete-stat">
+            <div class="session-complete-stat-num" style="color:#3aabf0">${answered}</div>
+            <div class="session-complete-stat-label">Correct</div>
+          </div>
+        </div>
+        <div class="session-complete-sub">${_passed5 ? weakHtml5 : `<strong style="color:#ff7043">${answered}/${TOTAL} answered — answer all ${TOTAL} to pass!</strong>`}</div>
+        ${_passed5
+          ? `<button class="session-complete-btn session-complete-btn-play" id="s5-continue">▶ CLAIM YOUR VICTORY!</button>`
+          : `<button class="session-complete-btn session-complete-btn-play" id="s5-retry">▶ TRY AGAIN</button>`
+        }
+        <button class="session-complete-btn session-complete-btn-mastery" id="s5-mastery">📊 MY FACT MASTERY GRID</button>
+        <button class="session-complete-btn session-complete-btn-home" id="s5-home">🏠 HOME</button>
+      `;
+      gameEl5.appendChild(overlay5);
+
+      if(_passed5){
+        document.getElementById('s5-continue').onclick = () => {
+          overlay5.remove();
+          showCutscene(() => showCelebration());
+        };
+      } else {
+        document.getElementById('s5-retry').onclick = () => {
+          overlay5.remove();
+          document.querySelector('.g-equation').style.fontSize = '65px';
+          startGame();
+        };
+      }
+      document.getElementById('s5-mastery').onclick = () => showMasteryGrid();
+      document.getElementById('s5-home').onclick = () => {
+        overlay5.remove();
+        showScreen('screen-home');
+      };
+    }
     return;
   }
 
@@ -5644,37 +5705,61 @@ function showPracticeComplete(tbl){
   const stdBlank = document.querySelector('.g-blank');
   if(stdBlank){ stdBlank.style.display = ''; }
 
-  document.getElementById('eq-a').textContent = '🎉';
-  document.getElementById('eq-b').textContent = '';
-  document.querySelector('.g-blank').textContent = `${tbl}×✓`;
-  document.querySelector('.g-blank').style.fontSize = '32px';
-  document.querySelector('.g-blank').style.minWidth = '90px';
-  document.querySelector('.g-blank').style.padding = '2px 8px';
-  document.querySelector('.g-equation').style.fontSize = '36px';
-
-  const _bt = document.getElementById('bubble-text');
-  if(_bt) _bt.textContent = `${tbl}× table practised! 🌟`;
   closeHint();
 
-  const grid = document.getElementById('g-answers');
-  grid.innerHTML = '';
-  [
-    [`🔁 Practise ${tbl}× again`, '#ff9800', '#e65100',
-      () => { startTrainingTable(tbl); }],
-    ['📚 Choose table',           '#6b4dbf', '#3d2778',
-      () => { showScreen('screen-stages'); }],
-    ['▶ Continue training',       '#5dce44', '#36a020',
-      () => { _practiceTable = null; document.querySelector('.g-equation').style.fontSize = '65px'; startGame(); }],
-  ].forEach(([lbl, bg, sh, fn]) => {
-    const btn = document.createElement('button');
-    btn.className = 'ans-btn';
-    // First button spans all 4 columns; last two share two columns each
-    const span = lbl.startsWith('🔁') ? 'grid-column:span 4' : 'grid-column:span 2';
-    btn.style.cssText = `${span};background:${bg};box-shadow:0 6px 0 ${sh};font-size:15px;padding:14px 6px;`;
-    btn.textContent = lbl;
-    btn.onclick = fn;
-    grid.appendChild(btn);
-  });
+  // Use the session-complete overlay (same purple card as staged results)
+  const gameEl = document.getElementById('screen-game');
+  if(!gameEl) return;
+  const old = document.getElementById('session-complete-overlay');
+  if(old) old.remove();
+
+  const _mc = masteredCount();
+  const _weak = getWeakFacts(3);
+  const weakHtml = _weak.length
+    ? `Still practising: <strong style="color:#ffe84d">${_weak.map(f=>`${f.a}x${f.b}`).join('  ')}</strong>`
+    : `<strong style="color:#8be43c">No weak spots this session!</strong>`;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'session-complete-overlay';
+  overlay.id = 'session-complete-overlay';
+  overlay.innerHTML = `
+    <div class="session-complete-emoji">🌟</div>
+    <div class="session-complete-title">${tbl}× Table Practised!</div>
+    <div class="session-complete-stats">
+      <div class="session-complete-stat">
+        <div class="session-complete-stat-num" style="color:#ffe84d">${sessionCoins}</div>
+        <div class="session-complete-stat-label">Stars earned</div>
+      </div>
+      <div class="session-complete-stat">
+        <div class="session-complete-stat-num" style="color:#8be43c">${_mc}</div>
+        <div class="session-complete-stat-label">Facts mastered</div>
+      </div>
+      <div class="session-complete-stat">
+        <div class="session-complete-stat-num" style="color:#3aabf0">${answered}</div>
+        <div class="session-complete-stat-label">Correct</div>
+      </div>
+    </div>
+    <div class="session-complete-sub">${weakHtml}</div>
+    <button class="session-complete-btn session-complete-btn-play" id="prac-again">🔁 PRACTISE ${tbl}× AGAIN</button>
+    <button class="session-complete-btn session-complete-btn-mastery" id="prac-choose">📚 CHOOSE TABLE</button>
+    <button class="session-complete-btn session-complete-btn-home" id="prac-continue">▶ CONTINUE TRAINING</button>
+  `;
+  gameEl.appendChild(overlay);
+
+  document.getElementById('prac-again').onclick = () => {
+    overlay.remove();
+    startTrainingTable(tbl);
+  };
+  document.getElementById('prac-choose').onclick = () => {
+    overlay.remove();
+    showScreen('screen-stages');
+  };
+  document.getElementById('prac-continue').onclick = () => {
+    overlay.remove();
+    _practiceTable = null;
+    document.querySelector('.g-equation').style.fontSize = '65px';
+    startGame();
+  };
 }
 
 /* ── Stage 5 fail ── */
@@ -6309,6 +6394,10 @@ function makeInteractive(){
 
 function interactiveHop(targetIdx){
   if(!nlInteractive || targetIdx!==nlCurrent+1) return;
+
+  // Hide the tap banner after the first hop (it's done its job)
+  const tapBanner = document.getElementById('nl-tap-banner');
+  if(tapBanner) tapBanner.classList.remove('visible');
 
   // Clear click on current next stone
   document.getElementById(`nlc-${targetIdx}`).onclick=null;
@@ -7478,66 +7567,69 @@ function showTrainingIntro(onDone){
 }
 
 /* ═══════════════════════════════════════════════════
-   EQUATION AUTO-SCALING
-   Dynamically adjusts .g-equation font size so large
-   double-digit multiplication equations fit elegantly.
+   EQUATION AUTO-SCALING  — unified measure-and-fit
+   ───────────────────────────────────────────────────
+   Treats the whole equation (numbers + blank) as one
+   visual unit. Steps font-size down from 65 → 24 px
+   until eq.scrollWidth fits inside the card, keeping
+   blank width proportional to both font AND answer
+   digit count so everything scales as one system.
 ═══════════════════════════════════════════════════ */
 function scaleEquation(a, b) {
-  const eq = document.getElementById('g-equation');
+  const eq   = document.getElementById('g-equation');
+  const card = document.getElementById('g-question-card');
   if (!eq) return;
+
   eq.classList.remove('compact', 'very-compact');
-  // Score based on digit count of each factor and result
-  const aLen = String(a).length;
-  const bLen = String(b).length;
-  const ansLen = String(a * b).length;
-  const totalComplexity = aLen + bLen + ansLen;
-  if (totalComplexity >= 7) {
-    eq.classList.add('very-compact');
-  } else if (totalComplexity >= 5 || (aLen >= 2 && bLen >= 2)) {
-    eq.classList.add('compact');
+
+  const blank   = document.querySelector('.g-blank');
+  const ansLen  = String(a * b).length;
+  // Blank width as a multiple of font-size, larger for more digits
+  const blankRatio = ansLen >= 3 ? 2.9 : ansLen >= 2 ? 2.3 : 1.9;
+
+  // Available inner width = clientWidth (includes padding) minus l+r padding (40+40)
+  const availWidth = card ? (card.clientWidth - 80) : 240;
+
+  // Apply a candidate font size and proportional blank width, then measure
+  const apply = (size) => {
+    eq.style.fontSize = size + 'px';
+    eq.style.gap      = Math.max(4, Math.round(size * 0.12)) + 'px';
+    if (blank) blank.style.width = Math.round(blankRatio * size) + 'px';
+  };
+
+  let fontSize = 65;
+  apply(fontSize);
+
+  // Step down in 2px increments until everything fits (or we hit the floor)
+  while (eq.scrollWidth > availWidth && fontSize > 24) {
+    fontSize -= 2;
+    apply(fontSize);
   }
 }
 
 /* ═══════════════════════════════════════════════════
-   ANSWER BLANK AUTO-SIZING
-   When the blank is filled with the real answer (which
-   can be 1-3 digits), shrink its font/padding so the
-   number always fits cleanly inside its box, regardless
-   of the equation's compact/very-compact state.
+   ANSWER BLANK SIZING
+   The answer renders at the same font scale as the
+   equation numbers (font-size: 1em, set by CSS).
+   We only lock the height in pixels so the box stays
+   the same size as the ? state when the answer appears.
 ═══════════════════════════════════════════════════ */
 function sizeBlankToAnswer(ans) {
-  const eq = document.getElementById('g-equation');
+  const eq      = document.getElementById('g-equation');
   const blankEl = document.querySelector('.g-blank');
   if (!eq || !blankEl) return;
-  const len = String(ans).length;
-
-  let fontSize, minWidth, padding;
-  if (eq.classList.contains('very-compact')) {
-    if (len >= 3)      { fontSize = '24px'; minWidth = '60px'; padding = '2px 4px'; }
-    else if (len === 2){ fontSize = '28px'; minWidth = '54px'; padding = '2px 6px'; }
-    else               { fontSize = '32px'; minWidth = '50px'; padding = '2px 8px'; }
-  } else if (eq.classList.contains('compact')) {
-    if (len >= 3)      { fontSize = '30px'; minWidth = '74px'; padding = '2px 4px'; }
-    else if (len === 2){ fontSize = '36px'; minWidth = '68px'; padding = '2px 6px'; }
-    else               { fontSize = '40px'; minWidth = '60px'; padding = '2px 8px'; }
-  } else {
-    if (len >= 3)      { fontSize = '38px'; minWidth = '92px'; padding = '2px 6px'; }
-    else if (len === 2){ fontSize = '46px'; minWidth = '84px'; padding = '2px 8px'; }
-    else               { fontSize = '52px'; minWidth = '76px'; padding = '2px 10px'; }
-  }
-
-  blankEl.style.fontSize = fontSize;
-  blankEl.style.minWidth = minWidth;
-  blankEl.style.padding  = padding;
+  // Lock height = equation line-height + border (8px) so ? ↔ answer size is identical
+  const eqFontPx = parseFloat(getComputedStyle(eq).fontSize);
+  blankEl.style.height = (eqFontPx * 1.1 + 8) + 'px';
+  // font-size stays at 1em (equation scale) — no separate scaling
 }
 
-/* Reset the blank back to its default ('?') sizing for a new question */
+/* Reset the blank back to its ? state for a new question */
 function resetBlankSize() {
   const blankEl = document.querySelector('.g-blank');
   if (!blankEl) return;
-  blankEl.style.fontSize = '';
-  blankEl.style.minWidth = '';
-  blankEl.style.padding  = '';
+  blankEl.style.height = ''; // back to auto (line-height:1.1 × 1em)
+  // font-size and width are managed by CSS and scaleEquation() respectively
 }
 
 
