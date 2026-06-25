@@ -2,7 +2,7 @@
 <html lang="en" style="color-scheme:light only;background:#1a1a2e;filter:none !important;-webkit-filter:none !important;">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <!-- ── FORCE LIGHT MODE: prevents Android WebView / Samsung Internet / WhatsApp
      from applying a forced dark-mode filter over the game colours ── -->
 <meta name="color-scheme" content="light only"/>
@@ -3461,11 +3461,168 @@ function starImg(cls, style) {
   const s = style ? ` style="${style}"` : '';
   return `<img src="${MJ_STAR_SRC}" class="mj-star-svg${c}" aria-hidden="true"${s}>`;
 }
+/* ═══════════════════════════════════════════════════════════════════
+   STATE STORAGE  (Capacitor-ready)
+   ───────────────────────────────────────────────────────────────────
+   The whole app reads state SYNCHRONOUSLY (loadState() is called all
+   over the render path). The Capacitor Preferences API is async, so we
+   can't swap localStorage for Preferences directly without rewriting
+   every caller. Instead:
+
+     • An in-memory object (_stateCache) is the synchronous source of
+       truth that loadState()/saveState() read and write instantly.
+     • At boot we hydrate the cache synchronously from localStorage, so
+       every existing synchronous call keeps working untouched.
+     • Underneath, Capacitor Preferences (native UserDefaults /
+       SharedPreferences) is the DURABLE store: localStorage in a
+       WebView can be evicted by the OS under storage pressure, whereas
+       Preferences survives. Every save writes through to both.
+     • On native we run a one-time migration: copy any existing
+       localStorage save into Preferences, and recover from Preferences
+       if the WebView's localStorage was cleared.
+     • A schemaVersion + migrateSchema() hook lets future releases
+       transform old saves safely instead of breaking on them.
+
+   NO-BUILD NOTE: this resolves the plugin from the global
+   `Capacitor.Plugins.Preferences` (present once @capacitor/preferences
+   is installed in the native app). If you switch to a bundler and
+   `import { Preferences }`, just assign `window.MJ_PREFERENCES = Preferences`
+   once at startup and this layer will pick it up — no other changes.
+═══════════════════════════════════════════════════════════════════ */
+const STORAGE_KEY    = 'mj_state';
+const SCHEMA_VERSION = 1;
+
+let _stateCache       = {};      // synchronous source of truth
+let _prefWriteQueued  = false;   // coalesces bursts of native writes
+
+/* Resolve the Capacitor Preferences plugin (native only). Returns null in
+   a plain browser / dev preview, where we transparently fall back to
+   localStorage so the app still runs unwrapped. */
+function _prefs(){
+  return (typeof window !== 'undefined' && window.MJ_PREFERENCES)
+      || (typeof window !== 'undefined' && window.Capacitor
+            && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences)
+      || null;
+}
+function _hasPrefs(){ return !!_prefs(); }
+
+/* A save that contains nothing but the version stamp counts as "no real
+   data yet" — used to decide whether to recover from the durable store. */
+function _isEffectivelyEmpty(s){
+  if(!s || typeof s !== 'object') return true;
+  return Object.keys(s).filter(k => k !== 'schemaVersion').length === 0;
+}
+
+/* Forward-only schema migrations. Each block transforms older saves then
+   bumps the version. v0 (un-stamped) → v1 is just a stamp for now — the
+   hook exists so a future shape change can't corrupt existing players. */
+function migrateSchema(s){
+  if(!s || typeof s !== 'object' || Array.isArray(s)) s = {};
+  let v = (typeof s.schemaVersion === 'number') ? s.schemaVersion : 0;
+  if(v < 1){ /* v0 → v1: no shape change */ s.schemaVersion = 1; v = 1; }
+  // if(v < 2){ /* transform here */ s.schemaVersion = 2; v = 2; }
+  s.schemaVersion = SCHEMA_VERSION;
+  return s;
+}
+
+function _mirrorToLocalStorage(){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(_stateCache)); } catch(e){}
+}
+
+/* Debounced write to the durable native store. Many saveState() calls can
+   fire in one burst (e.g. per answered question); coalesce them into a
+   single native write on the next microtask. */
+function _persistToPreferences(){
+  const p = _prefs();
+  if(!p) return;
+  if(_prefWriteQueued) return;
+  _prefWriteQueued = true;
+  Promise.resolve().then(async ()=>{
+    _prefWriteQueued = false;
+    try { await p.set({ key: STORAGE_KEY, value: JSON.stringify(_stateCache) }); } catch(e){}
+  });
+}
+
+/* Write-through: localStorage (synchronous, always durable enough to
+   survive a reload) + Preferences (durable across OS eviction). */
+function _persist(){
+  _mirrorToLocalStorage();
+  _persistToPreferences();
+}
+
+/* ── Public API used by the rest of the app (unchanged signatures) ── */
+function loadState(){
+  // Deep clone so callers can mutate the result without affecting the
+  // cache until they explicitly saveState() — matches the old
+  // JSON.parse(localStorage) behaviour exactly.
+  try { return JSON.parse(JSON.stringify(_stateCache)); } catch(e){ return {}; }
+}
+function saveState(p){
+  _stateCache = { ..._stateCache, ...p };
+  _persist();
+  return loadState();
+}
+
+/* Wipe everything — cache, localStorage mirror, AND the durable store.
+   Clearing Preferences is essential: otherwise the recovery path below
+   would silently restore the data on the next launch after a reset. */
+async function clearState(){
+  _stateCache = migrateSchema({});
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
+  const p = _prefs();
+  if(p){ try { await p.remove({ key: STORAGE_KEY }); } catch(e){} }
+}
+
+/* Synchronous boot: hydrate from localStorage so all the synchronous
+   getters below have data on the very first paint. */
+(function _bootHydrate(){
+  let raw = null;
+  try { raw = localStorage.getItem(STORAGE_KEY); } catch(e){ raw = null; }
+  let parsed = {};
+  try { parsed = raw ? JSON.parse(raw) : {}; } catch(e){ parsed = {}; }
+  _stateCache = migrateSchema(parsed);
+  _mirrorToLocalStorage(); // stamp the (possibly migrated) version back
+})();
+
+/* Async: reconcile with the durable native store. Runs once at startup,
+   after the synchronous boot above. No-op in a plain browser. */
+async function syncWithPreferences(){
+  const p = _prefs();
+  if(!p) return;
+  let prefRaw = null;
+  try {
+    const res = await p.get({ key: STORAGE_KEY });
+    prefRaw = (res && res.value != null) ? res.value : null;
+  } catch(e){ return; }
+
+  if(prefRaw != null){
+    if(_isEffectivelyEmpty(_stateCache)){
+      // Durable store has data but our localStorage boot came up empty —
+      // the WebView's localStorage was evicted. Recover and refresh the UI.
+      try {
+        _stateCache = migrateSchema(JSON.parse(prefRaw));
+        _mirrorToLocalStorage();
+        try { applyCalmMotionClass(); } catch(e){}
+        try { refreshHome(); } catch(e){}
+      } catch(e){}
+    } else {
+      // Normal launch: localStorage had the data. Make sure Preferences
+      // reflects any writes that happened before this resolved.
+      _persistToPreferences();
+    }
+  } else if(!_isEffectivelyEmpty(_stateCache)){
+    // First launch on a Preferences-capable build: migrate the existing
+    // localStorage save into the durable native store.
+    _persistToPreferences();
+  }
+}
+syncWithPreferences();
+
 /* ── Calm Mode: apply/remove reduced-motion class on <body> ──
    Runs once immediately on load, and again whenever the toggle changes. ── */
 function applyCalmMotionClass(){
   try {
-    const on = JSON.parse(localStorage.getItem('mj_state'))?.calmModeOn ?? false;
+    const on = loadState().calmModeOn ?? false;
     document.body.classList.toggle('calm-motion', !!on);
   } catch(e){}
 }
@@ -3867,8 +4024,8 @@ function numWord(n){ return n<=50 ? (NW[n]||String(n)) : (NW2[n]||String(n)); }
 /* ═══════════════════════════════════════════════════
    PERSISTENCE
 ═══════════════════════════════════════════════════ */
-function loadState()  { try{ return JSON.parse(localStorage.getItem('mj_state'))||{}; }catch{ return {}; } }
-function saveState(p) { const s={...loadState(),...p}; localStorage.setItem('mj_state',JSON.stringify(s)); return s; }
+/* loadState() / saveState() now live in the STATE STORAGE layer near the
+   top of this script (in-memory cache + Capacitor Preferences durability). */
 const getCoins        = () => loadState().coins         ?? 0;
 
 /* ── Daily streak ───────────────────────────────────────
@@ -5983,19 +6140,20 @@ function applyStageUnlock(){
   // Selecting stage N in dev mode means "Stage N is complete", so store val+1.
   // This ensures earnedWhen checks (>= N+1) correctly unlock cutscenes for stage N.
   const devHighest = val + 1;
-  saveState({ highestStage: Math.max(devHighest, getHighestStage() > devHighest ? getHighestStage() : devHighest) });
-  const s = loadState();
-  s.highestStage = devHighest;
-  // Dev mode: unlocking stages also unlocks all characters
-  s.unlockedChars = CHARACTERS.map(c => c.id);
+  // Dev mode: unlocking stages also unlocks all characters.
+  const patch = {
+    highestStage:  devHighest,
+    unlockedChars: CHARACTERS.map(c => c.id),
+  };
   // Dev mode: if unlocking stage 5, also satisfy the Stage 5 cutscene
   // earnedWhen condition (lifetimeCoins >= 1 AND lifetimeCorrect >= 30)
   // so the "Ultimate Showdown complete" cutscene is visible in Rewards.
   if(val >= 5){
-    s.lifetimeCoins   = Math.max(s.lifetimeCoins   ?? 0, 1);
-    s.lifetimeCorrect = Math.max(s.lifetimeCorrect ?? 0, 30);
+    const s = loadState();
+    patch.lifetimeCoins   = Math.max(s.lifetimeCoins   ?? 0, 1);
+    patch.lifetimeCorrect = Math.max(s.lifetimeCorrect ?? 0, 30);
   }
-  localStorage.setItem('mj_state', JSON.stringify(s));
+  saveState(patch);
   // Stage 5 (Ultimate Showdown) unlocks once highestStage reaches 4 — same
   // rule renderStages uses — so reflect that in the confirmation toast.
   const ultimateMsg = val >= 4 ? ' + Ultimate Showdown' : '';
@@ -6005,9 +6163,7 @@ function applyStageUnlock(){
 }
 
 function saveSettingsBool(key, val){
-  const s = loadState();
-  s[key] = val;
-  localStorage.setItem('mj_state', JSON.stringify(s));
+  saveState({ [key]: val });
 
   // Calm Mode: stop any vibration already in progress the instant it's switched on,
   // and apply/remove the reduced-motion body class immediately.
@@ -6026,8 +6182,10 @@ function closeResetModal(){
   document.getElementById('reset-modal-overlay').classList.remove('open');
 }
 function performResetData(){
-  localStorage.removeItem('mj_state');
-  location.reload();
+  // Clear cache + localStorage + the durable Preferences store, THEN reload.
+  // If we only cleared localStorage, syncWithPreferences() would restore the
+  // data from Preferences on the next launch and the reset would be undone.
+  clearState().then(()=> location.reload(), ()=> location.reload());
 }
 
 function endSession(){
