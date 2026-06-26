@@ -6267,6 +6267,7 @@ function endSession(){
 ═══════════════════════════════════════════════════ */
 function setHintVisible(){
   if(loadState().hintsOn === false) return; // respect Settings → Hints toggle
+  if(getCurrentStage() !== 0) return;       // jump mechanism is Training (stage 0) only
   // Floating button is hidden on all stages — hint is indicated only via the answer blank
   const hintBtnEl = document.getElementById('g-hint-btn');
   if(hintBtnEl) hintBtnEl.style.display = 'none';
@@ -6321,6 +6322,7 @@ function cancelDemoTimer(){
 }
 
 function toggleHint(){
+  if(getCurrentStage() !== 0) return;       // jump mechanism is Training (stage 0) only
   if(!hintOpen){
     hintOpen=true;
     hintEverUsedThisGame = true;
@@ -6612,7 +6614,15 @@ function interactiveHop(targetIdx){
     if(targetIdx>=nlStones.length-1){
       // Reached the answer — auto-complete the question
       setTimeout(()=>{
+        // Suppress the nl-overlay fade-out transition here so the overlay
+        // disappears instantly rather than fading over 350ms. Without this,
+        // the partially-transparent overlay is visible on top of the
+        // "Tap the glowing answer!" state for ~350ms (screenshot-2 flash).
+        const _nlOv = document.getElementById('nl-overlay');
+        if(_nlOv) _nlOv.style.transition = 'none';
         closeHint();
+        // Restore the transition for the next hint open (after this frame)
+        requestAnimationFrame(()=>{ if(_nlOv) _nlOv.style.transition = ''; });
         autoCorrect();
       },700);
     } else {
