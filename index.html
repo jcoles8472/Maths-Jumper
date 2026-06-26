@@ -1370,7 +1370,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 .g-bird-wrap {
   position: absolute;
     right: 10%;
-    bottom: 270px;
+    bottom: 32%;
     transform: none;
     z-index: 23;
     display: flex;
@@ -1677,11 +1677,11 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* ── In-game Character Sprite Bounding Box ── */
 .g-redy {
   position: absolute;
-  bottom: 20%;
+  bottom: 22%;
   left: 32%;
   transform: translateX(-50%);
-  width: 30%;
-  height: 30%;              /* Forces both images to match this maximum height */
+  width: 32%;
+  height: 32%;              /* Sized to sit fully in the zone between card and answers */
   object-fit: contain;        /* Prevents stretching/distortion */
   object-position: bottom center; /* Keeps character resting flush on the ground line */
   z-index: 22;
@@ -1690,7 +1690,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 /* ── Auto-Scale Adjustment for the Oops Sprite ── */
 .g-redy[src*="opps"] {
-  height: 30%; /* Pulls the height down slightly to offset the tight asset cropping */
+  height: 22%; /* Keep opps sprite at the same size as the default sprite */
 }
 /* Hidden during hint mode */
 .g-redy.hint-hidden { opacity:0 !important; pointer-events:none; }
@@ -2311,8 +2311,8 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
   .pic-panels-row    { margin-bottom: 8px; }
   .pic-blank-row     { margin-top: 2px; margin-top: 10px;}
 
-  /* Bring Redy down to close the dead space above the buttons. */
-  .g-redy { bottom: 17%; width: 25%; height: 25%; }
+  /* Bring Redy into the zone between card and answers on short screens. */
+  .g-redy { bottom: 18%; width: 32%; height: 32%; }
 }
 
 /* ──────────────────────────────────────────────────────────
@@ -2325,7 +2325,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 @media (max-width: 440px) {
   .g-bird-wrap {
     right: 10%;
-    bottom: 25%;
+    bottom: 30%;
     transform: none;
   }
 }
@@ -7334,7 +7334,7 @@ function renderRewards() {
   const coins = getCoins();
   document.getElementById('rew-coins-badge').innerHTML = `${starImg()} ${coins}`;
   const s = loadState();
-  const lifetime = s.lifetimeCoins ?? coins;
+  const lifetime = Math.max(s.lifetimeCoins ?? 0, coins);
   const el = document.getElementById('rew-content');
   el.innerHTML = '';
 
