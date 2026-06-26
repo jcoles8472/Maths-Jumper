@@ -4495,6 +4495,7 @@ let questionQueue = [];
 
 // ── Hint state ──────────────────────────────────────
 let hintOpen    = false;
+let _hintChargedThisQ = false;   // hint coin cost is charged at most once per question
 let hintEverUsedThisGame = false;
 let hintTimer      = null;   // delay before hint button appears
 let strategyTimer  = null;   // contextual strategy cue timer
@@ -4518,8 +4519,15 @@ const PASS_MIN_QUESTIONS  = 5;   // must attempt at least 5 questions to be scor
 function makeQ(stage){
   const stageObj = STAGES.find(s=>s.id===stage);
   const tables = stageObj ? stageObj.tables : [2,5,10];
-  const a = tables[Math.floor(Math.random()*tables.length)];
-  const b = Math.ceil(Math.random()*12);
+  const t = tables[Math.floor(Math.random()*tables.length)];
+  // ×1 facts are giveaways in these timed practice stages, so down-weight them
+  // to roughly half their old frequency (~1 in 24 instead of ~1 in 12) rather
+  // than dropping them entirely — an occasional easy one is a nice confidence hit.
+  const m = Math.random() < 1/24 ? 1 : Math.floor(Math.random()*11) + 2;  // 1, or 2–12
+  // Vary which factor appears first so the table isn't always on the left
+  // (e.g. show "7×2" as well as "2×7"). This also spreads mastery across both
+  // ordered cells, since fact mastery is keyed by (a,b).
+  const [a, b] = Math.random() < 0.5 ? [t, m] : [m, t];
   return { a, b, ans: a*b };
 }
 
@@ -4674,6 +4682,7 @@ function generateChoices(q){
 function renderQ(q){
   // Reset per-question wrong-attempt tracking + hint nudge
   _wrongAttemptsThisQ = 0;
+  _hintChargedThisQ = false;   // a hint costs at most 1 ⭐ per question
   const _hn = document.getElementById('g-hint-btn');
   if(_hn) _hn.classList.remove('hint-nudge');
 
@@ -4965,11 +4974,25 @@ function renderPictorialQ(q){
 /* ── Streak banners ─────────────────────────────── */
 const STREAK_MSGS = {3:'3-STREAK! 🎉', 5:'SUPER JUMPER! 🔥', 10:'MATHS MASTER! 🏆'};
 function checkStreak(n){
-  const msg=STREAK_MSGS[n]; if(!msg) return;
+  // Reward a coin bonus on every 3rd correct-in-a-row, scaling up so a longer
+  // streak is always worth at least as much as a shorter one — sustained
+  // success is never left unrewarded, including streaks beyond 10.
+  let bonus = 0;
+  if(n > 0 && n % 3 === 0){
+    bonus = 1 + Math.floor(n / 3);   // 3→2, 6→3, 9→4, 12→5 ...
+  }
+  // Special milestone banners keep their original (slightly higher) rewards.
+  if(n === 5)  bonus = Math.max(bonus, 3);
+  if(n === 10) bonus = Math.max(bonus, 5);
+
+  if(bonus > 0){ sessionCoins += bonus; updateCoinDisplay(); }
+
+  // Banner text: keep the named milestones, otherwise a generic streak banner
+  // whenever a bonus is earned.
+  const msg = STREAK_MSGS[n] || (bonus > 0 ? `${n}-STREAK! 🔥` : null);
+  if(!msg) return;
   const b=document.getElementById('streak-banner');
   b.textContent=msg; b.classList.remove('hide'); b.classList.add('show');
-  const bonus = n>=10?5 : n>=5?3 : 2;
-  sessionCoins+=bonus; updateCoinDisplay();
   setTimeout(()=>{ b.classList.remove('show'); b.classList.add('hide'); },2000);
 }
 
@@ -5057,7 +5080,8 @@ function checkAns(chosen, q, btn){
       const gBlankEl = document.querySelector('.g-blank');
       if(gBlankEl){ sizeBlankToAnswer(q.ans); gBlankEl.textContent = q.ans; void gBlankEl.offsetWidth; gBlankEl.classList.add('blank-correct'); }
     }
-    // Speed Round bonus (Q9-10) — only if answered within 5 seconds
+    // Speed Round bonus (Q9 onward) — a fast correct answer (within 5 s) earns
+    // an extra coin. The "Speed Bonus! ⚡" toast is the player's visible cue.
     if(!isUltimate && !isTraining && !reviewMode && questionIndex >= 9 && _responseMs <= 5000){
       sessionCoins+=1; updateCoinDisplay();
       showToast('Speed Bonus! ⚡', 2000);
@@ -5081,6 +5105,7 @@ function checkAns(chosen, q, btn){
     playWrongBoop();
     _wrongAttemptsThisQ++;
     passPoints += PASS_POINTS_WRONG;
+    updateProgress();   // dip the progress bar backward for the wrong attempt
     setRedyState('incorrect');
 
     // Redy speaks — explicit "try again" guidance
@@ -5183,11 +5208,17 @@ function updateProgress(){
             : _trainingSeqPos % 12))
     : answered;
 
+  // The bar shows how far through the questions you are. A wrong attempt on the
+  // current question dips it backward (½ a step per wrong tap); it springs back
+  // forward the moment the question is finally answered correctly.
+  const barPos = Math.max(0, globalPos - 0.5 * _wrongAttemptsThisQ);
+
   // During review mode: hold bar at 100% so it doesn't jump backwards
-  const pct = reviewMode ? 100 : Math.min(100, globalPos / total * 100);
+  const pct = reviewMode ? 100 : Math.max(0, Math.min(100, barPos / total * 100));
   document.getElementById('g-progress-fill').style.width = pct+'%';
 
-  // Milestone thresholds
+  // Milestone thresholds (based on true progress, so a transient dip never
+  // un-earns a star)
   const m1 = Math.round(total / 3);
   const m2 = Math.round(total * 2 / 3);
   const m3 = total;
@@ -6296,8 +6327,17 @@ function toggleHint(){
     // Track lifetime hints used
     const s = loadState();
     saveState({ hintsUsed: (s.hintsUsed ?? 0) + 1 });
-    // Subtract 1 star for hint cost
-    if(sessionCoins > 0){ sessionCoins--; updateCoinDisplay(); }
+    // Hint costs 1 ⭐ — but charged at most once per question, and free if the
+    // child has none. The cost used to be deducted silently; now it's shown.
+    if(!_hintChargedThisQ){
+      _hintChargedThisQ = true;
+      if(sessionCoins > 0){
+        sessionCoins--; updateCoinDisplay();
+        showToast('💡 Hint: −1 ⭐', 1800);
+      } else {
+        showToast('💡 Free hint!', 1800);
+      }
+    }
     // Hide the show-hint pill
     const showBtn = document.getElementById('g-hint-btn');
     showBtn.classList.remove('visible');
@@ -6610,6 +6650,7 @@ function finalTapAfterHint(q, btn){
   btn.textContent='✓';
   gameScore+=10; sessionCoins+=2; streak++; answered++;
   passPoints += PASS_POINTS_CORRECT;
+  _wrongAttemptsThisQ = 0;   // clear dip so the bar springs forward, not held back
   updateCoinDisplay(); updateProgress(); checkStreak(streak);
   // showCorrectSequence speaks the equation — no duplicate call here.
   setTimeout(()=>showCorrectSequence(q), 400);
