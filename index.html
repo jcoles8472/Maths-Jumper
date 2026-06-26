@@ -2204,7 +2204,7 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 
 /* Toast */
-.toast { position:absolute; bottom:160px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:10px 20px; font-size:13px; font-weight:900; opacity:0; pointer-events:none; z-index:90; transition:all .3s; white-space:normal; text-align:center; max-width:calc(100% - 32px); box-sizing:border-box; line-height:1.4; }
+.toast { position:absolute; bottom:10em; left:50%; transform:translateX(-50%) translateY(20px); background:var(--purple-dark); color:white; border-radius:20px; padding:10px 20px; font-size:13px; font-weight:900; opacity:0; pointer-events:none; z-index:90; transition:all .3s; white-space:normal; text-align:center; max-width:calc(100% - 32px); box-sizing:border-box; line-height:1.4; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
 /* ── Quit confirmation modal ── */
@@ -4886,7 +4886,7 @@ function renderPictorialQ(q){
     const num = document.createElement('span');
     num.className = 'pic-star-num';
     num.textContent = perGroup;
-    num.style.fontSize = `${Math.round(starFontSize * 0.42)}px`;
+    num.style.fontSize = `${Math.round(starFontSize * 0.62)}px`; num.style.marginTop = "0.1em";
 
     badge.appendChild(icon);
     badge.appendChild(num);
