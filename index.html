@@ -809,17 +809,20 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 /* Bottom button — pinned to bottom */
 .celebration-btn {
   position: relative; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
   margin: 0 0 40px;
-  background: linear-gradient(to bottom, #8be43c 0%, #68d326 55%, #4ab915 100%);
+  width: calc(100% - 48px); max-width: 320px;
+  background: linear-gradient(to bottom, #b580f8 0%, #7c44d6 55%, #5e28b8 100%);
   color: white; border: none; border-radius: 50px;
-  padding: 18px 48px; font-family: 'Nunito', cursive;
-  font-size: 22px; font-weight: 900; letter-spacing: 1px;
+  padding: 16px 0; font-family: 'Nunito', cursive;
+  font-size: 18px; font-weight: 900; letter-spacing: 1.5px;
   cursor: pointer; overflow: hidden;
-  box-shadow: 0 8px 0 #2e7d32, 0 12px 28px rgba(0,0,0,.4);
+  box-shadow: 0 14px 28px rgba(100,0,200,.25), inset 0 3px 0 rgba(255,255,255,.28), inset 0 -5px 0 rgba(0,0,0,.1);
+  text-shadow: 0 2px 4px rgba(0,0,0,.25);
   animation: fadeSlideUp .6s ease .9s both;
   transition: transform .12s, box-shadow .12s;
 }
-.celebration-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #2e7d32; }
+.celebration-btn:active { transform: translateY(4px); box-shadow: 0 5px 12px rgba(0,0,0,.2), inset 0 3px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.08); }
 .celebration-btn::after {
   content: ''; position: absolute; inset: 8px; border-radius: 40px;
   background: linear-gradient(to bottom, rgba(255,255,255,.32) 0%, rgba(255,255,255,.14) 18%, rgba(255,255,255,0) 44%);
@@ -5618,7 +5621,7 @@ function endGame(){
   });
   checkAndUnlockAchievements();
 
-  // Stage 5: show session-complete overlay with pass/fail result first
+  // Stage 5: cutscene first (pass) or overlay immediately (fail)
   if(stage === 5){
     const _passed5 = answered >= TOTAL;
     const _mc5 = masteredCount();
@@ -5633,12 +5636,7 @@ function endGame(){
         ? `Still practising: <strong style="color:#ffe84d">${_weak5.map(f=>`${f.a}x${f.b}`).join('  ')}</strong>`
         : `<strong style="color:#8be43c">No weak spots this session!</strong>`;
 
-      const overlay5 = document.createElement('div');
-      overlay5.className = 'session-complete-overlay';
-      overlay5.id = 'session-complete-overlay';
-      overlay5.innerHTML = `
-        <div class="session-complete-emoji">${_passed5 ? '🏆' : '⏰'}</div>
-        <div class="session-complete-title">${_passed5 ? 'Stage 5 Passed! 🎉' : 'Not Quite — Try Again!'}</div>
+      const statsHtml = `
         <div class="session-complete-stats">
           <div class="session-complete-stat">
             <div class="session-complete-stat-num" style="color:#ffe84d">${sessionCoins}</div>
@@ -5652,34 +5650,62 @@ function endGame(){
             <div class="session-complete-stat-num" style="color:#3aabf0">${answered}</div>
             <div class="session-complete-stat-label">Correct</div>
           </div>
-        </div>
-        <div class="session-complete-sub">${_passed5 ? weakHtml5 : `<strong style="color:#ff7043">${answered}/${TOTAL} answered — answer all ${TOTAL} to pass!</strong>`}</div>
-        ${_passed5
-          ? `<button class="session-complete-btn session-complete-btn-play" id="s5-continue">▶ CLAIM YOUR VICTORY!</button>`
-          : `<button class="session-complete-btn session-complete-btn-play" id="s5-retry">▶ TRY AGAIN</button>`
-        }
-        <button class="session-complete-btn session-complete-btn-mastery" id="s5-mastery">📊 MY FACT MASTERY GRID</button>
-        <button class="session-complete-btn session-complete-btn-home" id="s5-home">🏠 HOME</button>
-      `;
-      gameEl5.appendChild(overlay5);
+        </div>`;
 
       if(_passed5){
-        document.getElementById('s5-continue').onclick = () => {
-          overlay5.remove();
-          showCutscene(() => showCelebration());
-        };
+        // Play cutscene FIRST, then reveal the pass overlay
+        showCutscene(() => {
+          const overlay5 = document.createElement('div');
+          overlay5.className = 'session-complete-overlay';
+          overlay5.id = 'session-complete-overlay';
+          overlay5.innerHTML = `
+            <div class="session-complete-emoji">🏆</div>
+            <div class="session-complete-title">Stage 5 Passed! 🎉</div>
+            ${statsHtml}
+            <div class="session-complete-sub">${weakHtml5}</div>
+            <button class="session-complete-btn session-complete-btn-play" id="s5-continue">▶ CLAIM YOUR VICTORY!</button>
+            <button class="session-complete-btn session-complete-btn-mastery" id="s5-mastery">📊 MY FACT MASTERY GRID</button>
+            <button class="session-complete-btn session-complete-btn-home" id="s5-home">🏠 HOME</button>
+          `;
+          gameEl5.appendChild(overlay5);
+
+          document.getElementById('s5-continue').onclick = () => {
+            overlay5.remove();
+            showCelebration();
+          };
+          document.getElementById('s5-mastery').onclick = () => showMasteryGrid();
+          document.getElementById('s5-home').onclick = () => {
+            overlay5.remove();
+            showScreen('screen-home');
+          };
+        });
       } else {
+        // Fail: show overlay immediately (no cutscene)
+        const overlay5 = document.createElement('div');
+        overlay5.className = 'session-complete-overlay';
+        overlay5.id = 'session-complete-overlay';
+        overlay5.innerHTML = `
+          <div class="session-complete-emoji">⏰</div>
+          <div class="session-complete-title">Not Quite — Try Again!</div>
+          ${statsHtml}
+          <div class="session-complete-sub"><strong style="color:#ff7043">${answered}/${TOTAL} answered — answer all ${TOTAL} to pass!</strong></div>
+          <button class="session-complete-btn session-complete-btn-play" id="s5-retry">▶ TRY AGAIN</button>
+          <button class="session-complete-btn session-complete-btn-mastery" id="s5-mastery">📊 MY FACT MASTERY GRID</button>
+          <button class="session-complete-btn session-complete-btn-home" id="s5-home">🏠 HOME</button>
+        `;
+        gameEl5.appendChild(overlay5);
+
         document.getElementById('s5-retry').onclick = () => {
           overlay5.remove();
           document.querySelector('.g-equation').style.fontSize = '65px';
           startGame();
         };
+        document.getElementById('s5-mastery').onclick = () => showMasteryGrid();
+        document.getElementById('s5-home').onclick = () => {
+          overlay5.remove();
+          showScreen('screen-home');
+        };
       }
-      document.getElementById('s5-mastery').onclick = () => showMasteryGrid();
-      document.getElementById('s5-home').onclick = () => {
-        overlay5.remove();
-        showScreen('screen-home');
-      };
     }
     return;
   }
@@ -6299,15 +6325,23 @@ function setHintHidden(){
   const qcard = document.getElementById('g-question-card');
   if(qcard) qcard.classList.remove('hint-active');
   // Restore blank box to default (standard and pictorial modes)
+  // Guard: don't overwrite a correct answer already displayed in the blank
+  // (e.g. closeHint() is called at the start of advanceQuestion(), which fires
+  //  immediately after the player answers the last question correctly — without
+  //  this check, blank.innerHTML='?' would briefly flash before the cutscene).
   const blank = document.querySelector('.g-blank');
   if(blank){
-    blank.innerHTML = '?';
+    if(!blank.classList.contains('blank-correct')){
+      blank.innerHTML = '?';
+    }
     blank.style.cursor = '';
     blank.onclick = null;
   }
   const picBlank = document.querySelector('.pic-blank');
   if(picBlank){
-    picBlank.innerHTML = '?';
+    if(!picBlank.classList.contains('blank-correct')){
+      picBlank.innerHTML = '?';
+    }
     picBlank.style.cursor = '';
     picBlank.onclick = null;
   }
