@@ -1197,6 +1197,144 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
 }
 .rewards-tally-label { font-size:13px; font-weight:900; color:rgba(255,255,255,.8); margin-top:2px; }
 
+/* ══════════ TROPHY CABINET ══════════ */
+.tc-cabinet{
+  background:linear-gradient(180deg,#2a1b54,#1c1238);
+  border:2px solid rgba(245,197,24,.35);
+  border-radius:24px; padding:16px 14px 18px; margin-bottom:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.tc-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px; }
+.tc-head-title{ font-size:18px; font-weight:900; color:#fff; letter-spacing:.3px; }
+.tc-head-count{ font-size:16px; font-weight:900; color:var(--yellow); }
+.tc-meter{ height:10px; background:rgba(0,0,0,.35); border-radius:6px; overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,.4); }
+.tc-meter-fill{ height:100%; border-radius:6px; background:linear-gradient(90deg,#ffe96e,#f5a500); transition:width .6s ease; box-shadow:0 0 10px rgba(245,165,0,.6); }
+.tc-hint{ font-size:11.5px; font-weight:700; color:rgba(255,255,255,.6); padding:8px 2px 4px; line-height:1.35; }
+
+.tc-shelf-label{
+  font-size:10px; font-weight:900; letter-spacing:1.5px; text-transform:uppercase;
+  color:rgba(255,255,255,.5); padding:10px 2px 6px;
+}
+.tc-shelf{ position:relative; }
+.tc-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+/* The wooden/glass ledge each shelf of trophies stands on */
+.tc-ledge{
+  height:8px; margin:2px 2px 4px; border-radius:0 0 8px 8px;
+  background:linear-gradient(180deg,#6b4dbf,#3d2778);
+  box-shadow:0 6px 12px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.18);
+}
+
+/* A single trophy slot (button) */
+.tc-slot{
+  -webkit-appearance:none; appearance:none; cursor:pointer;
+  border:none; font-family:inherit; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  padding:10px 4px 12px; border-radius:16px;
+  background:rgba(255,255,255,.04);
+  border:1.5px solid rgba(255,255,255,.07);
+  transition:transform .12s ease, box-shadow .15s ease, border-color .15s ease;
+  position:relative;
+}
+.tc-slot:active{ transform:scale(.95); }
+.tc-slot:focus-visible{ outline:3px solid var(--yellow); outline-offset:2px; }
+
+.tc-pedestal{
+  width:54px; height:54px; border-radius:14px; position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 50% 35%, rgba(255,255,255,.08), rgba(0,0,0,.25));
+  box-shadow:inset 0 -6px 10px rgba(0,0,0,.35), inset 0 2px 4px rgba(255,255,255,.06);
+}
+.tc-trophy{ font-size:30px; line-height:1; }
+.tc-name{ font-size:11px; font-weight:900; color:rgba(255,255,255,.85); line-height:1.1; }
+
+/* Price / status tag */
+.tc-tag{
+  display:inline-flex; align-items:center; gap:3px;
+  font-size:10.5px; font-weight:900; border-radius:20px; padding:2px 8px; line-height:1;
+}
+.tc-tag.owned   { background:#dcfce7; color:#15803d; padding:2px 7px; }
+.tc-tag.buyable { background:var(--yellow); color:#6b3a00; box-shadow:0 0 0 2px rgba(245,197,24,.25); }
+.tc-tag.locked  { background:rgba(255,255,255,.1); color:rgba(255,255,255,.5); }
+
+/* OWNED: lit pedestal in the trophy's colour + gentle bob + shine sweep */
+.tc-slot.is-owned{ background:rgba(255,255,255,.07); border-color:rgba(245,197,24,.3); }
+.tc-slot.is-owned .tc-pedestal{ box-shadow:inset 0 -6px 10px rgba(0,0,0,.3), 0 0 16px rgba(245,197,24,.35); }
+.tc-slot.is-owned.bg-yellow .tc-pedestal{ background:linear-gradient(135deg,#ffe96e,#f5a500); }
+.tc-slot.is-owned.bg-purple .tc-pedestal{ background:linear-gradient(135deg,#c084fc,#7c3aed); }
+.tc-slot.is-owned.bg-blue   .tc-pedestal{ background:linear-gradient(135deg,#7dd3fc,#0284c7); }
+.tc-slot.is-owned.bg-orange .tc-pedestal{ background:linear-gradient(135deg,#fdba74,#ea580c); }
+.tc-slot.is-owned.bg-pink   .tc-pedestal{ background:linear-gradient(135deg,#f9a8d4,#db2777); }
+.tc-slot.is-owned .tc-trophy{ animation:tc-bob 2.6s ease-in-out infinite; filter:drop-shadow(0 2px 3px rgba(0,0,0,.4)); }
+.tc-shine{
+  position:absolute; top:0; left:-60%; width:50%; height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:skewX(-18deg); animation:tc-shine 3.4s ease-in-out infinite;
+}
+
+/* LOCKED: ghosted silhouette trophy */
+.tc-slot.is-locked .tc-trophy{ filter:grayscale(1) brightness(.55); opacity:.5; }
+.tc-slot.is-locked .tc-name{ color:rgba(255,255,255,.45); }
+/* AFFORDABLE but not owned: glows to say "you can get this now" */
+.tc-slot.can-buy{ border-color:rgba(245,197,24,.55); box-shadow:0 0 14px rgba(245,197,24,.2); }
+.tc-slot.can-buy .tc-trophy{ filter:none; opacity:.9; }
+
+@keyframes tc-bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-3px); } }
+@keyframes tc-shine{ 0%,55%{ left:-60%; } 80%,100%{ left:120%; } }
+
+/* ── Buy-confirmation sheet ── */
+.tc-sheet-backdrop{
+  position:fixed; inset:0; z-index:9999;
+  background:rgba(10,4,28,.6); backdrop-filter:blur(3px);
+  display:flex; align-items:flex-end; justify-content:center;
+  opacity:0; transition:opacity .2s ease;
+}
+.tc-sheet-backdrop.show{ opacity:1; }
+.tc-sheet{
+  width:100%; max-width:440px; margin:0 10px 10px;
+  background:linear-gradient(180deg,#fff,#f3eefe);
+  border-radius:26px 26px 22px 22px; padding:22px 22px 20px;
+  text-align:center; position:relative;
+  box-shadow:0 -10px 40px rgba(0,0,0,.5);
+  transform:translateY(30px); transition:transform .25s cubic-bezier(.2,.9,.3,1.2);
+}
+.tc-sheet-backdrop.show .tc-sheet{ transform:translateY(0); }
+.tc-sheet-x{
+  position:absolute; top:12px; right:12px; width:32px; height:32px; border:none; cursor:pointer;
+  background:#ece6f7; color:#6b4dbf; border-radius:50%; font-size:15px; font-weight:900;
+}
+.tc-sheet-pedestal{
+  width:96px; height:96px; border-radius:24px; margin:4px auto 14px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:inset 0 -8px 14px rgba(0,0,0,.25), 0 8px 20px rgba(0,0,0,.2);
+}
+.tc-sheet-pedestal.bg-grey{ background:linear-gradient(135deg,#e2e8f0,#94a3b8); }
+.tc-sheet-trophy{ font-size:54px; line-height:1; filter:drop-shadow(0 3px 5px rgba(0,0,0,.3)); }
+.tc-sheet-name{ font-size:22px; font-weight:900; color:#3d2778; }
+.tc-sheet-desc{ font-size:13px; font-weight:700; color:#6b5b8f; margin:6px 4px 16px; line-height:1.4; }
+.tc-sheet-footer{ display:flex; flex-direction:column; gap:9px; }
+.tc-sheet-balance{ font-size:12.5px; font-weight:800; color:#6b5b8f; }
+.tc-sheet-balance img{ vertical-align:-2px; }
+.tc-sheet-status{ font-size:14px; font-weight:900; padding:10px; border-radius:14px; }
+.tc-sheet-status.owned{ background:#dcfce7; color:#15803d; }
+.tc-sheet-status.short{ background:#fff4d6; color:#9a6b00; }
+.tc-sheet-status img{ vertical-align:-2px; }
+.tc-sheet-btn{
+  border:none; cursor:pointer; font-family:inherit;
+  font-size:16px; font-weight:900; border-radius:16px; padding:14px;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.tc-sheet-btn img{ vertical-align:middle; }
+.tc-sheet-btn.buy{ background:var(--yellow); color:#6b3a00; box-shadow:0 5px 0 var(--yellow-dark); }
+.tc-sheet-btn.buy:active{ transform:translateY(4px); box-shadow:0 1px 0 var(--yellow-dark); }
+.tc-sheet-btn.ghost{ background:#ece6f7; color:#6b4dbf; padding:11px; font-size:14px; }
+
+@media (prefers-reduced-motion: reduce){
+  .tc-slot.is-owned .tc-trophy{ animation:none; }
+  .tc-shine{ animation:none; display:none; }
+  .tc-meter-fill{ transition:none; }
+  .tc-sheet-backdrop, .tc-sheet{ transition:none; }
+}
+
 .howto-step-num {
   width:36px; height:36px; flex-shrink:0; border-radius:50%;
   background:var(--purple-btn); color:white; font-size:18px; font-weight:900;
@@ -3042,6 +3180,19 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     <span class="chars-title-main">ACHIEVEMENTS</span>
   </div>
   <div class="info-scroll-area" id="ach-list"></div>
+
+  <!-- Cutscene (Story) player modal — lives in Achievements -->
+  <div class="rewards-video-modal" id="rewards-video-modal">
+    <video
+      id="rewards-modal-video"
+      playsinline
+      preload="auto"
+      loop
+      style="display:block;width:100%;height:100%;object-fit:cover;"
+    ></video>
+    <div class="rewards-video-title" id="rewards-video-modal-title"></div>
+    <button class="rewards-video-close" onclick="closeRewardsVideo()" aria-label="Close">✕</button>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -3059,19 +3210,6 @@ html,body { height:100%; width:100%; overflow:hidden; font-family:'Nunito',cursi
     <span class="chars-title-main">REWARDS</span>
   </div>
   <div class="info-scroll-area" id="rew-content"></div>
-
-  <!-- In-rewards cutscene player modal -->
-  <div class="rewards-video-modal" id="rewards-video-modal">
-    <video
-      id="rewards-modal-video"
-      playsinline
-      preload="auto"
-      loop
-      style="display:block;width:100%;height:100%;object-fit:cover;"
-    ></video>
-    <div class="rewards-video-title" id="rewards-video-modal-title"></div>
-    <button class="rewards-video-close" onclick="closeRewardsVideo()" aria-label="Close">✕</button>
-  </div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -7174,6 +7312,55 @@ function renderAchievements() {
   const list = document.getElementById('ach-list');
   list.innerHTML = '';
 
+  // ── Story (cutscenes unlocked by completing stages) ─────────
+  const storyLbl = document.createElement('div');
+  storyLbl.className = 'info-section-label';
+  storyLbl.textContent = '🎬 Story';
+  list.appendChild(storyLbl);
+
+  const storyEarned = CUTSCENES.filter(c => c.earnedWhen(s)).length;
+  const storySub = document.createElement('div');
+  storySub.style.cssText = 'font-size:11px;font-weight:700;color:rgba(255,255,255,.65);padding:0 4px 8px;';
+  storySub.textContent = storyEarned === 0
+    ? 'Complete stages to unlock cutscenes — then watch them here!'
+    : `${storyEarned} of ${CUTSCENES.length} unlocked — tap to watch.`;
+  list.appendChild(storySub);
+
+  const gallery = document.createElement('div');
+  gallery.className = 'cutscene-gallery';
+  CUTSCENES.forEach(c => {
+    const earned = c.earnedWhen(s);
+    const card = document.createElement('div');
+    card.className = 'cutscene-card ' + (earned ? 'earned' : 'locked');
+
+    const previewEl = document.createElement('img');
+    previewEl.className = 'cutscene-card-preview';
+    previewEl.src = c.thumb;
+    previewEl.alt = c.title;
+    previewEl.style.pointerEvents = 'none';
+    card.appendChild(previewEl);
+
+    if (earned) {
+      const playOverlay = document.createElement('div');
+      playOverlay.className = 'cutscene-card-play';
+      playOverlay.innerHTML = `
+        <div class="cutscene-play-circle">▶</div>
+        <div class="cutscene-card-label">${c.title}</div>`;
+      card.appendChild(playOverlay);
+      card.onclick = () => openRewardsVideo(c.src, c.title);
+    } else {
+      const lockOverlay = document.createElement('div');
+      lockOverlay.className = 'cutscene-card-lock';
+      lockOverlay.innerHTML = `
+        <div class="cutscene-lock-icon">🔒</div>
+        <div class="cutscene-lock-label">${c.unlockHint}</div>`;
+      card.appendChild(lockOverlay);
+      card.onclick = () => showToast(c.unlockHint, 2000);
+    }
+    gallery.appendChild(card);
+  });
+  list.appendChild(gallery);
+
   // Section: earned
   const earned = ACHIEVEMENTS.filter(a => earnedIds.includes(a.id));
   const pending = ACHIEVEMENTS.filter(a => !earnedIds.includes(a.id));
@@ -7365,6 +7552,174 @@ const COIN_REWARDS = [
   { stars: 750, icon: '🌟', color: 'yellow', title: 'Legendary Star',     desc: '750 stars — legendary status unlocked. Wow!' },
 ];
 
+/* ── TROPHY CABINET ─────────────────────────────────────
+   Buyable trophies — a place to actually SPEND stars once
+   everything else is unlocked. One trophy per times table
+   (rising in price), plus two prestige trophies to chase.
+   Buying a trophy deducts spendable stars and is permanent. ── */
+const TROPHIES = [
+  { id:'t_2x',  icon:'🥉', color:'orange', name:'2× Trophy',  cost:100,  desc:'Bronze trophy for mastering the 2× table.' },
+  { id:'t_3x',  icon:'🥉', color:'orange', name:'3× Trophy',  cost:100,  desc:'Bronze trophy for mastering the 3× table.' },
+  { id:'t_4x',  icon:'🥈', color:'blue',   name:'4× Trophy',  cost:150,  desc:'Silver trophy for mastering the 4× table.' },
+  { id:'t_5x',  icon:'🥈', color:'blue',   name:'5× Trophy',  cost:150,  desc:'Silver trophy for mastering the 5× table.' },
+  { id:'t_6x',  icon:'🥈', color:'blue',   name:'6× Trophy',  cost:200,  desc:'Silver trophy for mastering the 6× table.' },
+  { id:'t_7x',  icon:'🥇', color:'yellow', name:'7× Trophy',  cost:250,  desc:'Gold trophy for mastering the tricky 7× table.' },
+  { id:'t_8x',  icon:'🥇', color:'yellow', name:'8× Trophy',  cost:250,  desc:'Gold trophy for mastering the 8× table.' },
+  { id:'t_9x',  icon:'🥇', color:'yellow', name:'9× Trophy',  cost:300,  desc:'Gold trophy for mastering the 9× table.' },
+  { id:'t_10x', icon:'🥇', color:'yellow', name:'10× Trophy', cost:300,  desc:'Gold trophy for mastering the 10× table.' },
+  { id:'t_11x', icon:'🏆', color:'purple', name:'11× Trophy', cost:400,  desc:'A shining trophy for the 11× table.' },
+  { id:'t_12x', icon:'🏆', color:'purple', name:'12× Trophy', cost:500,  desc:'The ultimate table — a trophy to match!' },
+  { id:'t_grand',   icon:'🏆', color:'orange', name:'Grand Champion', cost:1500, legendary:true, desc:'A grand prize trophy. Only true champions can afford it.' },
+  { id:'t_diamond', icon:'💎', color:'blue',   name:'Diamond Legend',  cost:3000, legendary:true, desc:'The rarest trophy of all. The pinnacle of the cabinet.' },
+];
+
+const getOwnedTrophies = () => loadState().ownedTrophies ?? [];
+
+/* Build one shelf of trophy slots into a parent element. */
+function _buildTrophyShelf(parent, list, coins, owned){
+  const shelf = document.createElement('div');
+  shelf.className = 'tc-shelf';
+  const row = document.createElement('div');
+  row.className = 'tc-row';
+
+  list.forEach(t => {
+    const isOwned   = owned.includes(t.id);
+    const canAfford = coins >= t.cost;
+
+    const slot = document.createElement('button');
+    slot.type = 'button';
+    slot.className = 'tc-slot'
+      + (isOwned ? ' is-owned bg-' + t.color : ' is-locked')
+      + (!isOwned && canAfford ? ' can-buy' : '');
+    slot.setAttribute('aria-label',
+      isOwned ? `${t.name}, collected`
+              : `${t.name}, costs ${t.cost} stars${canAfford ? '' : ' (not enough yet)'}`);
+
+    slot.innerHTML = `
+      <div class="tc-pedestal">
+        <span class="tc-trophy">${t.icon}</span>
+        ${isOwned ? '<span class="tc-shine"></span>' : ''}
+      </div>
+      <div class="tc-name">${t.name.replace(' Trophy','')}</div>
+      ${ isOwned
+          ? '<div class="tc-tag owned">✓</div>'
+          : `<div class="tc-tag ${canAfford ? 'buyable' : 'locked'}">${starImg('','width:11px;height:11px;')} ${t.cost}</div>` }
+    `;
+    slot.onclick = () => openTrophyBuySheet(t.id);
+    row.appendChild(slot);
+  });
+
+  shelf.appendChild(row);
+  shelf.appendChild(Object.assign(document.createElement('div'), { className:'tc-ledge' }));
+  parent.appendChild(shelf);
+}
+
+/* Render the whole cabinet: header + fill meter + two shelves. */
+function renderTrophyCabinet(parent, coins, owned){
+  const total   = TROPHIES.length;
+  const haveN   = TROPHIES.filter(t => owned.includes(t.id)).length;
+  const pct     = Math.round(haveN / total * 100);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'tc-cabinet';
+  wrap.innerHTML = `
+    <div class="tc-head">
+      <div class="tc-head-title">🏆 Trophy Cabinet</div>
+      <div class="tc-head-count">${haveN} / ${total}</div>
+    </div>
+    <div class="tc-meter"><div class="tc-meter-fill" style="width:${pct}%"></div></div>
+    <div class="tc-hint">${ haveN === 0
+        ? 'Spend your stars to collect trophies. Tap any slot to see it.'
+        : haveN === total
+          ? 'Cabinet complete — every trophy is yours. Legendary! 🌟'
+          : 'Tap an empty slot to fill it with a trophy.' }</div>
+  `;
+
+  const tables    = TROPHIES.filter(t => !t.legendary);
+  const legendary = TROPHIES.filter(t =>  t.legendary);
+
+  wrap.appendChild(Object.assign(document.createElement('div'),
+    { className:'tc-shelf-label', textContent:'Times Tables' }));
+  _buildTrophyShelf(wrap, tables, coins, owned);
+
+  wrap.appendChild(Object.assign(document.createElement('div'),
+    { className:'tc-shelf-label', textContent:'Legendary' }));
+  _buildTrophyShelf(wrap, legendary, coins, owned);
+
+  parent.appendChild(wrap);
+}
+
+/* ── Buy-confirmation sheet ──────────────────────────────
+   Tapping a slot opens this instead of buying instantly, so
+   a child can't spend a big star balance by accident. ── */
+function openTrophyBuySheet(id){
+  const t = TROPHIES.find(x => x.id === id);
+  if(!t) return;
+  const owned     = getOwnedTrophies();
+  const isOwned   = owned.includes(id);
+  const coins     = getCoins();
+  const canAfford = coins >= t.cost;
+  const after     = coins - t.cost;
+
+  closeTrophyBuySheet(); // ensure only one
+
+  const back = document.createElement('div');
+  back.className = 'tc-sheet-backdrop';
+  back.id = 'tc-sheet-backdrop';
+  back.onclick = (e) => { if(e.target === back) closeTrophyBuySheet(); };
+
+  let footer;
+  if(isOwned){
+    footer = `<div class="tc-sheet-status owned">✓ In your cabinet</div>
+              <button class="tc-sheet-btn ghost" onclick="closeTrophyBuySheet()">Close</button>`;
+  } else if(canAfford){
+    footer = `<div class="tc-sheet-balance">Stars left after: <b>${starImg('','width:13px;height:13px;')} ${after}</b></div>
+              <button class="tc-sheet-btn buy" onclick="confirmTrophyBuy('${t.id}')">Buy for ${starImg('','width:15px;height:15px;')} ${t.cost}</button>
+              <button class="tc-sheet-btn ghost" onclick="closeTrophyBuySheet()">Maybe later</button>`;
+  } else {
+    const need = t.cost - coins;
+    footer = `<div class="tc-sheet-status short">Need ${starImg('','width:13px;height:13px;')} ${need} more — keep playing! 💪</div>
+              <button class="tc-sheet-btn ghost" onclick="closeTrophyBuySheet()">Close</button>`;
+  }
+
+  back.innerHTML = `
+    <div class="tc-sheet" role="dialog" aria-modal="true" aria-label="${t.name}">
+      <button class="tc-sheet-x" onclick="closeTrophyBuySheet()" aria-label="Close">✕</button>
+      <div class="tc-sheet-pedestal bg-${isOwned ? t.color : (canAfford ? t.color : 'grey')}">
+        <span class="tc-sheet-trophy">${t.icon}</span>
+      </div>
+      <div class="tc-sheet-name">${t.name}</div>
+      <div class="tc-sheet-desc">${t.desc}</div>
+      <div class="tc-sheet-footer">${footer}</div>
+    </div>`;
+
+  document.body.appendChild(back);
+  requestAnimationFrame(() => back.classList.add('show'));
+}
+
+function closeTrophyBuySheet(){
+  const back = document.getElementById('tc-sheet-backdrop');
+  if(back) back.remove();
+}
+
+function confirmTrophyBuy(id){
+  const t = TROPHIES.find(x => x.id === id);
+  if(!t) return;
+  const owned = getOwnedTrophies();
+  if(owned.includes(id)){ closeTrophyBuySheet(); return; }
+  const coins = getCoins();
+  if(coins < t.cost){
+    showToast(`Need ${t.cost - coins} more ⭐ for the ${t.name}! 💪`, 2500);
+    return;
+  }
+  saveState({ coins: coins - t.cost, ownedTrophies: [...owned, id] });
+  closeTrophyBuySheet();
+  showToast(`🎉 ${t.name} added to your cabinet!`);
+  renderRewards();
+  const homeNum = document.getElementById('home-coins');
+  if(homeNum) homeNum.textContent = getCoins();
+}
+
 function renderRewards() {
   const coins = getCoins();
   document.getElementById('rew-coins-badge').innerHTML = `${starImg()} ${coins}`;
@@ -7383,69 +7738,8 @@ function renderRewards() {
       </div>
     </div>`;
 
-  // ── Cutscene gallery ────────────────────────────────────
-  const lbl0 = document.createElement('div');
-  lbl0.className = 'info-section-label';
-  lbl0.textContent = '🎬 Stage Cutscenes';
-  el.appendChild(lbl0);
-
-  const earnedCount = CUTSCENES.filter(c => c.earnedWhen(s)).length;
-  const gallerySub = document.createElement('div');
-  gallerySub.style.cssText = 'font-size:11px;font-weight:700;color:rgba(255,255,255,.65);padding:0 4px 8px;';
-  gallerySub.textContent = earnedCount === 0
-    ? 'Complete stages to unlock your cutscenes!'
-    : `${earnedCount} of ${CUTSCENES.length} unlocked — tap to watch!`;
-  el.appendChild(gallerySub);
-
-  const gallery = document.createElement('div');
-  gallery.className = 'cutscene-gallery';
-
-  CUTSCENES.forEach(c => {
-    const earned = c.earnedWhen(s);
-    const card = document.createElement('div');
-    card.className = 'cutscene-card ' + (earned ? 'earned' : 'locked');
-
-    // Use a dedicated preview image as the card thumbnail
-    const previewEl = document.createElement('img');
-    previewEl.className = 'cutscene-card-preview';
-    previewEl.src = c.thumb;
-    previewEl.alt = c.title;
-    previewEl.style.pointerEvents = 'none';
-
-    card.appendChild(previewEl);
-
-    // No fallback overlay — the preview image covers the card;
-    // the card's dark background (#0d0025) shows if the image fails.
-
-    // Overlay: play button (earned) or lock (locked)
-    if (earned) {
-      const playOverlay = document.createElement('div');
-      playOverlay.className = 'cutscene-card-play';
-      playOverlay.innerHTML = `
-        <div class="cutscene-play-circle">▶</div>
-        <div class="cutscene-card-label">${c.title}</div>
-      `;
-      card.appendChild(playOverlay);
-    } else {
-      const lockOverlay = document.createElement('div');
-      lockOverlay.className = 'cutscene-card-lock';
-      lockOverlay.innerHTML = `
-        <div class="cutscene-lock-icon">🔒</div>
-        <div class="cutscene-lock-label">${c.unlockHint}</div>
-      `;
-      card.appendChild(lockOverlay);
-    }
-
-    if (earned) {
-      card.onclick = () => openRewardsVideo(c.src, c.title);
-    } else {
-      card.onclick = () => showToast(c.unlockHint, 2000);
-    }
-
-    gallery.appendChild(card);
-  });
-
-  el.appendChild(gallery);
+  // ── Trophy Cabinet (visual shelves — spend your stars!) ──
+  renderTrophyCabinet(el, coins, getOwnedTrophies());
 
   // ── Star Rewards (tiered, lifetime-coin-gated) ──────────────
   const lblR = document.createElement('div');
